@@ -47,4 +47,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For any questions or issues, feel free to reach out to:
 - Juan Felipe Restrepo Buitrago: [jfrestrepb@eafit.edu.co](jfrestrepb@eafit.edu.co)
-- Kevin Quiroz González: [email@example.com](mailto:email@example.com)
+- Kevin Quiroz González: [kquirozg@eafit.edu.co](mailto:kquirozg@eafit.edu.co)
