@@ -54,6 +54,7 @@ Thumbs.db
 # Python virtual environment or version
 venv/
 .venv/
+new_venv/
 .python-version
 
 # Python cache
