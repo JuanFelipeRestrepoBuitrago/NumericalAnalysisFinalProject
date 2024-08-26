@@ -6,9 +6,9 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 # Routes and config modules import
-from app.api.config.env import API_NAME, PRODUCTION_SERVER_URL, DEVELOPMENT_SERVER_URL, LOCALHOST_SERVER_URL
-from app.api.config.limiter import limiter
-from app.api.routes.routes import router
+from app.config.env import API_NAME, PRODUCTION_SERVER_URL, DEVELOPMENT_SERVER_URL, LOCALHOST_SERVER_URL
+from app.config.limiter import limiter
+from app.routes.routes import router
 
 from fastapi.openapi.utils import get_openapi
 
