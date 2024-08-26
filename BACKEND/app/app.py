@@ -43,9 +43,9 @@ license_info = {
 
 
 app = FastAPI(
-    openapi_url=f'/api/v1/{API_NAME}/openapi.json',
-    docs_url=f'/api/v1/{API_NAME}/docs',
-    redoc_url=f'/api/v1/{API_NAME}/redoc',
+    openapi_url=f'/api/{API_VERSION}/{API_NAME}/openapi.json',
+    docs_url=f'/api/{API_VERSION}/{API_NAME}/docs',
+    redoc_url=f'/api/{API_VERSION}/{API_NAME}/redoc',
     servers=servers,
     title=title,
     description=description,
