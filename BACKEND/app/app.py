@@ -5,8 +5,8 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
-# Routes and config modules import
-from app.config.env import API_NAME, PRODUCTION_SERVER_URL, DEVELOPMENT_SERVER_URL, LOCALHOST_SERVER_URL
+# Created modules imports
+from app.config.env import API_NAME, PRODUCTION_SERVER_URL, DEVELOPMENT_SERVER_URL, LOCALHOST_SERVER_URL, API_VERSION
 from app.config.limiter import limiter
 from app.routes.routes import router
 
@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
 
 title = f'{API_NAME} API'
 description = f'{API_NAME} API description.'
-version = '0.0.1'
+version = f'{API_VERSION}'
 servers = [
     {"url": LOCALHOST_SERVER_URL, "description": "Localhost server"},
     {"url": DEVELOPMENT_SERVER_URL, "description": "Development server"},
@@ -88,4 +88,4 @@ app.add_middleware(
 )
 
 # Include the routes
-app.include_router(router, prefix=f'/api/v1/{API_NAME}')
+app.include_router(router, prefix=f'/api/{API_VERSION}/{API_NAME}')
