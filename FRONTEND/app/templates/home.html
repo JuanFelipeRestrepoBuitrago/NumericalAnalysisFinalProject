@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MethodSolver</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="MethodSolve Icon" width="50" height="50" class="d-inline-block align-text-top">
+                MethodSolver
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index_page') }}">
+                            <i class="bi bi-house-door-fill"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('metodos_page') }}">
+                            <i class="bi bi-book-fill"></i> Métodos
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4">MethodSolver</h1>
+            <p class="lead">Tu herramienta confiable para resolver problemas numéricos con precisión y eficiencia.</p>
+            <a href="{{ url_for('metodos_page') }}" class="btn btn-primary btn-lg">Explora Métodos</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 feature">
+                    <div class="icon mb-4">
+                        <i class="bi bi-easel"></i>
+                    </div>
+                    <h3>Fácil de Usar</h3>
+                    <p>Interfaz intuitiva diseñada para hacer que la resolución de problemas numéricos sea accesible para todos.</p>
+                </div>
+                <div class="col-md-4 feature">
+                    <div class="icon mb-4">
+                        <i class="bi bi-grid"></i>
+                    </div>
+                    <h3>Amplia Gama de Métodos</h3>
+                    <p>Desde métodos clásicos hasta avanzados, encuentra la solución adecuada para cada problema.</p>
+                </div>
+                <div class="col-md-4 feature">
+                    <div class="icon mb-4">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <h3>Resultados Precisos</h3>
+                    <p>Confía en MethodSolver para obtener resultados precisos que te ayudarán a avanzar en tus proyectos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy;2024 Juan Felipe Restrepo y Kevin Quiroz. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

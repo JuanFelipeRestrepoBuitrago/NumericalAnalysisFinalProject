@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métodos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+              <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="MethodSolve Icon" width="50" height="50" class="d-inline-block align-text-top">
+              MethodSolver
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('index_page') }}">
+                          <i class="bi bi-house-door-fill"></i> Inicio
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('metodos_page') }}">
+                          <i class="bi bi-book-fill"></i> Métodos
+                      </a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4">Métodos</h1>
+            <p class="lead">24 métodos para resolver problemas numéricos</p>
+        </div>
+    </section>
+
+    <!-- Métodos Section -->
+    <section class="methods-section py-5">
+        <div class="container">
+            <!-- Grupo 1: Solving Systems by Graphing -->
+            <div class="mb-5">
+                <h2 class="mb-4"><i class="bi bi-graph-up"></i> Resolver sistemas mediante gráficos</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="graphing.html" class="btn btn-outline-primary btn-lg w-100">Function plotter</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 2: Solving Equations of One Variable -->
+            <div class="mb-5">
+                <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="function_evaluator.html" class="btn btn-outline-primary btn-lg w-100">Function evaluator</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="incremental_search.html" class="btn btn-outline-primary btn-lg w-100">Incremental search</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="bisection.html" class="btn btn-outline-primary btn-lg w-100">Bisection</a>
+                    </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="false_position.html" class="btn btn-outline-primary btn-lg w-100">False position</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="fixed_point.html" class="btn btn-outline-primary btn-lg w-100">Fixed point</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="newton_raphson.html" class="btn btn-outline-primary btn-lg w-100">Newton-Raphson</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="secant.html" class="btn btn-outline-primary btn-lg w-100">Secant</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="multiple_roots.html" class="btn btn-outline-primary btn-lg w-100">Multiple roots</a>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Group 3: Solution of Systems of Equations -->
+            <div class="mb-5">
+                <h2 class="mb-4"><i class="bi bi-bar-chart-fill"></i> Solución de sistemas de ecuaciones</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="gaussian_elimination_simple.html" class="btn btn-outline-primary btn-lg w-100">Gaussian elimination (simple)</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="gaussian_elimination_partial.html" class="btn btn-outline-primary btn-lg w-100">Gaussian elimination (partial pivot)</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="gaussian_elimination_total.html" class="btn btn-outline-primary btn-lg w-100">Gaussian elimination (total pivot)</a>
+                    </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Direct Factorization LU - simple.html" class="btn btn-outline-primary btn-lg w-100">Direct Factorization LU (simple)</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Direct Factorization LU - partial pivot.html" class="btn btn-outline-primary btn-lg w-100">Direct Factorization LU (partial pivot)</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Croult.html" class="btn btn-outline-primary btn-lg w-100">Croult</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Doolittle.html" class="btn btn-outline-primary btn-lg w-100">Doolittle</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Cholesky.html" class="btn btn-outline-primary btn-lg w-100">Cholesky</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Jacobi.html" class="btn btn-outline-primary btn-lg w-100">Jacobi</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Gauss-Seidel.html" class="btn btn-outline-primary btn-lg w-100">Gauss-Seidel</a>
+                     </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="Sor.html" class="btn btn-outline-primary btn-lg w-100">Sor</a>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Grupo 4: Interpolation -->
+            <div class="mb-5">
+                <h2 class="mb-4"><i class="bi bi-spline"></i> Interpolación</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="vandermonde.html" class="btn btn-outline-primary btn-lg w-100">Vandermonde</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="newton_divided.html" class="btn btn-outline-primary btn-lg w-100">Newton (Divided difference method)</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="lagrange.html" class="btn btn-outline-primary btn-lg w-100">Lagrange</a>
+                    </div>
+                     <div class="col-md-4 mb-4">
+                           <a href="spline.html" class="btn btn-outline-primary btn-lg w-100">Spline</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy;2024 MethodSolve. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
