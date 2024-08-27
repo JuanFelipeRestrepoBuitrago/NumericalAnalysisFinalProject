@@ -1,15 +1,15 @@
 from fastapi import APIRouter, HTTPException, Request, Depends, status
 from slowapi.errors import RateLimitExceeded
-# from typing import List
 import logging
+from sqlalchemy.orm import Session
 
 # Configuration, models, methods and authentication modules imports
-# from app.config.db import database
+from app.config.database import get_db
 from app.config.limiter import limiter
 from app.config.env import API_NAME
-from app.models.models import ResponseError
-# from app.auth.auth import auth_handler
-from app.utils.utils import raise_exception
+from app.models.models import ResponseError, UserLogin, UserLoginResponse
+from app.auth.auth import auth_handler
+from app.utils.utils import raise_exception, get_user_by_username
 
 router = APIRouter()
 
@@ -35,14 +35,57 @@ logger = logging.getLogger(__name__)
             })
 @limiter.limit("30/minute")
 def root(request: Request):
-    """Root endpoint.
+    """
+    Root endpoint.
 
     Returns:
-    - str: Welcome message.
+        (str): Welcome message.
     """
     try:
         logger.info("Root endpoint.")
         return "Welcome to the Backend Numerical Methods API!"
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except Exception as e:
+        raise_exception(e, logger)
+
+@router.post('/login/',
+                tags=["Authentication"],
+                status_code=status.HTTP_200_OK,
+                summary="User login.",
+                response_model=UserLoginResponse,
+                responses={
+                    500: {"model": ResponseError, "description": "Internal server error."},
+                    429: {"model": ResponseError, "description": "Too many requests."}
+                })
+@limiter.limit("10/minute")
+def login(request: Request, user: UserLogin, db: Session = Depends(get_db)):
+    """
+    User login endpoint.
+
+    Args:
+        user (UserLogin): User credentials.
+
+    Returns:
+        (UserLoginResponse): JWT token.
+
+    Raises:
+        HTTPException: If the user is not found or the password is incorrect.
+    """
+    try:
+        logger.info(f"User login attempt for {user.username}.")
+        # Fetch user from the database
+        db_user = get_user_by_username(db, user.username)
+
+        # Verify user and password match
+        if not db_user or not auth_handler.verify_password(user.password, db_user.password):
+            raise HTTPException(status_code=400, detail='Invalid username or password')
+        
+        # Generate token
+        token = auth_handler.create_token({'username': db_user.username})
+
+        # Return token
+        return UserLoginResponse(access_token=token, token_type="bearer")
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except Exception as e:

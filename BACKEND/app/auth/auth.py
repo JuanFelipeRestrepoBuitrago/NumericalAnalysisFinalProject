@@ -15,36 +15,39 @@ class AuthenticationHandler:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     def hash_password(self, password: str) -> str:
-        """Hashes the password using bcrypt.
+        """
+        Hashes the password using bcrypt.
         
         Args:
-        - password (str): Plain text password.
+            password (str): Plain text password.
         
         Returns:
-        - str: Hashed password.
+            (str): Hashed password. 
         """
         return self.pwd_context.hash(password)
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        """Verifies a password against its hashed version.
+        """
+        Verifies a password against its hashed version.
         
         Args:
-        - plain_password (str): Plain text password.
-        - hashed_password (str): Hashed version of the password.
+            plain_password (str): Plain text password.
+            hashed_password (str): Hashed version of the password.
         
         Returns:
-        - bool: True if verification is successful, False otherwise.
+            (bool): True if verification is successful, False otherwise.
         """
         return self.pwd_context.verify(plain_password, hashed_password)
 
     def create_token(self, user: dict) -> str:
-        """Generates a JWT token for the given user_id.
+        """
+        Generates a JWT token for the given user_id.
         
         Args:
-        - user_id (str): Unique identifier for the user.
+            user_id (str): Unique identifier for the user.
         
         Returns:
-        - str: JWT token.
+            (str): JWT token.
         """
         expiration = datetime.utcnow() + timedelta(days=2)
         payload = {
@@ -55,16 +58,17 @@ class AuthenticationHandler:
         return jwt.encode(payload, JWT_SECRET, algorithm='HS256')
 
     def decode_token(self, token: str) -> Union[dict, None]:
-        """Decodes a JWT token and returns its payload.
+        """
+        Decodes a JWT token and returns its payload.
         
         Args:
-        - token (str): JWT token.
+            token (str): JWT token.
         
         Returns:
-        - dict: User dict if verification is successful.
+            (dict): User dict if verification is successful.
         
         Raises:
-        - HTTPException: If token is expired or invalid.
+            HTTPException: If token is expired or invalid.
         """
         try:
             payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
@@ -75,16 +79,17 @@ class AuthenticationHandler:
             raise HTTPException(status_code=401, detail='Invalid token')
 
     def authenticate(self, auth_credentials: HTTPAuthorizationCredentials = Security(security)) -> str:
-        """Wrapper function for token authentication.
+        """
+        Wrapper function for token authentication.
         
         Args:
-        - auth_credentials (HTTPAuthorizationCredentials): HTTP authorization credentials.
+            auth_credentials (HTTPAuthorizationCredentials): HTTP authorization credentials.
         
         Returns:
-        - str: User ID if authentication is successful.
+            (str): User ID if authentication is successful.
         
         Raises:
-        - HTTPException: If token is expired or invalid.
+            HTTPException: If token is expired or invalid.
         """
         return self.decode_token(auth_credentials.credentials)
 

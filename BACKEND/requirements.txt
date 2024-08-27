@@ -3,3 +3,7 @@ uvicorn==0.30.6
 slowapi==0.1.9
 PyJWT==2.9.0
 passlib==1.7.4
+databases==0.9.0
+pymysql==1.1.1
+sqlalchemy==2.0.32
+aiomysql==0.2.0 
