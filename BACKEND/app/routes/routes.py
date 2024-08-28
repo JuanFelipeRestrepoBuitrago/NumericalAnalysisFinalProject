@@ -9,7 +9,8 @@ from app.config.limiter import limiter
 from app.config.env import API_NAME
 from app.models.models import ResponseError, UserLogin, UserLoginResponse
 from app.auth.auth import auth_handler
-from app.utils.utils import raise_exception, get_user_by_username
+from app.utils.utils import raise_exception
+from app.utils.crud import get_user_by_username
 
 router = APIRouter()
 

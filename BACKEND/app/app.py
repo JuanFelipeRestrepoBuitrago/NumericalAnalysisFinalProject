@@ -9,13 +9,16 @@ from slowapi.middleware import SlowAPIMiddleware
 from app.config.env import API_NAME, PRODUCTION_SERVER_URL, DEVELOPMENT_SERVER_URL, LOCALHOST_SERVER_URL, API_VERSION
 from app.config.limiter import limiter
 from app.routes.routes import router
+from app.utils.crud import init_db
 
+# FastAPI imports
 from fastapi.openapi.utils import get_openapi
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Actions to be executed during startup
     print('API started')
+    init_db()
     
     # Yield control to allow the app to run
     yield
