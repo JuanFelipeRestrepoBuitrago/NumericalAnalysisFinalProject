@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
                 500: {"model": ResponseError, "description": "Internal server error."},
                 429: {"model": ResponseError, "description": "Too many requests."}
             })
-@limiter.limit("30/minute")
+@limiter.limit("1/minute")
 def root(request: Request):
     """
     Root endpoint.
@@ -59,7 +59,7 @@ def root(request: Request):
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("10/minute")
+@limiter.limit("5/minute")
 def login(request: Request, user: UserLogin, db: Session = Depends(get_db)):
     """
     User login endpoint.
@@ -85,12 +85,40 @@ def login(request: Request, user: UserLogin, db: Session = Depends(get_db)):
         # Generate token
         token = auth_handler.create_token({'username': db_user.username})
 
+        logger.info(f"User {user.username} successfully logged in.")
         # Return token
-        return UserLoginResponse(access_token=token, token_type="bearer")
+        return UserLoginResponse(access_token=token, token_type="Bearer")
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except Exception as e:
         raise_exception(e, logger)
+
+
+@router.get('/protected/',
+            tags=["Protected"],
+            status_code=status.HTTP_200_OK,
+            summary="Protected endpoint to test authentication.",
+            response_model=str,
+            responses={
+                500: {"model": ResponseError, "description": "Internal server error."},
+                429: {"model": ResponseError, "description": "Too many requests."}
+            })
+@limiter.limit("1/minute")
+def protected(request: Request, auth: dict = Depends(auth_handler.authenticate)):
+    """
+    Root endpoint.
+
+    Returns:
+        (str): Welcome message.
+    """
+    try:
+        logger.info("Protected endpoint.")
+        return f"This is a protected endpoint. Welcome, {auth['username']}!"
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except Exception as e:
+        raise_exception(e, logger)
+
 
 
 # @router.post('/items/', 
