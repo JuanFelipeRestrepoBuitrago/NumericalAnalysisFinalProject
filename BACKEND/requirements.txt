@@ -8,3 +8,4 @@ pymysql==1.1.1
 sqlalchemy==2.0.32
 aiomysql==0.2.0
 cryptography==43.0.0
+sympy==1.13.2
