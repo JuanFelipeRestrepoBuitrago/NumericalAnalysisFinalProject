@@ -18,7 +18,7 @@ services:
     restart: always
 
   methods_solver_backend_api:
-    image: ghcr.io/juanfeliperestreprobuitrago/numericalanalysisfinalproject/methods_solver_backend_api:latest
+    image: ghcr.io/juanfeliperestrepobuitrago/numericalanalysisfinalproject/methods_solver_backend_api:latest
     container_name: methods_solver_backend_api
     depends_on:
       - mysql
@@ -28,8 +28,8 @@ services:
       - API_NAME=backend_numerical_methods
       - API_VERSION=v1.0.0
       - JWT_SECRET=supersecretkeythatissufficientlylong123
-      - PRODUCTION_SERVER_URL=http://localhost:8000
-      - DEVELOPMENT_SERVER_URL=http://localhost:8000
+      - PRODUCTION_SERVER_URL=http://method-solver.sytes.net
+      - DEVELOPMENT_SERVER_URL=http://method-solver.sytes.net
       - LOCALHOST_SERVER_URL=http://localhost:8000
       - DATABASE_USER=root
       - DATABASE_PASSWORD=123
