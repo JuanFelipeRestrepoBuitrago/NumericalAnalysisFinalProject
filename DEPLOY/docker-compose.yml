@@ -18,20 +18,26 @@ services:
     restart: always
 
   methods_solver_backend_api:
-    image: piper04/methods_solver_backend_api:latest
+    image: ghcr.io/juanfeliperestreprobuitrago/numericalanalysisfinalproject/methods_solver_backend_api:latest
     container_name: methods_solver_backend_api
     depends_on:
       - mysql
     links:
       - mysql
     environment:
-      - PORT=3000
-      - HOST=0.0.0.0
-      - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASSWORD=123
-      - DB_NAME=jpr_reformas_construcciones_sas
-      - DB_PORT=3306
+      - API_NAME=backend_numerical_methods
+      - API_VERSION=v1.0.0
+      - JWT_SECRET=supersecretkeythatissufficientlylong123
+      - PRODUCTION_SERVER_URL=http://localhost:8000
+      - DEVELOPMENT_SERVER_URL=http://localhost:8000
+      - LOCALHOST_SERVER_URL=http://localhost:8000
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=123
+      - DATABASE_NAME=numerical_methods_api
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DEFAULT_USER_NAME=eafit
+      - DEFAULT_USER_PASSWORD=Analisis123
     networks:
       - methods_solver_backend_network
     restart: always
