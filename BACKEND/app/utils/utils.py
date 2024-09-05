@@ -1,5 +1,9 @@
 from logging import Logger
 from fastapi import HTTPException, status
+import sympy as sp
+from typing import Tuple
+from sympy.core.sympify import SympifyError
+import re
 
 
 def raise_exception(e: Exception, logger: Logger):
@@ -18,3 +22,45 @@ def raise_exception(e: Exception, logger: Logger):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail=str(e)
     )
+
+
+def parse_expression(expression: str, logger: Logger, variable_character: str = None) -> Tuple[sp.Expr, list[sp.Symbol]]:
+    """
+    Parse the expression and return the sympy expression and the variables in the expression
+
+    Arguments:
+        expression (str) : The expression to parse
+        logger (Logger) : The logger instance to log
+        variable_character (str) : The character to use as the variable
+
+    Returns:
+        tuple : The sympy expression and the variables in the expression
+    """
+    # Check if the expression is empty to raise an exception
+    if not expression:
+        raise_exception(ValueError("La expresión o función no puede ser vacía"), logger)
+
+    # Try to parse the expression, if it fails raise an exception
+    try:
+        expr = sp.sympify(expression)
+    except (TypeError, SyntaxError, SympifyError) as e:
+        raise_exception(SyntaxError("Expresión Inválida, verifique la guía de expresiones"), logger)
+
+    # Check if the expression is a function and get the variables
+    if variable_character is None:
+        variables = list(expr.free_symbols)
+    else:
+        variables = [sp.symbols(variable_character)]
+
+    # Check if the expression doesn't contains variables to raise an exception
+    if not variables:
+        raise_exception(ValueError("La expresión o función no contiene variables"), logger)
+
+    # Check if there are any variables next to another variable or expression, example: xx, xln(x)
+    for variable in variables:
+        if re.search(rf"{variable.name}([a-zA-Z0-9]+)", expression) or re.search(rf"{variable.name}\(", expression) or re.search(rf"\){variable.name}", expression):
+            raise_exception(SyntaxError("Expresión Inválida, verifique la guía de expresiones"), logger)
+        
+    # Return the expression and the variables
+    return expr, variables
+    
