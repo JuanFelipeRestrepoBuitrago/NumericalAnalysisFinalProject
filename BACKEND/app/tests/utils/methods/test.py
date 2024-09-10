@@ -49,3 +49,4 @@ def test_bisection():
         result = bisection(function, variable, initial, final, tolerance, iterations, absolute_error)
     except HTTPException as e:
         assert e.detail == "La función no tiene cambio de signo en el intervalo dado"
+        

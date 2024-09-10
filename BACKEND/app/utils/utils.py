@@ -58,7 +58,7 @@ def parse_expression(expression: str, logger: Logger, variable_character: str = 
 
     # Check if there are any variables next to another variable or expression, example: xx, xln(x)
     for variable in variables:
-        if re.search(rf"{variable.name}([a-zA-Z0-9]+)", expression) or re.search(rf"{variable.name}\(", expression) or re.search(rf"\){variable.name}", expression):
+        if re.search(rf"{variable.name}([a-zA-Z0-9]+)", expression) or re.search(rf"{variable.name}\(", expression) or re.search(rf"\){variable.name}", expression) or len(variable.name) > 1:
             raise_exception(SyntaxError("Expresión Inválida, verifique la guía de expresiones"), logger)
         
     # Return the expression and the variables

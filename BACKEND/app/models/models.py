@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Literal, List
 from pydantic import BaseModel, Field
 
 
@@ -45,3 +45,52 @@ class UserLoginResponse(BaseModel):
     """
     access_token: str = Field(description="JWT token for user authentication.")
     token_type: str = Field(description="Type of token.")
+
+
+class NumericalMethodRequest(BaseModel):
+    """
+    Data model for numerical method requests.
+    
+    This model is used for numerical method requests. It contains the `expression` attribute, which represents the mathematical expression to be evaluated.
+
+    Attributes:
+        expression (str): Mathematical expression to be evaluated.
+        error_type (Optional[str]): Type of error to be used in the method.
+        tolerance (float): Tolerance value for the error in the method.
+        max_iterations (int): Maximum number of iterations for the method.
+    """
+    expression: str = Field(..., description="Mathematical expression or function to be evaluated.")
+    error_type: Optional[Literal["absolute", "relative"]] = Field("absolute", description="Type of error to be used in the method.")
+    tolerance: float = Field(..., description="Tolerance value for the error in the method.")
+    max_iterations: int = Field(..., description="Maximum number of iterations for the method.")
+
+class NumericalMethodResponse(BaseModel):
+    """
+    Data model for numerical method responses.
+    
+    This model is used for numerical method responses.
+
+    Attributes:
+        Iterations (List[int]): List of the number of iterations taken to reach the result.
+        Xn (List[float]): List of approximations of the root.
+        Fx (List[float]): List of function values at each approximation.
+        Error (List[float]): List of errors at each approximation.
+    """
+    Iterations: List[int] = Field(description="List of the number of iterations taken to reach the result.")
+    Xn: List[float] = Field(description="List of approximations of the root.")
+    Fx: List[float] = Field(description="List of function values at each approximation.")
+    Error: List[float] = Field(description="List of errors at each approximation.")
+
+
+class BisectionModel(NumericalMethodRequest):
+    """
+    Data model for the Bisection method.
+    
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Bisection method.
+
+    Attributes:
+        a (float): Initial left bound of the interval.
+        b (float): Initial right bound of the interval.
+    """
+    a: float = Field(..., description="Initial left bound of the interval.")
+    b: float = Field(..., description="Initial right bound of the interval.")

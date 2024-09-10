@@ -64,6 +64,22 @@ def test_parse_expression():
         raise AssertionError("The expression is invalid and should raise an exception")
     except HTTPException as e:
         assert e.detail == "Expresión Inválida, verifique la guía de expresiones"
+
+    # Test the function with an invalid expression
+    expression = "x**2 + 2*x + 1 + xx"
+    try:
+        expr, variables = parse_expression(expression, logger)
+        raise AssertionError("The expression is invalid and should raise an exception")
+    except HTTPException as e:
+        assert e.detail == "Expresión Inválida, verifique la guía de expresiones"
+
+    # Test the function with an invalid expression
+    expression = "xx"
+    try:
+        expr, variables = parse_expression(expression, logger)
+        raise AssertionError("The expression is invalid and should raise an exception")
+    except HTTPException as e:
+        assert e.detail == "Expresión Inválida, verifique la guía de expresiones"
     
     # Test the function with an expression without variables
     expression = "1 + 2 + 3"
