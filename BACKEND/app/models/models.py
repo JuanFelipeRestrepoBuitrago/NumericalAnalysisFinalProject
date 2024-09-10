@@ -58,6 +58,7 @@ class NumericalMethodRequest(BaseModel):
         error_type (Optional[str]): Type of error to be used in the method.
         tolerance (float): Tolerance value for the error in the method.
         max_iterations (int): Maximum number of iterations for the method.
+        precision (int): Number of decimal places to round the values.
     """
     expression: str = Field(..., description="Mathematical expression or function to be evaluated.")
     error_type: Optional[Literal["absolute", "relative"]] = Field("absolute", description="Type of error to be used in the method.")
@@ -82,15 +83,15 @@ class NumericalMethodResponse(BaseModel):
     Error: List[float] = Field(description="List of errors at each approximation.")
 
 
-class BisectionModel(NumericalMethodRequest):
+class BisectionFalseRuleModel(NumericalMethodRequest):
     """
     Data model for the Bisection method.
     
     This model extends the `NumericalMethodRequest` model and adds specific attributes for the Bisection method.
 
     Attributes:
-        a (float): Initial left bound of the interval.
-        b (float): Initial right bound of the interval.
+        initial (float): Initial left bound of the interval.
+        final (float): Initial right bound of the interval.
     """
-    a: float = Field(..., description="Initial left bound of the interval.")
-    b: float = Field(..., description="Initial right bound of the interval.")
+    initial: float = Field(..., description="Initial left bound of the interval.")
+    final: float = Field(..., description="Initial right bound of the interval.")
