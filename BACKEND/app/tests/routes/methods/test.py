@@ -39,9 +39,9 @@ def test_bisection():
     assert response.status_code == 200
     answer = response.json()
     assert answer["Iterations"][-1] == 55 
-    assert answer["Xn"][-1] == 2
-    assert answer["Fx"][-1] == 0
-    assert answer["Error"][-1] == 8.881784197001252e-16
+    assert answer["Xn"][-1] == "2.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "8.881784197001252e-16"
 
     # Test the bisection method with relative error
     data["error_type"] = "relative"
@@ -50,9 +50,9 @@ def test_bisection():
     assert response.status_code == 200
     answer = response.json()
     assert answer["Iterations"][-1] == 55
-    assert answer["Xn"][-1] == 2
-    assert answer["Fx"][-1] == 0
-    assert answer["Error"][-1] == 4.440892098500626e-16
+    assert answer["Xn"][-1] == "2.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "4.440892098500626e-16"
 
     # Test the bisection method with a different expression
     data["expression"] = "x**2 - 5"
@@ -60,7 +60,7 @@ def test_bisection():
 
     assert response.status_code == 200
     answer = response.json()
-    assert answer["Xn"][-1] == 2.23606797749978980505
+    assert answer["Xn"][-1] == "2.23606797749979"
 
     # Test the bisection method with a wrong interval
     data["initial"] = -15
@@ -119,9 +119,9 @@ def test_false_rule():
     assert response.status_code == 200
     answer = response.json()
     assert answer["Iterations"][-1] == 5
-    assert answer["Xn"][-1] == -1.635775774845467
-    assert answer["Fx"][-1] == -1.4978240869822912e-11
-    assert answer["Error"][-1] == 8.387002203846805e-10
+    assert answer["Xn"][-1] == "-1.635775774845467"
+    assert answer["Fx"][-1] == "-1.497813678641435e-11"
+    assert answer["Error"][-1] == "8.387003036514074e-10"
 
     # Test the false rule method with relative error
     data["error_type"] = "relative"
@@ -130,9 +130,9 @@ def test_false_rule():
     assert response.status_code == 200
     answer = response.json()
     assert answer["Iterations"][-1] == 5
-    assert answer["Xn"][-1] == -1.635775774845467
-    assert answer["Fx"][-1] == -1.4978240869822912e-11
-    assert answer["Error"][-1] == 5.127232187210457e-10
+    assert answer["Xn"][-1] == "-1.635775774845467"
+    assert answer["Fx"][-1] == "-1.497813678641435e-11"
+    assert answer["Error"][-1] == "5.127232696245547e-10"
 
     # Test the bisection method with a wrong interval
     data["initial"] = -1

@@ -45,7 +45,7 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = bisection_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error)
+        iterations, x, fx, error = bisection_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
     except RateLimitExceeded:
@@ -89,7 +89,7 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = false_rule_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error)
+        iterations, x, fx, error = false_rule_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
     except RateLimitExceeded:

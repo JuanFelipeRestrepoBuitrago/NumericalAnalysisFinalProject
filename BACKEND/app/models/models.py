@@ -64,6 +64,7 @@ class NumericalMethodRequest(BaseModel):
     error_type: Optional[Literal["absolute", "relative"]] = Field("absolute", description="Type of error to be used in the method.")
     tolerance: float = Field(..., description="Tolerance value for the error in the method.")
     max_iterations: int = Field(..., description="Maximum number of iterations for the method.")
+    precision: int = Field(16, description="Number of decimal places to round the values.")
 
 class NumericalMethodResponse(BaseModel):
     """
@@ -78,9 +79,9 @@ class NumericalMethodResponse(BaseModel):
         Error (List[float]): List of errors at each approximation.
     """
     Iterations: List[int] = Field(description="List of the number of iterations taken to reach the result.")
-    Xn: List[float] = Field(description="List of approximations of the root.")
-    Fx: List[float] = Field(description="List of function values at each approximation.")
-    Error: List[float] = Field(description="List of errors at each approximation.")
+    Xn: List[str] = Field(description="List of approximations of the root.")
+    Fx: List[str] = Field(description="List of function values at each approximation.")
+    Error: List[str] = Field(description="List of errors at each approximation.")
 
 
 class BisectionFalseRuleModel(NumericalMethodRequest):
