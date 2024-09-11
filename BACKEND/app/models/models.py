@@ -64,7 +64,7 @@ class NumericalMethodRequest(BaseModel):
     error_type: Optional[Literal["absolute", "relative"]] = Field("absolute", description="Type of error to be used in the method.")
     tolerance: float = Field(..., description="Tolerance value for the error in the method.")
     max_iterations: int = Field(..., description="Maximum number of iterations for the method.")
-    precision: int = Field(16, description="Number of decimal places to round the values.")
+    precision: Optional[int] = Field(16, description="Number of decimal places to round the values.")
 
 class NumericalMethodResponse(BaseModel):
     """
@@ -86,9 +86,9 @@ class NumericalMethodResponse(BaseModel):
 
 class BisectionFalseRuleModel(NumericalMethodRequest):
     """
-    Data model for the Bisection method.
+    Data model for the Bisection and False Rule methods.
     
-    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Bisection method.
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Bisection and False Rule methods.
 
     Attributes:
         initial (float): Initial left bound of the interval.
@@ -96,3 +96,15 @@ class BisectionFalseRuleModel(NumericalMethodRequest):
     """
     initial: float = Field(..., description="Initial left bound of the interval.")
     final: float = Field(..., description="Initial right bound of the interval.")
+
+class FixedPointModel(NumericalMethodRequest):
+    """
+    Data model for the Fixed Point method.
+    
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Fixed Point method.
+
+    Attributes:
+        initial (float): Initial guess for the root.
+    """
+    g_expression: str = Field(..., description="Function g(x) to be used in the fixed point method.")
+    initial: float = Field(..., description="Initial value for the fixed point calculation.")

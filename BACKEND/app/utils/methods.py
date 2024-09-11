@@ -154,3 +154,73 @@ def false_rule(function: sp.Expr, variable: sp.Symbol, initial: float, final: fl
 
         # Return the list of iterations, values, function values and errors
         return [counter_values_list, values_list, function_values_list, error_values_list]
+    
+
+def fixed_point(function: sp.Expr, variable: sp.Symbol, g_function: sp.Expr, initial_value: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+    """
+    Find the root of a function using the fixed point method.
+    
+    Args:
+        function: The function for which to find the root.
+        g_function: The function to use in the fixed point method.
+        initial_value: Initial value of the independent variable.
+        tolerance: Tolerance for the root (default 0.5).
+        iterations: Maximum number of iterations to perform (default 100).
+        absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
+        precision: Number of decimal places to round the values (default 15).
+    Returns:
+        List or table with the iterations, the values of x, the values of f(x) and the errors.
+    """
+    # Initialize the lists to store the function values and errors
+    function_values_list = []
+    values_list = []
+    error_values_list = []
+    counter_values_list = []
+    counter = 0
+
+    # Calculate the function value at the initial point
+    f_initial = function.subs(variable, initial_value).evalf(precision)
+
+    # Check if the initial point is a root
+    if f_initial == 0:
+        return [[0], [str(initial_value)], [str(f_initial)], [0]]
+    else:
+        # Set the variables needed for the iterations
+        x = initial_value
+        f_x = f_initial
+        # Initialize the error
+        previous_error = 1
+
+        # Add the initial values to the lists
+        values_list.append(str(x))
+        function_values_list.append(str(f_x))
+        error_values_list.append(str(previous_error))
+        counter_values_list.append(counter)
+
+        # Iterate until the error is less than the tolerance, the function value is zero or the maximum number of iterations is reached
+        while previous_error > tolerance and f_x != 0 and counter < iterations:
+            # Sets the previous x value
+            x_previous = x
+
+            # Calculate the new value of x using the g function
+            x = g_function.subs(variable, x).evalf(precision)
+            f_x = function.subs(variable, x).evalf(precision)
+
+            # Store the values in the lists
+            values_list.append(str(x))
+            function_values_list.append(str(f_x))
+
+            # Calculate the error and increment the counter
+            if absolute_error: 
+                error = abs(x - x_previous)
+            else:
+                error = abs((x - x_previous) / x)
+            counter += 1
+
+            # Store the error in the list, update the previous error and add the counter to the list
+            error_values_list.append(str(error))
+            previous_error = error
+            counter_values_list.append(counter)
+
+        # Return the list of iterations, values, function values and errors
+        return [counter_values_list, values_list, function_values_list, error_values_list]
