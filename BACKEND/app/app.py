@@ -9,6 +9,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from app.config.env import API_NAME, PRODUCTION_SERVER_URL, DEVELOPMENT_SERVER_URL, LOCALHOST_SERVER_URL, API_VERSION
 from app.config.limiter import limiter
 from app.routes.routes import router
+from app.routes.methods.routes import router as methods_router
 from app.utils.crud import init_db
 
 # FastAPI imports
@@ -92,3 +93,4 @@ app.add_middleware(
 
 # Include the routes
 app.include_router(router, prefix=f'/api/{API_VERSION}/{API_NAME}')
+app.include_router(methods_router, prefix=f'/api/{API_VERSION}/{API_NAME}/methods')

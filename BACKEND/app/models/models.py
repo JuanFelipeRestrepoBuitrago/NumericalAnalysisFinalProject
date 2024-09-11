@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Literal, List
 from pydantic import BaseModel, Field
 
 
@@ -45,3 +45,66 @@ class UserLoginResponse(BaseModel):
     """
     access_token: str = Field(description="JWT token for user authentication.")
     token_type: str = Field(description="Type of token.")
+
+
+class NumericalMethodRequest(BaseModel):
+    """
+    Data model for numerical method requests.
+    
+    This model is used for numerical method requests. It contains the `expression` attribute, which represents the mathematical expression to be evaluated.
+
+    Attributes:
+        expression (str): Mathematical expression to be evaluated.
+        error_type (Optional[str]): Type of error to be used in the method.
+        tolerance (float): Tolerance value for the error in the method.
+        max_iterations (int): Maximum number of iterations for the method.
+        precision (int): Number of decimal places to round the values.
+    """
+    expression: str = Field(..., description="Mathematical expression or function to be evaluated.")
+    error_type: Optional[Literal["absolute", "relative"]] = Field("absolute", description="Type of error to be used in the method.")
+    tolerance: float = Field(..., description="Tolerance value for the error in the method.")
+    max_iterations: int = Field(..., description="Maximum number of iterations for the method.")
+    precision: Optional[int] = Field(16, description="Number of decimal places to round the values.")
+
+class NumericalMethodResponse(BaseModel):
+    """
+    Data model for numerical method responses.
+    
+    This model is used for numerical method responses.
+
+    Attributes:
+        Iterations (List[int]): List of the number of iterations taken to reach the result.
+        Xn (List[float]): List of approximations of the root.
+        Fx (List[float]): List of function values at each approximation.
+        Error (List[float]): List of errors at each approximation.
+    """
+    Iterations: List[int] = Field(description="List of the number of iterations taken to reach the result.")
+    Xn: List[str] = Field(description="List of approximations of the root.")
+    Fx: List[str] = Field(description="List of function values at each approximation.")
+    Error: List[str] = Field(description="List of errors at each approximation.")
+
+
+class BisectionFalseRuleModel(NumericalMethodRequest):
+    """
+    Data model for the Bisection and False Rule methods.
+    
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Bisection and False Rule methods.
+
+    Attributes:
+        initial (float): Initial left bound of the interval.
+        final (float): Initial right bound of the interval.
+    """
+    initial: float = Field(..., description="Initial left bound of the interval.")
+    final: float = Field(..., description="Initial right bound of the interval.")
+
+class FixedPointModel(NumericalMethodRequest):
+    """
+    Data model for the Fixed Point method.
+    
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Fixed Point method.
+
+    Attributes:
+        initial (float): Initial guess for the root.
+    """
+    g_expression: str = Field(..., description="Function g(x) to be used in the fixed point method.")
+    initial: float = Field(..., description="Initial value for the fixed point calculation.")

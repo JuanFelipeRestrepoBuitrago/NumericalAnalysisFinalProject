@@ -46,11 +46,4 @@ def test_protected():
     assert response.status_code == 200
     data = response.json()
     assert f"This is a protected endpoint. Welcome, {DEFAULT_USER_NAME}!" == data
-
-# # Test for GET /items/ endpoint
-# def test_list_items():
-#     response = client.get("/items/")
-#     assert response.status_code == 200
-#     assert isinstance(response.json(), list)
-
-# # Add more tests for other endpoints...
+    
