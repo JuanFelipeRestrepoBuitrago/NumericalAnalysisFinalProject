@@ -130,7 +130,7 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
-        function_g = parse_expression(data.g_expression, logger, variable_character=variable.name)
+        function_g = parse_expression(data.g_expression, logger, variable_character=variable.name)[0]
 
         absolute_error = True if data.error_type == "absolute" else False
 

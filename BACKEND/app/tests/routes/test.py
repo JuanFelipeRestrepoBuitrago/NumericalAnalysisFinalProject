@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from app.config.env import API_NAME, API_VERSION, DEFAULT_USER_NAME
+from app.config.env import API_NAME, API_VERSION, DEFAULT_USER_NAME, DEFAULT_USER_PASSWORD
 from app.app import app
 
 client = TestClient(app)
@@ -20,8 +20,8 @@ def test_login():
     Test the post login endpoint /login/
     """
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
-        "username": "eafit",
-        "password": "Analisis123"
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
     })
     assert response.status_code == 200
     data = response.json()
@@ -32,8 +32,8 @@ def test_protected():
     Test the get protected endpoint /protected/
     """
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
-        "username": "eafit",
-        "password": "Analisis123"
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
     })
     assert response.status_code == 200
     data = response.json()
