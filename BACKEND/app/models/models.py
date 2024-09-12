@@ -108,3 +108,16 @@ class FixedPointModel(NumericalMethodRequest):
     """
     g_expression: str = Field(..., description="Function g(x) to be used in the fixed point method.")
     initial: float = Field(..., description="Initial value for the fixed point calculation.")
+
+class NewtonRaphsonModel(NumericalMethodRequest):
+    """
+    Data model for the Newton-Raphson method.
+
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Newton-Raphson method.
+
+    Attributes:
+        initial (float): Initial guess for the root.
+        derivative_expression (Optional[str])
+    """
+    initial: float = Field(..., description="Initial value for the Newton-Raphson calculation.")
+    derivative_expression: Optional[str] = Field(None, description="Derivative expression of the function to be used in the Newton-Raphson method.")

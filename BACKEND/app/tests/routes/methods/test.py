@@ -209,7 +209,7 @@ def test_fixed_point():
         "precision": 16
     }
 
-    # Test the false rule method
+    # Test the fixed point method
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/fixed_point/", json=data, headers=headers)
 
     assert response.status_code == 200
@@ -219,7 +219,7 @@ def test_fixed_point():
     assert answer["Fx"][-1] == "0"
     assert answer["Error"][-1] == "6.938893903907228e-18"
 
-    # Test the false rule method with relative error
+    # Test the fixed point method with relative error
     data["error_type"] = "relative"
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/fixed_point/", json=data, headers=headers)
 
@@ -240,6 +240,74 @@ def test_fixed_point():
     data["precision"] = 16
 
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/fixed_point/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
+
+
+def test_newton_raphson():
+    """
+    Test the post false rule endpoint /methods/newton_raphson/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "expression": "(exp(x)/x) + 3",
+        "initial": -1,
+        "tolerance": 0.5e-100,
+        "max_iterations": 100,
+        "error_type": "absolute",
+        "precision": 16
+    }
+
+    # Test the newton raphson method
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/newton_raphson/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 12
+    assert answer["Xn"][-1] == "-0.2576276530497367"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "1.679212324745549e-15"
+
+    # Test the newton raphson method with relative error
+    data["error_type"] = "relative"
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/newton_raphson/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 12
+    assert answer["Xn"][-1] == "-0.2576276530497367"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "6.517981687398155e-15"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+    data["precision"] = 16
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/newton_raphson/", json=data, headers=headers)
 
     assert response.status_code == 200
     answer = response.json()
