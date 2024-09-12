@@ -83,6 +83,23 @@ def test_bisection():
     answer = response.json()
     assert answer["detail"][0]["msg"] == "Input should be 'absolute' or 'relative'"
 
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["final"] = 5
+    data["error_type"] = "absolute"
+    data["max_iterations"] = 100
+    data["tolerance"] = 0.5e-100
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/bisection/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
+
 
 def test_false_rule():
     """
@@ -134,7 +151,7 @@ def test_false_rule():
     assert answer["Fx"][-1] == "-1.497813678641435e-11"
     assert answer["Error"][-1] == "5.127232696245547e-10"
 
-    # Test the bisection method with a wrong interval
+    # Test the false rule method with a wrong interval
     data["initial"] = -1
     data["final"] = -6
 
@@ -143,6 +160,23 @@ def test_false_rule():
     assert response.status_code == 500
     answer = response.json()
     assert answer["detail"] == "La función no tiene cambio de signo en el intervalo dado"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["final"] = 5
+    data["error_type"] = "absolute"
+    data["max_iterations"] = 100
+    data["tolerance"] = 0.5e-100
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/false_rule/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
 
 
 def test_fixed_point():
@@ -195,4 +229,22 @@ def test_fixed_point():
     assert answer["Xn"][-1] == "-0.2576276530497367"
     assert answer["Fx"][-1] == "0"
     assert answer["Error"][-1] == "2.693380862561221e-17"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["g_expression"] = "x"
+    data["initial"] = 0
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+    data["precision"] = 16
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/fixed_point/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
     

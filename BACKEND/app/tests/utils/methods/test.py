@@ -1,4 +1,4 @@
-from app.utils.methods import bisection, false_rule, fixed_point
+from app.utils.methods import bisection, false_rule, fixed_point, newton_raphson
 from app.utils.utils import parse_expression
 from app.routes.routes import logger
 from fastapi.exceptions import HTTPException
@@ -130,3 +130,37 @@ def test_fixed_point():
     assert result[2][0] == "2.632120558828558"
     assert result[2][1] == "-4.213727502041105"
     assert result[3][1] == "7.154845485377136"
+
+
+def test_newton_raphson():
+    # Test 1
+    function, variables = parse_expression("(exp(x)/x) + 3", logger)
+    variable = variables[0]
+    initial = -1
+    tolerance = 0.5e-10
+    iterations = 5
+    absolute_error = True
+    result = newton_raphson(function, variable, initial, tolerance=tolerance, iterations=iterations, absolute_error=absolute_error, precision=16)
+
+    assert result[0][-1] == 5
+    assert result[1][0] == "-1"
+    assert result[1][1] == "2.577422742688568"
+    assert result[2][0] == "2.632120558828558"
+    assert result[2][1] == "8.107105370253216"
+    assert result[3][1] == "3.577422742688568"
+
+    # Test 2
+    function, variables = parse_expression("(exp(x)/x) + 3", logger)
+    variable = variables[0]
+    initial = -1
+    tolerance = 0.5e-10
+    iterations = 5
+    absolute_error = False
+    result = newton_raphson(function, variable, initial, tolerance=tolerance, iterations=iterations, absolute_error=absolute_error, precision=16)
+
+    assert result[0][-1] == 5
+    assert result[1][0] == "-1"
+    assert result[1][1] == "2.577422742688568"
+    assert result[2][0] == "2.632120558828558"
+    assert result[2][1] == "8.107105370253216"
+    assert result[3][1] == "1.387984471246218"
