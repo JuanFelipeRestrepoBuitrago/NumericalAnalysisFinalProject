@@ -102,7 +102,7 @@ def test_fixed_point():
     # Test 1
     function, variables = parse_expression("(exp(x)/x) + 3", logger)
     variable = variables[0]
-    function_g = parse_expression("-(exp(x)/3)", logger, variable_character=variable.name)
+    function_g = parse_expression("-(exp(x)/3)", logger, variable_character=variable.name)[0]
     initial = -1
     tolerance = 0.5e-10
     iterations = 10
@@ -118,11 +118,11 @@ def test_fixed_point():
     # Test 2
     function, variables = parse_expression("(exp(x)/x) + 3", logger)
     variable = variables[0]
-    function_g = parse_expression("-(exp(x)/3)", logger, variable_character=variable.name)
+    function_g = parse_expression("-(exp(x)/3)", logger, variable_character=variable.name)[0]
     initial = -1
     tolerance = 0.5e-10
     iterations = 10
-    absolute_error = True
+    absolute_error = False
     result = fixed_point(function, variable, function_g, initial, tolerance, iterations, absolute_error)
 
     assert result[1][0] == "-1"
