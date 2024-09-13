@@ -462,3 +462,83 @@ def first_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial
 
         # Return the list of iterations, values, function values and errors
         return [counter_values_list, values_list, function_values_list, error_values_list]
+    
+
+def second_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial: float,  derivative: sp.Expr = None, second_derivative: sp.Expr = None, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+    """
+    Find the root of a function using the second modified Newton method. This method is for multiple roots.
+
+    Args:
+        function: The function for which to find the root.
+        variable: The independent variable of the function.
+        initial: Initial value of the independent variable.
+        derivative: The derivative of the function (default None).
+        second_derivative: The second derivative of the function (default None).
+        tolerance: Tolerance for the root (default 0.5).
+        iterations: Maximum number of iterations to perform (default 100).
+        absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
+        precision: Number of decimal places to round the values (default 15).
+    Returns:
+        List or table with the iterations, the values of x, the values of f(x) and the errors.
+    """
+    # Initialize the lists to store the function values and errors
+    function_values_list = []
+    values_list = []
+    error_values_list = []
+    counter_values_list = []
+    counter = 0
+
+    # Calculate the function value at the initial point
+    f_initial = function.subs(variable, initial).evalf(precision)
+
+    # Check if the initial point is a root
+    if f_initial == 0:
+        return [[0], [str(initial)], [str(f_initial)], ["0"]]
+    else:
+        # Set the variables needed for the iterations
+        x = initial
+        f_x = f_initial
+        # Initialize the error
+        previous_error = 1
+
+        # Add the initial values to the lists
+        values_list.append(str(x))
+        function_values_list.append(str(f_x))
+        error_values_list.append(str(previous_error))
+        counter_values_list.append(counter)
+
+        # Calculate the derivative of the function if it is not provided
+        if derivative is None:
+            derivative = sp.diff(function, variable)
+
+        # Calculate the second derivative of the function if it is not provided
+        if second_derivative is None:
+            second_derivative = sp.diff(derivative, variable)
+
+        # Iterate until the error is less than the tolerance, the function value is zero or the maximum number of iterations is reached
+        while previous_error > tolerance and f_x != 0 and counter < iterations:
+            # Sets the previous x value and calculate the new value of x using the second modified Newton method
+            x_previous = x
+            x = x - f_x * derivative.subs(variable, x).evalf(precision) / (derivative.subs(variable, x).evalf(precision) ** 2 - f_x * second_derivative.subs(variable, x).evalf(precision))
+
+            # Calculate the function value at the new x value
+            f_x = function.subs(variable, x).evalf(precision)
+
+            # Store the values in the lists
+            values_list.append(str(x))
+            function_values_list.append(str(f_x))
+
+            # Calculate the error and increment the counter
+            if absolute_error:
+                error = abs(x - x_previous)
+            else:
+                error = abs((x - x_previous) / x)
+            counter += 1
+
+            # Store the error in the list, update the previous error and add the counter to the list
+            error_values_list.append(str(error))
+            previous_error = error
+            counter_values_list.append(counter)
+
+        # Return the list of iterations, values, function values and errors
+        return [counter_values_list, values_list, function_values_list, error_values_list]
