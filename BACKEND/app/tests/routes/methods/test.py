@@ -383,4 +383,66 @@ def test_secant():
     assert answer["Xn"][-1] == "0.0"
     assert answer["Fx"][-1] == "0"
     assert answer["Error"][-1] == "0"
+
+
+def test_first_modified_newton_method():
+    """
+    Test the post false rule endpoint /methods/first_modified_newton_method/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "expression": "(x - 1) ** 2",
+        "initial": 13,
+        "multiplicity": 2,
+        "tolerance": 0.5e-100,
+        "max_iterations": 100,
+        "error_type": "absolute"
+    }
+
+    # Test the first modified newton method
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/first_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "1.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "12.00000000000000"
+
+    # Test the first modified newton method with relative error
+    data["error_type"] = "relative"
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/first_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "1.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "12.00000000000000"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["multiplicity"] = 1
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/first_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
     

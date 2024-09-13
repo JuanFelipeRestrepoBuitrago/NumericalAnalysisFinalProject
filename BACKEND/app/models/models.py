@@ -134,3 +134,25 @@ class SecantModel(NumericalMethodRequest):
     """
     initial: float = Field(..., description="Initial value for the secant calculation.")
     second_initial: float = Field(..., description="Second initial value for the secant calculation.")
+
+class FirstNewtonModified(NewtonRaphsonModel):
+    """
+    Data model for the First Modified Newton-Raphson method.
+
+    This model extends the `NewtonRaphsonModel` model and adds specific attributes for the First Modified Newton-Raphson method.
+
+    Attributes:
+        multiplicity (int): Multiplicity of the multiple root.
+    """
+    multiplicity: int = Field(..., description="Multiplicity of the multiple root.")
+
+class SecondNewtonModified(NewtonRaphsonModel):
+    """
+    Data model for the Second Modified Newton-Raphson method.
+
+    This model extends the `NewtonRaphsonModel` model and adds specific attributes for the Second Modified Newton-Raphson method.
+
+    Attributes:
+        second_derivative_expression (Optional[str])
+    """
+    second_derivative_expression: Optional[str] = Field(None, description="Second derivative expression of the function to be used in the Second Modified Newton-Raphson method.")
