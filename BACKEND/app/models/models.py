@@ -121,3 +121,16 @@ class NewtonRaphsonModel(NumericalMethodRequest):
     """
     initial: float = Field(..., description="Initial value for the Newton-Raphson calculation.")
     derivative_expression: Optional[str] = Field(None, description="Derivative expression of the function to be used in the Newton-Raphson method.")
+
+class SecantModel(NumericalMethodRequest):
+    """
+    Data model for the Secant method.
+
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Secant method.
+
+    Attributes:
+        initial (float): Initial guess for the root.
+        second_initial (float): Second initial guess for the root.
+    """
+    initial: float = Field(..., description="Initial value for the secant calculation.")
+    second_initial: float = Field(..., description="Second initial value for the secant calculation.")

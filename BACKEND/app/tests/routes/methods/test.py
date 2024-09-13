@@ -315,4 +315,72 @@ def test_newton_raphson():
     assert answer["Xn"][-1] == "0.0"
     assert answer["Fx"][-1] == "0"
     assert answer["Error"][-1] == "0"
+
+
+def test_secant():
+    """
+    Test the post false rule endpoint /methods/secant/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "expression": "x**2 - 4",
+        "initial": 0,
+        "second_initial": 3,
+        "tolerance": 0.5e-100,
+        "max_iterations": 100,
+        "error_type": "absolute",
+        "precision": 16
+    }
+
+    # Test the secant method
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/secant/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "2.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "8.382183835919932e-15"
+
+    # Test the secant method with relative error
+    data["error_type"] = "relative"
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/secant/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "2.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "4.191091917959966e-15"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["second_initial"] = 2
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+    data["precision"] = 16
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/secant/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
     
