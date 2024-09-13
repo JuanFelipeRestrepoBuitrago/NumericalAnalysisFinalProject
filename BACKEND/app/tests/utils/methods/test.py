@@ -1,4 +1,4 @@
-from app.utils.methods import bisection, false_rule, fixed_point, newton_raphson
+from app.utils.methods import bisection, false_rule, fixed_point, newton_raphson, secant
 from app.utils.utils import parse_expression
 from app.routes.routes import logger
 from fastapi.exceptions import HTTPException
@@ -164,3 +164,49 @@ def test_newton_raphson():
     assert result[2][0] == "2.632120558828558"
     assert result[2][1] == "8.107105370253216"
     assert result[3][1] == "1.387984471246218"
+
+def test_secant():
+    # Test 1: f(x) = x^2 - 4 (root is 2 or -2)
+    function, variables = parse_expression("x**2 - 4", logger=logger)
+    variable = variables[0]
+    initial = 0
+    second_initial = 3
+    tolerance = 0.5e-10
+    iterations = 10
+    absolute_error = True
+    
+    result = secant(function, variable, initial, second_initial, tolerance=tolerance, iterations=iterations, absolute_error=absolute_error, precision=16)
+
+    assert result[1][-1] == "2.000000000000000"
+    assert result[2][-1] == "0"
+    assert result[3][-1] == "8.382183835919932e-15"
+
+    # Test 2: f(x) = exp(x) - 3x (root between 1 and 2)
+    function, variables = parse_expression("exp(x) - 3*x", logger=logger)
+    variable = variables[0]
+    initial = 0
+    second_initial = 2
+    tolerance = 0.5e-10
+    iterations = 20
+    absolute_error = True
+
+    result = secant(function, variable, initial, second_initial, tolerance=tolerance, iterations=iterations, absolute_error=absolute_error, precision=16)
+
+    assert 1.0 <= float(result[1][-1]) <= 2.0  # Root is between 1 and 2
+    assert result[2][-1] == "0"
+    assert result[0][-1] == 15
+    assert result[3][-1] == "3.425315586724764e-13"
+
+    # Test 3: f(x) = sin(x) - x/2 (root close to 0)
+    function, variables = parse_expression("sin(x) - x/2", logger=logger)
+    variable = variables[0]
+    initial = 1
+    second_initial = 2
+    tolerance = 0.5e-10
+    iterations = 10
+    absolute_error = True
+
+    result = secant(function, variable, initial, second_initial, tolerance=tolerance, iterations=iterations, absolute_error=absolute_error, precision=16)
+
+    assert result[2][-1] == "0" 
+    assert result[3][-1] == "3.608224830031759e-16"
