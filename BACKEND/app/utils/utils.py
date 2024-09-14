@@ -4,6 +4,7 @@ import sympy as sp
 from typing import Tuple
 from sympy.core.sympify import SympifyError
 import re
+import numpy as np
 
 
 def raise_exception(e: Exception, logger: Logger):
@@ -64,3 +65,23 @@ def parse_expression(expression: str, logger: Logger, variable_character: str = 
     # Return the expression and the variables
     return expr, variables
     
+
+def construct_augmented_matrix(A: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """
+    Constructs the augmented matrix Ab from A and b.
+
+    Args:
+        A (numpy.ndarray): The coefficient matrix of size (n, n).
+        b (numpy.ndarray): The constant vector of size (n, 1) or (n,).
+
+    Returns:
+        numpy.ndarray: The augmented matrix [A | b].
+    """
+    # Reshape b to ensure it's a column vector (n x 1)
+    if b.ndim == 1:
+        b = b.reshape(-1, 1)
+    
+    # Horizontally stack A and b to create the augmented matrix
+    Ab = np.hstack((A, b))
+    
+    return Ab

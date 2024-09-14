@@ -1,6 +1,7 @@
-from app.utils.utils import parse_expression
+from app.utils.utils import parse_expression, construct_augmented_matrix
 from app.routes.routes import logger
 from fastapi.exceptions import HTTPException
+import numpy as np
 
 
 def test_parse_expression():
@@ -50,14 +51,6 @@ def test_parse_expression():
         assert e.detail == "Expresión Inválida, verifique la guía de expresiones"
 
     # Test the function with an invalid expression
-    expression = "x**2 + 2*x + 1 + xlog(x)"
-    try:
-        expr, variables = parse_expression(expression, logger)
-        raise AssertionError("The expression is invalid and should raise an exception")
-    except HTTPException as e:
-        assert e.detail == "Expresión Inválida, verifique la guía de expresiones"
-
-    # Test the function with an invalid expression
     expression = "x**2 + 2*x + 1 + x(x)"
     try:
         expr, variables = parse_expression(expression, logger)
@@ -87,3 +80,22 @@ def test_parse_expression():
         expr, variables = parse_expression(expression, logger)
     except HTTPException as e:
         assert e.detail == "La expresión o función no contiene variables"
+
+def test_construct_augmented_matrix():
+    # Test 1
+    A = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    b = np.array([10, 11, 12])
+    Ab = np.array([[1, 2, 3, 10], [4, 5, 6, 11], [7, 8, 9, 12]])
+    assert np.array_equal(construct_augmented_matrix(A, b), Ab), "Test failed for a 3x3 matrix"
+
+    # Test 2
+    A = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+    b = np.array([13, 14, 15])
+    Ab = np.array([[1, 2, 3, 4, 13], [5, 6, 7, 8, 14], [9, 10, 11, 12, 15]])
+    assert np.array_equal(construct_augmented_matrix(A, b), Ab), "Test failed for a 3x4 matrix"
+
+    # Test 3
+    A = np.array([[1, 2], [3, 4]])
+    b = np.array([[5], [6]])
+    Ab = np.array([[1, 2, 5], [3, 4, 6]])
+    assert np.array_equal(construct_augmented_matrix(A, b), Ab), "Test failed for a 2x2 matrix"

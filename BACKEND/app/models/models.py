@@ -108,3 +108,51 @@ class FixedPointModel(NumericalMethodRequest):
     """
     g_expression: str = Field(..., description="Function g(x) to be used in the fixed point method.")
     initial: float = Field(..., description="Initial value for the fixed point calculation.")
+
+class NewtonRaphsonModel(NumericalMethodRequest):
+    """
+    Data model for the Newton-Raphson method.
+
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Newton-Raphson method.
+
+    Attributes:
+        initial (float): Initial guess for the root.
+        derivative_expression (Optional[str])
+    """
+    initial: float = Field(..., description="Initial value for the Newton-Raphson calculation.")
+    derivative_expression: Optional[str] = Field(None, description="Derivative expression of the function to be used in the Newton-Raphson method.")
+
+class SecantModel(NumericalMethodRequest):
+    """
+    Data model for the Secant method.
+
+    This model extends the `NumericalMethodRequest` model and adds specific attributes for the Secant method.
+
+    Attributes:
+        initial (float): Initial guess for the root.
+        second_initial (float): Second initial guess for the root.
+    """
+    initial: float = Field(..., description="Initial value for the secant calculation.")
+    second_initial: float = Field(..., description="Second initial value for the secant calculation.")
+
+class FirstNewtonModified(NewtonRaphsonModel):
+    """
+    Data model for the First Modified Newton-Raphson method.
+
+    This model extends the `NewtonRaphsonModel` model and adds specific attributes for the First Modified Newton-Raphson method.
+
+    Attributes:
+        multiplicity (int): Multiplicity of the multiple root.
+    """
+    multiplicity: int = Field(..., description="Multiplicity of the multiple root.")
+
+class SecondNewtonModified(NewtonRaphsonModel):
+    """
+    Data model for the Second Modified Newton-Raphson method.
+
+    This model extends the `NewtonRaphsonModel` model and adds specific attributes for the Second Modified Newton-Raphson method.
+
+    Attributes:
+        second_derivative_expression (Optional[str])
+    """
+    second_derivative_expression: Optional[str] = Field(None, description="Second derivative expression of the function to be used in the Second Modified Newton-Raphson method.")

@@ -83,6 +83,23 @@ def test_bisection():
     answer = response.json()
     assert answer["detail"][0]["msg"] == "Input should be 'absolute' or 'relative'"
 
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["final"] = 5
+    data["error_type"] = "absolute"
+    data["max_iterations"] = 100
+    data["tolerance"] = 0.5e-100
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/bisection/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
+
 
 def test_false_rule():
     """
@@ -134,7 +151,7 @@ def test_false_rule():
     assert answer["Fx"][-1] == "-1.497813678641435e-11"
     assert answer["Error"][-1] == "5.127232696245547e-10"
 
-    # Test the bisection method with a wrong interval
+    # Test the false rule method with a wrong interval
     data["initial"] = -1
     data["final"] = -6
 
@@ -143,6 +160,23 @@ def test_false_rule():
     assert response.status_code == 500
     answer = response.json()
     assert answer["detail"] == "La función no tiene cambio de signo en el intervalo dado"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["final"] = 5
+    data["error_type"] = "absolute"
+    data["max_iterations"] = 100
+    data["tolerance"] = 0.5e-100
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/false_rule/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
 
 
 def test_fixed_point():
@@ -175,7 +209,7 @@ def test_fixed_point():
         "precision": 16
     }
 
-    # Test the false rule method
+    # Test the fixed point method
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/fixed_point/", json=data, headers=headers)
 
     assert response.status_code == 200
@@ -185,7 +219,7 @@ def test_fixed_point():
     assert answer["Fx"][-1] == "0"
     assert answer["Error"][-1] == "6.938893903907228e-18"
 
-    # Test the false rule method with relative error
+    # Test the fixed point method with relative error
     data["error_type"] = "relative"
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/fixed_point/", json=data, headers=headers)
 
@@ -195,4 +229,286 @@ def test_fixed_point():
     assert answer["Xn"][-1] == "-0.2576276530497367"
     assert answer["Fx"][-1] == "0"
     assert answer["Error"][-1] == "2.693380862561221e-17"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["g_expression"] = "x"
+    data["initial"] = 0
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+    data["precision"] = 16
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/fixed_point/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
+
+
+def test_newton_raphson():
+    """
+    Test the post false rule endpoint /methods/newton_raphson/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "expression": "(exp(x)/x) + 3",
+        "initial": -1,
+        "tolerance": 0.5e-100,
+        "max_iterations": 100,
+        "error_type": "absolute",
+        "precision": 16
+    }
+
+    # Test the newton raphson method
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/newton_raphson/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 12
+    assert answer["Xn"][-1] == "-0.2576276530497367"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "1.679212324745549e-15"
+
+    # Test the newton raphson method with relative error
+    data["error_type"] = "relative"
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/newton_raphson/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 12
+    assert answer["Xn"][-1] == "-0.2576276530497367"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "6.517981687398155e-15"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+    data["precision"] = 16
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/newton_raphson/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
+
+
+def test_secant():
+    """
+    Test the post false rule endpoint /methods/secant/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "expression": "x**2 - 4",
+        "initial": 0,
+        "second_initial": 3,
+        "tolerance": 0.5e-100,
+        "max_iterations": 100,
+        "error_type": "absolute",
+        "precision": 16
+    }
+
+    # Test the secant method
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/secant/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "2.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "8.382183835919932e-15"
+
+    # Test the secant method with relative error
+    data["error_type"] = "relative"
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/secant/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "2.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "4.191091917959966e-15"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["second_initial"] = 2
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+    data["precision"] = 16
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/secant/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
+
+
+def test_first_modified_newton_method():
+    """
+    Test the post false rule endpoint /methods/first_modified_newton_method/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "expression": "(x - 1) ** 2",
+        "initial": 13,
+        "multiplicity": 2,
+        "tolerance": 0.5e-100,
+        "max_iterations": 100,
+        "error_type": "absolute"
+    }
+
+    # Test the first modified newton method
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/first_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "1.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "12.00000000000000"
+
+    # Test the first modified newton method with relative error
+    data["error_type"] = "relative"
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/first_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "1.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "12.00000000000000"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["multiplicity"] = 1
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/first_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+
+
+def test_second_modified_newton_method():
+    """
+    Test the post false rule endpoint /methods/second_modified_newton_method/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "expression": "(x - 1) ** 2",
+        "initial": 13,
+        "multiplicity": 2,
+        "tolerance": 0.5e-100,
+        "max_iterations": 100,
+        "error_type": "absolute"
+    }
+
+    # Test the second modified newton method
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/second_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "1.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "12.00000000000000"
+
+    # Test the second modified newton method with relative error
+    data["error_type"] = "relative"
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/second_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Xn"][-1] == "1.000000000000000"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "12.00000000000000"
+
+    # Test with a initial value being a root
+    data["expression"] = "x**2"
+    data["initial"] = 0
+    data["multiplicity"] = 1
+    data["tolerance"] = 0.5e-100
+    data["max_iterations"] = 100
+    data["error_type"] = "absolute"
+
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/methods/second_modified_newton_method/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["Iterations"][-1] == 0
+    assert answer["Xn"][-1] == "0.0"
+    assert answer["Fx"][-1] == "0"
+    assert answer["Error"][-1] == "0"
     
