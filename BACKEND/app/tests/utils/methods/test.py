@@ -2,7 +2,6 @@ from app.utils.methods import bisection, false_rule, fixed_point, newton_raphson
 from app.utils.utils import parse_expression
 from app.routes.routes import logger
 from fastapi.exceptions import HTTPException
-from decimal import Decimal
 
 
 def test_bisection():

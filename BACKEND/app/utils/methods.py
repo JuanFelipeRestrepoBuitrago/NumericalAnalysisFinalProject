@@ -1,4 +1,4 @@
-from app.utils.utils import parse_expression, raise_exception
+from app.utils.utils import raise_exception
 from app.routes.routes import logger
 import sympy as sp
 from typing import List, Tuple
