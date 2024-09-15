@@ -75,53 +75,16 @@ class GaussianElimination:
         self.x = x
         # Return the solution
         return x
-    
-    def partial_pivot(self, k: int, Ab: np.array = None, n: int = None):
-        """
-        This function performs the partial pivot method to solve a system of equations.
-        
-        :param Ab: numpy array with the coefficients of the system of equations
-        :param n: length of the system of equations
-        :param k: current iteration
-        :param logger: logger object
-        :return: numpy array with the coefficients of the system of equations after the partial pivot method
-        """
-        if Ab is None:
-            Ab = self.Ab
-        if n is None:
-            n = self.n
 
-        # Find the maximum value in the current column
-        max = np.abs(Ab[k, k])
-        max_row = k
-
-        # Iterate over the rows to find the maximum value
-        for s in range(k + 1, n):
-            # Check if the current value is greater than the maximum value
-            if np.abs(Ab[s, k]) > max:
-                max = np.abs(Ab[s, k])
-                max_row = s
-
-        # Check if the maximum value is zero
-        if max == 0:
-            raise_exception(SystemError("El sistema no tiene solución única"), logger)
-
-        # Swap the rows if the maximum value is not in the current row
-        if max_row != k:
-            # Swap the rows
-            Ab[[k, max_row]] = Ab[[max_row, k]]
-
-        # Return the coefficients of the system of equations after the partial pivot method
-        return Ab
-
-    def total_pivot(self, k: int, mark: np.array = None, Ab: np.array = None, n: int = None):
+    def pivot(self, k: int, pivot_type: int, mark: np.array = None, Ab: np.array = None, n: int = None):
         """
         This function performs the total pivot method to solve a system of equations.
 
+        :param k: current iteration
+        :param pivot_type: number 1 or 2 to indicate if the pivot is partial or total
+        :param mark: numpy array with the permutation of the columns in order to keep track of the solutions
         :param Ab: numpy array with the coefficients of the system of equations
         :param n: length of the system of equations
-        :param k: current iteration
-        :param mark: numpy array with the permutation of the columns in order to keep track of the solutions
         :return: numpy array with the coefficients of the system of equations after the total pivot method
         """
         if Ab is None:
@@ -138,11 +101,15 @@ class GaussianElimination:
         max_col = k
         max_row = k
         
-
+        # Check if the pivot is total
+        if pivot_type == 2:
+            column_condition = n
+        else:
+            column_condition = k + 1
         # Iterate over the rows
         for i in range(k, n):
             # Iterate over the columns to find the maximum value
-            for j in range(k, n):
+            for j in range(k, column_condition):
                 # Check if the current value is greater than the maximum value
                 if np.abs(Ab[i, j]) > max:
                     max = np.abs(Ab[i, j])
