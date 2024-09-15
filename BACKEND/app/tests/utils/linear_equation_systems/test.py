@@ -107,7 +107,7 @@ def test_partial_pivot():
         assert e.detail == "El sistema no tiene solución única"
 
 
-def test_pivot():
+def test_total_pivot():
     # Test for a system of equations with 3 variables
     A = np.array([[1, -2, 3], [5, 1, -2], [10, 0, 9]])
     object = GaussianElimination(A, np.array([[7, -3, 9]]), 3)
@@ -130,3 +130,26 @@ def test_pivot():
 
     assert np.allclose(result, np.array([[-80, 0, 1, -2], [-1, 3, 9, 2], [0, -1, 2, 3], [0, 0, -8, 5]])), "Test failed for a system of equations with 4 variables"
     assert np.allclose(mark, np.array([2, 1, 0, 3])), "Test failed for a system of equations with 4 variables"
+
+def test_organize_x():
+    # Test 1
+    A = np.array([[1, -2, 3], [5, 1, -2], [10, 0, 9]])
+    object = GaussianElimination(A, np.array([[7, -3, 9]]), 3)
+
+    mark = np.array([2, 0, 1])
+    x = np.array([2, -1, 1])
+    result = object.organize_solution(x, mark)
+    assert np.allclose(result, np.array([-1, 1, 2]))
+
+    # Test 2
+    mark = np.array([0, 1, 2])
+    x = np.array([2, -1, 1])
+    result = object.organize_solution(x, mark)
+    assert np.allclose(result, x)
+
+    # Test 3
+    mark = np.array([1, 0, 2])
+    x = np.array([2, -1, 1])
+    result = object.organize_solution(x, mark)
+    assert np.allclose(result, np.array([-1, 2, 1]))
+    

@@ -135,3 +135,21 @@ class GaussianElimination:
 
         # Return the coefficients of the system of equations after the total pivot method
         return Ab, mark
+    
+    def organize_solution(self, x: np.array, mark: np.array):
+        """
+        This function organizes the solution of the system of equations after the total pivot method.
+        :param x: numpy array with the solutions of the system of equations
+        :param mark: numpy array with the permutation of the columns in order to keep track of the solutions
+        :return: numpy array with the organized solutions of the system of equations
+        """
+        # Create an array to store the organized solution
+        organized_x = np.zeros(x.shape[0])
+
+        # Organize the solutions
+        for i in range(x.shape[0]):
+            organized_x[mark[i]] = x[i]
+
+        self.x = organized_x
+        # Return the organized solutions
+        return organized_x
