@@ -152,4 +152,34 @@ def test_organize_x():
     x = np.array([2, -1, 1])
     result = object.organize_solution(x, mark)
     assert np.allclose(result, np.array([-1, 2, 1]))
+
+
+def test_gaussian_elimination_solve():
+    # Test for a system of equations with 3 variables
+    A = np.array([[3, 4, -2], [2, -3, 4], [1, -2, 3]])
+    object = GaussianElimination(A, np.array([[0, 11, 7]]), 3)
+
+    result = object.solve()
+    assert np.allclose(result, np.array([2, -1, 1])), "Test failed for a system of equations with 3 variables"
+    assert np.allclose(A @ result.T - np.array([0, 11, 7]).T, np.zeros(3)), "Test failed for a system of equations with 3 variables"
+
+    # Test for a system of equations with 4 variables
+    A = np.array([
+        [2, -1, 0, 3],
+        [8.6, 3, -1, 2],
+        [-11.50, 3.1, 4, -2],
+        [36.224, 3.006, 2.01, 5]
+    ])
+
+    object = GaussianElimination(A, np.array([[7, -3, 9, 0]]), 4, 20)
+    result = object.solve(pivot_type=2)
+
+    vectorial_error = A @ result.T - np.array([7, -3, 9, 0]).T
+
+    abs_error = np.linalg.norm(vectorial_error)
+
+    rest = A @ result.T - np.array([7, -3, 9, 0]).T
+
+    print(result)
+    print("Vectorial Error: ", )
     

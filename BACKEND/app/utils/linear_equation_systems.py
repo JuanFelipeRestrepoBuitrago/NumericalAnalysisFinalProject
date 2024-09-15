@@ -4,9 +4,10 @@ import numpy as np
 
 
 class GaussianElimination:
-    def __init__(self, A: np.array, b: np.array, n: int = None):
-        self.A = A
-        self.b = b
+    def __init__(self, A: np.array, b: np.array, n: int = None, precision: int = 16):
+        self.A = A.astype(float)
+        self.b = b.astype(float)
+        self.precision = precision
 
         try:
             self.validate_input(A, b, n)
@@ -57,8 +58,10 @@ class GaussianElimination:
         # Create an array to store the solution
         x = np.zeros(n)
 
+        if Ab[n - 1, n - 1] == 0:
+            raise_exception(ValueError("El sistema no tiene solución única"), logger)
         # Find the solution for the last equation
-        x[n - 1] = Ab[n - 1, n] / Ab[n - 1, n - 1]
+        x[n - 1] = np.round(Ab[n - 1, n] / Ab[n - 1, n - 1], self.precision)
 
         # Find the solution for the rest of the equations
         for i in range(n - 2, -1, -1):
@@ -66,10 +69,15 @@ class GaussianElimination:
             sum = 0
             for p in range(i + 1, n):
                 # Add the product of the coefficient and the respective solution
-                sum += Ab[i, p] * x[p]
+                sum += np.round(Ab[i, p] * x[p], self.precision)
                 
+            # Check if the coefficient is zero
+            if Ab[i, i] == 0:
+                raise_exception(ValueError("El sistema no tiene solución única"), logger)
             # Calculate the solution for the current equation, x_i = (b_i - sum) / a_ii
-            x[i] = (Ab[i, n] - sum) / Ab[i, i]
+            x[i] = np.round((Ab[i, n] - sum) / Ab[i, i], self.precision)
+
+        x = np.round(x, self.precision)
 
         # Store the solution in the object
         self.x = x
@@ -153,3 +161,46 @@ class GaussianElimination:
         self.x = organized_x
         # Return the organized solutions
         return organized_x
+    
+    def solve(self, A: np.array = None, b: np.array = None, n: int = None, pivot_type: int = None):
+        """
+        This function performs the Gaussian Elimination method to solve a system of equations.
+        :param A: numpy array with the coefficients of the system of equations
+        :param b: numpy array with the solutions of the system of equations
+        :param n: length of the system of equations
+        :param pivot_type: number 1 or 2 to indicate if the pivot is partial or total, None for no pivot
+        """
+        if A is None:
+            A = self.A
+        if b is None:
+            b = self.b
+        if n is None:
+            n = self.n
+
+        # Construct the augmented matrix
+        Ab = construct_augmented_matrix(A, b)
+        # Build the mark array
+        mark = np.arange(n)
+
+        # Iterate over the rows
+        for k in range(n - 1):
+            # Perform the pivot method
+            if pivot_type is not None:
+                Ab, mark = self.pivot(k, pivot_type, mark, Ab, n)
+
+            # Iterate over the rows
+            for i in range(k + 1, n):
+                # Calculate the factor to eliminate the coefficient
+                factor = np.round(Ab[i, k] / Ab[k, k], self.precision)
+
+                # Iterate over the columns
+                for j in range(k, n + 1):
+                    # Update the coefficient
+                    Ab[i, j] = np.round(Ab[i, j] - factor * Ab[k, j], self.precision)
+
+        # Perform the regressive substitution method
+        self.regressive_substitution(Ab=Ab, n=n)
+
+        # Organize the solution
+        self.organize_solution(self.x, mark)
+        return self.x
