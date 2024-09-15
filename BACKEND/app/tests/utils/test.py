@@ -99,3 +99,9 @@ def test_construct_augmented_matrix():
     b = np.array([[5], [6]])
     Ab = np.array([[1, 2, 5], [3, 4, 6]])
     assert np.array_equal(construct_augmented_matrix(A, b), Ab), "Test failed for a 2x2 matrix"
+
+    # Test 4
+    A = np.array([[1, 2], [3, 4]])
+    b = np.array([[5, 6]])
+    Ab = np.array([[1, 2, 5], [3, 4, 6]])
+    assert np.array_equal(construct_augmented_matrix(A, b), Ab), "Test failed for a 2x2 matrix"
