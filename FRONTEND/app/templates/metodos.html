@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,33 +10,36 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png">
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-      <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-              <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="MethodSolve Icon" width="50" height="50" class="d-inline-block align-text-top">
-              MethodSolver
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav ms-auto">
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('index_page') }}">
-                          <i class="bi bi-house-door-fill"></i> Inicio
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('metodos_page') }}">
-                          <i class="bi bi-book-fill"></i> Métodos
-                      </a>
-                  </li>
-              </ul>
-          </div>
-      </div>
-  </nav>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="Ícono de MethodSolve" width="50"
+                    height="50" class="d-inline-block align-text-top">
+                MethodSolver
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index_page') }}">
+                            <i class="bi bi-house-door-fill"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('metodos_page') }}">
+                            <i class="bi bi-book-fill"></i> Métodos
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -48,102 +52,119 @@
     <!-- Métodos Section -->
     <section class="methods-section py-5">
         <div class="container">
-            <!-- Grupo 1: Solving Systems by Graphing -->
+            <!-- Grupo 1: Resolver Sistemas mediante Gráficos -->
             <div class="mb-5">
                 <h2 class="mb-4"><i class="bi bi-graph-up"></i> Resolver sistemas mediante gráficos</h2>
                 <div class="row">
                     <div class="col-md-4 mb-4">
-                        <a href="graphing.html" class="btn btn-outline-primary btn-lg w-100">Function plotter</a>
+                        <a href="{{ url_for('graphing') }}" class="btn btn-outline-primary btn-lg w-100">Graficador de
+                            funciones</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Group 2: Solving Equations of One Variable -->
+            <!-- Grupo 2: Resolver Ecuaciones de Una Variable -->
             <div class="mb-5">
                 <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
                 <div class="row">
                     <div class="col-md-4 mb-4">
-                        <a href="function_evaluator.html" class="btn btn-outline-primary btn-lg w-100">Function evaluator</a>
+                        <a href="{{ url_for('function_evaluator') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Evaluador de funciones</a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <a href="incremental_search.html" class="btn btn-outline-primary btn-lg w-100">Incremental search</a>
+                        <a href="{{ url_for('incremental_search') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Búsqueda incremental</a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <a href="bisection.html" class="btn btn-outline-primary btn-lg w-100">Bisection</a>
+                        <a href="{{ url_for('bisection') }}" class="btn btn-outline-primary btn-lg w-100">Bisección</a>
                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="false_position.html" class="btn btn-outline-primary btn-lg w-100">False position</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="fixed_point.html" class="btn btn-outline-primary btn-lg w-100">Fixed point</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="newton_raphson.html" class="btn btn-outline-primary btn-lg w-100">Newton-Raphson</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="secant.html" class="btn btn-outline-primary btn-lg w-100">Secant</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="multiple_roots.html" class="btn btn-outline-primary btn-lg w-100">Multiple roots</a>
-                     </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('false_position') }}" class="btn btn-outline-primary btn-lg w-100">Falsa
+                            posición</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('fixed_point') }}" class="btn btn-outline-primary btn-lg w-100">Punto
+                            fijo</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('newton_raphson') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Newton-Raphson</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('secant') }}" class="btn btn-outline-primary btn-lg w-100">Secante</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('multiple_roots') }}" class="btn btn-outline-primary btn-lg w-100">Raíces
+                            múltiples</a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Group 3: Solution of Systems of Equations -->
+            <!-- Grupo 3: Solución de Sistemas de Ecuaciones -->
             <div class="mb-5">
                 <h2 class="mb-4"><i class="bi bi-bar-chart-fill"></i> Solución de sistemas de ecuaciones</h2>
                 <div class="row">
                     <div class="col-md-4 mb-4">
-                        <a href="gaussian_elimination_simple.html" class="btn btn-outline-primary btn-lg w-100">Gaussian elimination (simple)</a>
+                        <a href="{{ url_for('gaussian_elimination_simple') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Eliminación gaussiana (simple)</a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <a href="gaussian_elimination_partial.html" class="btn btn-outline-primary btn-lg w-100">Gaussian elimination (partial pivot)</a>
+                        <a href="{{ url_for('gaussian_elimination_partial') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Eliminación gaussiana (pivoteo parcial)</a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <a href="gaussian_elimination_total.html" class="btn btn-outline-primary btn-lg w-100">Gaussian elimination (total pivot)</a>
+                        <a href="{{ url_for('gaussian_elimination_total') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Eliminación gaussiana (pivoteo total)</a>
                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Direct Factorization LU - simple.html" class="btn btn-outline-primary btn-lg w-100">Direct Factorization LU (simple)</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Direct Factorization LU - partial pivot.html" class="btn btn-outline-primary btn-lg w-100">Direct Factorization LU (partial pivot)</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Croult.html" class="btn btn-outline-primary btn-lg w-100">Croult</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Doolittle.html" class="btn btn-outline-primary btn-lg w-100">Doolittle</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Cholesky.html" class="btn btn-outline-primary btn-lg w-100">Cholesky</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Jacobi.html" class="btn btn-outline-primary btn-lg w-100">Jacobi</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Gauss-Seidel.html" class="btn btn-outline-primary btn-lg w-100">Gauss-Seidel</a>
-                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="Sor.html" class="btn btn-outline-primary btn-lg w-100">Sor</a>
-                     </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('direct_factorization_lu_simple') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Factorización directa LU (simple)</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('direct_factorization_lu_partial_pivot') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Factorización directa LU (pivoteo parcial)</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('croult') }}" class="btn btn-outline-primary btn-lg w-100">Crout</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('doolittle') }}" class="btn btn-outline-primary btn-lg w-100">Doolittle</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('cholesky') }}" class="btn btn-outline-primary btn-lg w-100">Cholesky</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('jacobi') }}" class="btn btn-outline-primary btn-lg w-100">Jacobi</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('gauss_seidel') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Gauss-Seidel</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('sor') }}" class="btn btn-outline-primary btn-lg w-100">SOR (Relaxación
+                            Sucesiva)</a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Grupo 4: Interpolation -->
+            <!-- Grupo 4: Interpolación -->
             <div class="mb-5">
                 <h2 class="mb-4"><i class="bi bi-spline"></i> Interpolación</h2>
                 <div class="row">
                     <div class="col-md-4 mb-4">
-                        <a href="vandermonde.html" class="btn btn-outline-primary btn-lg w-100">Vandermonde</a>
+                        <a href="{{ url_for('vandermonde') }}"
+                            class="btn btn-outline-primary btn-lg w-100">Vandermonde</a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <a href="newton_divided.html" class="btn btn-outline-primary btn-lg w-100">Newton (Divided difference method)</a>
+                        <a href="{{ url_for('newton_divided') }}" class="btn btn-outline-primary btn-lg w-100">Newton
+                            (diferencias divididas)</a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <a href="lagrange.html" class="btn btn-outline-primary btn-lg w-100">Lagrange</a>
+                        <a href="{{ url_for('lagrange') }}" class="btn btn-outline-primary btn-lg w-100">Lagrange</a>
                     </div>
-                     <div class="col-md-4 mb-4">
-                           <a href="spline.html" class="btn btn-outline-primary btn-lg w-100">Spline</a>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('spline') }}" class="btn btn-outline-primary btn-lg w-100">Spline</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -158,4 +179,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
