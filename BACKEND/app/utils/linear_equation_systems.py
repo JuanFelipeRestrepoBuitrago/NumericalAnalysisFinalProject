@@ -1,27 +1,48 @@
 from app.utils.utils import raise_exception, construct_augmented_matrix
 from app.routes.routes import logger
+from decimal import Decimal, getcontext
 import numpy as np
 
 
 class GaussianElimination:
     def __init__(self, A: np.array, b: np.array, n: int = None, precision: int = 16):
+        getcontext().prec = precision
         self.A = A.astype(float)
-        self.b = b.astype(float)
-        self.precision = precision
+        self.b = b.astype(float)    
 
         try:
             self.validate_input(A, b, n)
         except IndexError:
             raise_exception(IndexError("Las matrices deben ser definidas con 2 paréntesis, el principal y dentro de este las filas separadas por comas. Ejemplo: [[1, 2], [3, 4]]"), logger)
 
+        self.A = self.redefine_to_decimal(A)
+        self.b = self.redefine_to_decimal(b)
+
         if n is None:
-            self.n = A.shape[0]
+            self.n = self.A.shape[0]
         else:
             self.n = n
 
         # Construct the augmented matrix
-        self.Ab = construct_augmented_matrix(A, b)
+        self.Ab = construct_augmented_matrix(self.A, self.b)
         self.x = None
+
+    def redefine_to_decimal(self, matrix: np.array):
+        """
+        This function redefines the values of a numpy array to Decimal.
+        :param matrix: numpy array to redefine
+        :return: numpy array with the values redefined to Decimal
+        """
+        new_matrix = np.array(matrix, dtype=object)
+        # Iterate over the rows
+        for i in range(matrix.shape[0]):
+            # Iterate over the columns
+            for j in range(matrix.shape[1]):
+                # Redefine the value to Decimal
+                new_matrix[i, j] = Decimal(str(matrix[i, j]))
+
+        # Return the numpy array with the values redefined to Decimal
+        return new_matrix
         
     def validate_input(self, A: np.array, b: np.array, n: int):
         """
@@ -56,12 +77,12 @@ class GaussianElimination:
             n = self.n
 
         # Create an array to store the solution
-        x = np.zeros(n)
+        x = np.array([np.zeros(n)], dtype=object)
 
         if Ab[n - 1, n - 1] == 0:
             raise_exception(ValueError("El sistema no tiene solución única"), logger)
         # Find the solution for the last equation
-        x[n - 1] = np.round(Ab[n - 1, n] / Ab[n - 1, n - 1], self.precision)
+        x[0][n - 1] = Ab[n - 1, n] / Ab[n - 1, n - 1]
 
         # Find the solution for the rest of the equations
         for i in range(n - 2, -1, -1):
@@ -69,15 +90,13 @@ class GaussianElimination:
             sum = 0
             for p in range(i + 1, n):
                 # Add the product of the coefficient and the respective solution
-                sum += np.round(Ab[i, p] * x[p], self.precision)
+                sum += Ab[i, p] * x[0][p]
                 
             # Check if the coefficient is zero
             if Ab[i, i] == 0:
                 raise_exception(ValueError("El sistema no tiene solución única"), logger)
             # Calculate the solution for the current equation, x_i = (b_i - sum) / a_ii
-            x[i] = np.round((Ab[i, n] - sum) / Ab[i, i], self.precision)
-
-        x = np.round(x, self.precision)
+            x[0][i] = (Ab[i, n] - sum) / Ab[i, i]
 
         # Store the solution in the object
         self.x = x
@@ -152,11 +171,12 @@ class GaussianElimination:
         :return: numpy array with the organized solutions of the system of equations
         """
         # Create an array to store the organized solution
-        organized_x = np.zeros(x.shape[0])
+        organized_x = np.array([[Decimal("0") for _ in range(x.shape[1])]], dtype=object)
 
         # Organize the solutions
-        for i in range(x.shape[0]):
-            organized_x[mark[i]] = x[i]
+        for i in range(x.shape[1]):
+
+            organized_x[0][mark[i]] = x[0][i]
 
         self.x = organized_x
         # Return the organized solutions
@@ -191,12 +211,12 @@ class GaussianElimination:
             # Iterate over the rows
             for i in range(k + 1, n):
                 # Calculate the factor to eliminate the coefficient
-                factor = np.round(Ab[i, k] / Ab[k, k], self.precision)
+                factor = Ab[i, k] / Ab[k, k]
 
                 # Iterate over the columns
                 for j in range(k, n + 1):
                     # Update the coefficient
-                    Ab[i, j] = np.round(Ab[i, j] - factor * Ab[k, j], self.precision)
+                    Ab[i, j] = Ab[i, j] - factor * Ab[k, j]
 
         # Perform the regressive substitution method
         self.regressive_substitution(Ab=Ab, n=n)
