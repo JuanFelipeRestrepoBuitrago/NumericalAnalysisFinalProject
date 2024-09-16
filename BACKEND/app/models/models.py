@@ -156,3 +156,30 @@ class SecondNewtonModified(NewtonRaphsonModel):
         second_derivative_expression (Optional[str])
     """
     second_derivative_expression: Optional[str] = Field(None, description="Second derivative expression of the function to be used in the Second Modified Newton-Raphson method.")
+
+class EquationSystemsRequest(BaseModel):
+    """
+    Data model for equation systems requests.
+
+    This model is used for equation systems requests. It contains the `A` attribute, which represents the matrix of coefficients, the `b` attribute, which represents the vector of solutions, and the `n` attribute, which represents the number of equations.
+    
+    Attributes:
+        A (List[List[float]]): Matrix of coefficients of the system of equations.
+        b (List[List[float]]): Vector of solutions of the system of equations.
+        n (Optional[int]): Number of equations in the system.
+    """
+    A: List[List[float]] = Field(..., description="Matrix of coefficients of the system of equations.")
+    b: List[List[float]] = Field(..., description="Vector of solutions of the system of equations.")
+    n: Optional[int] = Field(None, description="Number of equations in the system.")
+
+
+class GaussElimination(EquationSystemsRequest):
+    """
+    Data model for the Gauss Elimination method.
+
+    This model extends the `EquationSystemsRequest` model and adds specific attributes for the Gauss Elimination method.
+    
+    pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
+    """
+    pivot_type: Optional[Literal[1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
+    
