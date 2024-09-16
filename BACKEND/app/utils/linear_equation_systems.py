@@ -27,6 +27,10 @@ class GaussianElimination:
         self.Ab = construct_augmented_matrix(self.A, self.b)
         self.x = None
 
+        # Vectorial and Absolute error to None
+        self.vectorial_error = None
+        self.absolute_error = None
+
     def redefine_to_decimal(self, matrix: np.array):
         """
         This function redefines the values of a numpy array to Decimal.
@@ -103,7 +107,7 @@ class GaussianElimination:
         # Return the solution
         return x
 
-    def pivot(self, k: int, pivot_type: int, mark: np.array = None, Ab: np.array = None, n: int = None):
+    def pivot(self, k: int, pivot_type: int, mark: np.array = None, Ab: np.array = None, n: int = None) -> np.array:
         """
         This function performs the total pivot method to solve a system of equations.
 
@@ -131,8 +135,11 @@ class GaussianElimination:
         # Check if the pivot is total
         if pivot_type == 2:
             column_condition = n
-        else:
+        elif pivot_type == 1:
             column_condition = k + 1
+        else:
+            raise_exception(ValueError("El tipo de pivote no es válido"), logger)
+
         # Iterate over the rows
         for i in range(k, n):
             # Iterate over the columns to find the maximum value
@@ -163,9 +170,10 @@ class GaussianElimination:
         # Return the coefficients of the system of equations after the total pivot method
         return Ab, mark
     
-    def organize_solution(self, x: np.array, mark: np.array):
+    def organize_solution(self, x: np.array, mark: np.array) -> np.array:
         """
         This function organizes the solution of the system of equations after the total pivot method.
+
         :param x: numpy array with the solutions of the system of equations
         :param mark: numpy array with the permutation of the columns in order to keep track of the solutions
         :return: numpy array with the organized solutions of the system of equations
@@ -182,9 +190,44 @@ class GaussianElimination:
         # Return the organized solutions
         return organized_x
     
-    def solve(self, A: np.array = None, b: np.array = None, n: int = None, pivot_type: int = None):
+    def get_set_vectorial_error(self, x: np.array, A: np.array, b: np.array) -> np.array:
+        """
+        This function calculates the vectorial error of the solution of a system of equations.
+
+        :param x: numpy array with the solutions of the system of equations
+        :param A: numpy array with the coefficients of the system of equations
+        :param b: numpy array with the solutions of the system of equations
+        :return: numpy array with the vectorial error of the solution of the system of equations
+        """
+        # Calculate the vectorial error
+        error = (np.dot(A, x.T) - b.T).T
+
+        # Store the vectorial error
+        self.vectorial_error = error        
+        
+        # Return the vectorial error
+        return error
+    
+    def get_set_absolute_error(self, vectorial_error: np.array) -> np.array:
+        """
+        This function calculates the absolute error of the solution of a system of equations.
+
+        :param vectorial_error: numpy array with the vectorial error of the solution of the system of equations
+        :return: numpy array with the absolute error of the solution of the system of equations
+        """
+        # Calculate the absolute error
+        error = np.linalg.norm(vectorial_error)
+
+        # Store the absolute error
+        self.absolute_error = error
+
+        # Return the absolute error
+        return error
+    
+    def solve(self, A: np.array = None, b: np.array = None, n: int = None, pivot_type: int = None) -> np.array:
         """
         This function performs the Gaussian Elimination method to solve a system of equations.
+
         :param A: numpy array with the coefficients of the system of equations
         :param b: numpy array with the solutions of the system of equations
         :param n: length of the system of equations
@@ -219,8 +262,8 @@ class GaussianElimination:
                     Ab[i, j] = Ab[i, j] - factor * Ab[k, j]
 
         # Perform the regressive substitution method
-        self.regressive_substitution(Ab=Ab, n=n)
+        x = self.regressive_substitution(Ab=Ab, n=n)
 
         # Organize the solution
-        self.organize_solution(self.x, mark)
-        return self.x
+        x = self.organize_solution(x, mark)
+        return x

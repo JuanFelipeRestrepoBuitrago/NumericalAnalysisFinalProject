@@ -216,20 +216,22 @@ def test_gaussian_elimination_solve():
     assert allclose_decimal(result, x), "Test failed for a system of equations with 3 variables"
     assert allclose_decimal((object.A @ result.T - object.b.T).T, np.array([[Decimal("0"), Decimal("0"), Decimal("0")]])), "Test failed for a system of equations with 3 variables"
 
-    # Test for a system of equations with 4 variables
-    A = np.array([
-        [2, -1, 0, 3],
-        [8.6, 3, -1, 2],
-        [-11.50, 3.1, 4, -2],
-        [36.224, 3.006, 2.01, 5]
-    ])
 
-    object = GaussianElimination(A, np.array([[7, -3, 9, 0]]), 4, 20)
-    result = object.solve(pivot_type=2)
+def test_get_set_vectorial_error():
+    # Test for a system of equations with 3 variables
+    A = np.array([[3, 4, -2], [2, -3, 4], [1, -2, 3]])
+    object = GaussianElimination(A, np.array([[0, 11, 7]]), 3)
 
-    vectorial_error = object.A @ result.T - np.array([[Decimal("7"), Decimal("-3"), Decimal("9"), Decimal("0")]]).T
+    x = np.array([[Decimal("2"), Decimal("-1"), Decimal("1")]])
+    hola = object.get_set_vectorial_error(x, object.A, object.b), np.array([[Decimal("0"), Decimal("0"), Decimal("0")]])
+    assert allclose_decimal(object.get_set_vectorial_error(x, object.A, object.b), np.array([[Decimal("0"), Decimal("0"), Decimal("0")]])), "Test failed for a system of equations with 3 variables"
 
-    abs_error = np.linalg.norm(vectorial_error)
 
-    rest = object.A @ result.T - np.array([[Decimal("7"), Decimal("-3"), Decimal("9"), Decimal("0")]]).T
+def test_get_set_abs_error():
+    # Test for a system of equations with 3 variables
+    A = np.array([[3, 4, -2], [2, -3, 4], [1, -2, 3]])
+    object = GaussianElimination(A, np.array([[0, 11, 7]]), 3)
+
+    x = np.array([[Decimal("2"), Decimal("-1"), Decimal("1")]])
+    assert object.get_set_absolute_error(object.get_set_vectorial_error(x, object.A, object.b)) == 0, "Test failed for a system of equations with 3 variables"
     
