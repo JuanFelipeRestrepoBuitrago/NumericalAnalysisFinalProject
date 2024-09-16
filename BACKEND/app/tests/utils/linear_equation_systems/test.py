@@ -223,7 +223,6 @@ def test_get_set_vectorial_error():
     object = GaussianElimination(A, np.array([[0, 11, 7]]), 3)
 
     x = np.array([[Decimal("2"), Decimal("-1"), Decimal("1")]])
-    hola = object.get_set_vectorial_error(x, object.A, object.b), np.array([[Decimal("0"), Decimal("0"), Decimal("0")]])
     assert allclose_decimal(object.get_set_vectorial_error(x, object.A, object.b), np.array([[Decimal("0"), Decimal("0"), Decimal("0")]])), "Test failed for a system of equations with 3 variables"
 
 
@@ -234,4 +233,18 @@ def test_get_set_abs_error():
 
     x = np.array([[Decimal("2"), Decimal("-1"), Decimal("1")]])
     assert object.get_set_absolute_error(object.get_set_vectorial_error(x, object.A, object.b)) == 0, "Test failed for a system of equations with 3 variables"
+
+def test_convert_matrix_to_string():
+    # Test for a system of equations with 3 variables
+    A = np.array([[3, 4, -2], [2, -3, 4], [1, -2, 3]])
+    object = GaussianElimination(A, np.array([[0, 11, 7]]), 3)
+
+    x = np.array([[Decimal("2"), Decimal("-1"), Decimal("1")]])
+    object.solve()
+    object.get_set_vectorial_error()
+    object.get_set_absolute_error()
+
+    assert object.convert_matrix_to_string(object.x) == [["2", "-1", "1"]], "Test failed for a system of equations with 3 variables"
+    assert object.convert_matrix_to_string(object.vectorial_error) == [["0", "0", "0"]], "Test failed for a system of equations with 3 variables"
+    assert str(object.absolute_error) == "0", "Test failed for a system of equations with 3 variables"
     

@@ -2,6 +2,7 @@ from app.utils.utils import raise_exception, construct_augmented_matrix
 from app.routes.routes import logger
 from decimal import Decimal, getcontext
 import numpy as np
+from typing import List
 
 
 class GaussianElimination:
@@ -218,12 +219,12 @@ class GaussianElimination:
         # Return the vectorial error
         return error
     
-    def get_set_absolute_error(self, vectorial_error: np.array = None) -> np.array:
+    def get_set_absolute_error(self, vectorial_error: np.array = None) -> Decimal:
         """
         This function calculates the absolute error of the solution of a system of equations.
 
         :param vectorial_error: numpy array with the vectorial error of the solution of the system of equations
-        :return: numpy array with the absolute error of the solution of the system of equations
+        :return: decimal number with the absolute error of the solution of the system of equations
         """
         if vectorial_error is None:
             if self.vectorial_error is None:
@@ -284,3 +285,28 @@ class GaussianElimination:
         # Organize the solution
         x = self.organize_solution(x, mark)
         return x
+    
+    def convert_matrix_to_string(self, matrix: np.array) -> List[List[str]]:
+        """
+        This function converts a numpy array to a list of lists of strings.
+        :param matrix: numpy array to convert
+        :return: list of lists of strings
+        """
+        # Create an array to store the strings
+        string_matrix = []
+
+        # Iterate over the rows
+        for i in range(matrix.shape[0]):
+            # Create an array to store the strings of the row
+            string_row = []
+
+            # Iterate over the columns
+            for j in range(matrix.shape[1]):
+                # Convert the value to a string and append it to the row
+                string_row.append(str(matrix[i, j]))
+
+            # Append the row to the matrix
+            string_matrix.append(string_row)
+
+        # Return the list of lists of strings
+        return string_matrix

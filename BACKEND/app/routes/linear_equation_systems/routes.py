@@ -10,7 +10,9 @@ from app.auth.auth import auth_handler
 from app.utils.utils import raise_exception, parse_expression
 from app.routes.routes import logger
 
+
 router = APIRouter()
+
 
 @router.post('/gauss_elimination/',
                 tags=["Linear Equations System", "Protected"],
@@ -22,7 +24,7 @@ router = APIRouter()
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
 @limiter.limit("5/minute")
-def bisection(request: Request, data: GaussEliminationRequest, auth: dict = Depends(auth_handler.authenticate)):
+def gauss_elimination(request: Request, data: GaussEliminationRequest, auth: dict = Depends(auth_handler.authenticate)):
     """
     Gauss Elimination method.
     
@@ -50,6 +52,11 @@ def bisection(request: Request, data: GaussEliminationRequest, auth: dict = Depe
         x = gauss_elimination_object.solve(pivot_type=pivot_type)
         vectorial_error = gauss_elimination_object.get_set_vectorial_error()
         absolute_error = gauss_elimination_object.get_set_absolute_error()
+
+        # Convert to Strings
+        x = gauss_elimination_object.convert_matrix_to_string(x)
+        vectorial_error = gauss_elimination_object.convert_matrix_to_string(vectorial_error)
+        absolute_error = str(absolute_error)
 
         return GaussEliminationResponse(x=x, vectorial_error=vectorial_error, absolute_error=absolute_error)
     except RateLimitExceeded:
