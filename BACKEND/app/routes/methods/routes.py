@@ -40,6 +40,8 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -84,6 +86,8 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -127,6 +131,8 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -173,6 +179,8 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -222,6 +230,8 @@ def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handle
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -265,6 +275,8 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -314,6 +326,8 @@ def second_modified_newton(request: Request, data: SecondNewtonModified, auth: d
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host}: {data}")
+        
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 

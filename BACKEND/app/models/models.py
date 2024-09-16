@@ -171,9 +171,10 @@ class EquationSystemsRequest(BaseModel):
     A: List[List[float]] = Field(..., description="Matrix of coefficients of the system of equations.")
     b: List[List[float]] = Field(..., description="Vector of solutions of the system of equations.")
     n: Optional[int] = Field(None, description="Number of equations in the system.")
+    precision: Optional[int] = Field(16, description="Number of decimal places to round the values.")
 
 
-class GaussElimination(EquationSystemsRequest):
+class GaussEliminationRequest(EquationSystemsRequest):
     """
     Data model for the Gauss Elimination method.
 
@@ -182,4 +183,28 @@ class GaussElimination(EquationSystemsRequest):
     pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
     """
     pivot_type: Optional[Literal[1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
+
+class EquationSystemsResponse(BaseModel):
+    """
+    Data model for equation systems responses.
+
+    This model is used for equation systems responses. It contains the `x` attribute, which represents the solutions of the system of equations.
+    
+    Attributes:
+        x (List[float]): List of the solutions of the system of equations.
+    """
+    x: List[List[str]] = Field(description="List of the solutions of the system of equations.")
+
+class GaussEliminationResponse(EquationSystemsResponse):
+    """
+    Data model for the Gauss Elimination method response.
+
+    This model is used for the Gauss Elimination method response.
+    
+    Attributes:
+        vectorial_error (List[List[str]]): List of the vectorial errors of the system of  solution by gauss elimination.
+        absolute_error (str): Absolute error of the system of equations solution by gauss elimination.
+    """
+    vectorial_error: List[List[str]] = Field(description="List of the vectorial errors of the system of  solution by gauss elimination.")
+    absolute_error: str = Field(description="Absolute error of the system of equations solution by gauss elimination.")
     

@@ -208,7 +208,7 @@ class GaussianElimination:
             A = self.A
         if b is None:
             b = self.b
-            
+
         # Calculate the vectorial error
         error = (np.dot(A, x.T) - b.T).T
 
@@ -248,6 +248,7 @@ class GaussianElimination:
         :param b: numpy array with the solutions of the system of equations
         :param n: length of the system of equations
         :param pivot_type: number 1 or 2 to indicate if the pivot is partial or total, None for no pivot
+        :return: numpy array with the solutions of the system of equations
         """
         if A is None:
             A = self.A
