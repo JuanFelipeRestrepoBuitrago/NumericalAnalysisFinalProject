@@ -190,7 +190,7 @@ class GaussianElimination:
         # Return the organized solutions
         return organized_x
     
-    def get_set_vectorial_error(self, x: np.array, A: np.array, b: np.array) -> np.array:
+    def get_set_vectorial_error(self, x: np.array = None, A: np.array = None, b: np.array = None) -> np.array:
         """
         This function calculates the vectorial error of the solution of a system of equations.
 
@@ -199,6 +199,16 @@ class GaussianElimination:
         :param b: numpy array with the solutions of the system of equations
         :return: numpy array with the vectorial error of the solution of the system of equations
         """
+        if x is None:
+            if self.x is None:
+                raise_exception(ValueError("La solución no ha sido calculada"), logger)
+            else:
+                x = self.x
+        if A is None:
+            A = self.A
+        if b is None:
+            b = self.b
+            
         # Calculate the vectorial error
         error = (np.dot(A, x.T) - b.T).T
 
@@ -208,13 +218,19 @@ class GaussianElimination:
         # Return the vectorial error
         return error
     
-    def get_set_absolute_error(self, vectorial_error: np.array) -> np.array:
+    def get_set_absolute_error(self, vectorial_error: np.array = None) -> np.array:
         """
         This function calculates the absolute error of the solution of a system of equations.
 
         :param vectorial_error: numpy array with the vectorial error of the solution of the system of equations
         :return: numpy array with the absolute error of the solution of the system of equations
         """
+        if vectorial_error is None:
+            if self.vectorial_error is None:
+                raise_exception(ValueError("El error vectorial no ha sido calculado"), logger)
+            else:
+                vectorial_error = self.vectorial_error
+
         # Calculate the absolute error
         error = np.linalg.norm(vectorial_error)
 
