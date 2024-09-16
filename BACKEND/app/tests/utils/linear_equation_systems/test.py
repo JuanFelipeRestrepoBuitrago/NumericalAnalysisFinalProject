@@ -213,30 +213,23 @@ def test_gaussian_elimination_solve():
 
     x = np.array([[Decimal("2"), Decimal("-1"), Decimal("1")]])
     result = object.solve()
-    zeros = object.A @ result.T - object.b.T
-    A = object.A
-    bT = object.b.T
-    resultT = result.T
     assert allclose_decimal(result, x), "Test failed for a system of equations with 3 variables"
     assert allclose_decimal((object.A @ result.T - object.b.T).T, np.array([[Decimal("0"), Decimal("0"), Decimal("0")]])), "Test failed for a system of equations with 3 variables"
 
-    # # Test for a system of equations with 4 variables
-    # A = np.array([
-    #     [2, -1, 0, 3],
-    #     [8.6, 3, -1, 2],
-    #     [-11.50, 3.1, 4, -2],
-    #     [36.224, 3.006, 2.01, 5]
-    # ])
+    # Test for a system of equations with 4 variables
+    A = np.array([
+        [2, -1, 0, 3],
+        [8.6, 3, -1, 2],
+        [-11.50, 3.1, 4, -2],
+        [36.224, 3.006, 2.01, 5]
+    ])
 
-    # object = GaussianElimination(A, np.array([[7, -3, 9, 0]]), 4, 30)
-    # result = object.solve(pivot_type=2)
+    object = GaussianElimination(A, np.array([[7, -3, 9, 0]]), 4, 20)
+    result = object.solve(pivot_type=2)
 
-    # vectorial_error = A @ result.T - np.array([7, -3, 9, 0]).T
+    vectorial_error = object.A @ result.T - np.array([[Decimal("7"), Decimal("-3"), Decimal("9"), Decimal("0")]]).T
 
-    # abs_error = np.linalg.norm(vectorial_error)
+    abs_error = np.linalg.norm(vectorial_error)
 
-    # rest = A @ result.T - np.array([7, -3, 9, 0]).T
-
-    # print(result)
-    # print("Vectorial Error: ", )
+    rest = object.A @ result.T - np.array([[Decimal("7"), Decimal("-3"), Decimal("9"), Decimal("0")]]).T
     
