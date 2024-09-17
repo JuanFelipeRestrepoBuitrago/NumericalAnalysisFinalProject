@@ -182,7 +182,7 @@ class GaussEliminationRequest(EquationSystemsRequest):
     
     pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
     """
-    pivot_type: Optional[Literal[1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
+    pivot_type: Optional[Literal[None, 1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
 
 class EquationSystemsResponse(BaseModel):
     """
