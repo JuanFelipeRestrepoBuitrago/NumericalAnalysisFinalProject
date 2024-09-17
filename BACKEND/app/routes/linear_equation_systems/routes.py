@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request, Depends, status
 from slowapi.errors import RateLimitExceeded
 from sqlalchemy.orm import Session
+import numpy as np
 
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
@@ -40,8 +41,8 @@ def gauss_elimination(request: Request, data: GaussEliminationRequest, auth: dic
         logger.info(f"Request from {request.client.host}: {data}")
         
         # Get the data from the request
-        A = data.A
-        b = data.b
+        A = np.array(data.A)
+        b = np.array(data.b)
         n = data.n
         pivot_type = data.pivot_type
 
