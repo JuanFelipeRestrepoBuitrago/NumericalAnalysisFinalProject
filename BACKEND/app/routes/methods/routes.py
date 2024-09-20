@@ -7,7 +7,7 @@ from app.config.limiter import limiter
 from app.models.models import ResponseError, NumericalMethodResponse, BisectionFalseRuleModel, FixedPointModel, NewtonRaphsonModel, SecantModel, FirstNewtonModified, SecondNewtonModified
 from app.auth.auth import auth_handler
 from app.utils.utils import raise_exception, parse_expression
-from app.utils.methods import bisection as bisection_method, false_rule as false_rule_method, fixed_point as fixed_point_method, newton_raphson as newton_raphson_method, secant as secant_method, first_modified_newton_method as first_modified_newton_method, second_modified_newton_method as second_modified_newton_method
+from app.domain.methods import bisection as bisection_method, false_rule as false_rule_method, fixed_point as fixed_point_method, newton_raphson as newton_raphson_method, secant as secant_method, first_modified_newton_method as first_modified_newton_method, second_modified_newton_method as second_modified_newton_method
 from app.routes.routes import logger
 
 router = APIRouter()
@@ -21,7 +21,7 @@ router = APIRouter()
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Bisection method route.
@@ -67,7 +67,7 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     False Rule method route.
@@ -112,7 +112,7 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 }) 
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Fixed Point method route.
@@ -160,7 +160,7 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Newton Raphson method route.
@@ -211,7 +211,7 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Secant method route.
@@ -256,7 +256,7 @@ def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handle
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dict = Depends(auth_handler.authenticate)):
     """
     First Modified Newton method route.
@@ -307,7 +307,7 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def second_modified_newton(request: Request, data: SecondNewtonModified, auth: dict = Depends(auth_handler.authenticate)):
     """
     Second Modified Newton method route.

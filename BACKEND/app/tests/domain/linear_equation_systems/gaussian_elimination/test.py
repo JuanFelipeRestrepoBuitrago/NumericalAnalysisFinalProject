@@ -1,4 +1,4 @@
-from app.utils.linear_equation_systems import GaussianElimination
+from app.domain.gaussian_elimination import GaussianElimination
 from app.utils.utils import construct_augmented_matrix
 from fastapi.exceptions import HTTPException
 import numpy as np

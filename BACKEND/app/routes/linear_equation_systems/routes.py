@@ -6,7 +6,7 @@ import numpy as np
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
 from app.models.models import ResponseError, GaussEliminationRequest, GaussEliminationResponse
-from app.utils.linear_equation_systems import GaussianElimination
+from app.domain.gaussian_elimination import GaussianElimination
 from app.auth.auth import auth_handler
 from app.utils.utils import raise_exception, parse_expression
 from app.routes.routes import logger
