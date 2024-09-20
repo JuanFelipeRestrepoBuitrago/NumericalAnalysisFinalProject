@@ -82,6 +82,7 @@ class NumericalMethodResponse(BaseModel):
     Xn: List[str] = Field(description="List of approximations of the root.")
     Fx: List[str] = Field(description="List of function values at each approximation.")
     Error: List[str] = Field(description="List of errors at each approximation.")
+    Message: str = Field(description="Message to be displayed to the user.")
 
 
 class BisectionFalseRuleModel(NumericalMethodRequest):

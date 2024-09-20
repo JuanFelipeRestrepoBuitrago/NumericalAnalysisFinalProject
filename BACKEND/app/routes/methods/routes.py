@@ -47,9 +47,9 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = bisection_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = bisection_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -93,9 +93,9 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = false_rule_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = false_rule_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -140,9 +140,9 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = fixed_point_method(function, variable, function_g, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = fixed_point_method(function, variable, function_g, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -191,9 +191,9 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = newton_raphson_method(function, variable, data.initial, derivative=derivative, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = newton_raphson_method(function, variable, data.initial, derivative=derivative, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -237,9 +237,9 @@ def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handle
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = secant_method(function, variable, data.initial, data.second_initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = secant_method(function, variable, data.initial, data.second_initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -287,9 +287,9 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
         else:
             derivative = None
 
-        iterations, x, fx, error = first_modified_newton_method(function, variable, data.initial, multiplicity=data.multiplicity, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative)
+        iterations, x, fx, error, message = first_modified_newton_method(function, variable, data.initial, multiplicity=data.multiplicity, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -343,9 +343,9 @@ def second_modified_newton(request: Request, data: SecondNewtonModified, auth: d
         else:
             second_derivative = None
 
-        iterations, x, fx, error = second_modified_newton_method(function, variable, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative, second_derivative=second_derivative)
+        iterations, x, fx, error, message = second_modified_newton_method(function, variable, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative, second_derivative=second_derivative)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
