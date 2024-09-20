@@ -201,25 +201,16 @@ class LUFactorization:
         # Return the augmented matrix and the permutation matrix
         return Ab, permutation_matrix
     
-    def organize_solution(self, x: np.array, mark: np.array) -> np.array:
+    def organize_matrix(self, A: np.array, permutation_matrix: np.array) -> np.array:
         """
-        This function organizes the solution of the system of equations after the total pivot method.
+        This function organizes a matrix with its permutation matrix by multiplying each other
 
-        :param x: numpy array with the solutions of the system of equations
-        :param mark: numpy array with the permutation of the columns in order to keep track of the solutions
-        :return: numpy array with the organized solutions of the system of equations
+        :param A: numpy array matrix with the matrix to sort
+        :param permutation_matrix: numpy array matrix with the permutation matrix to make the product with
+        :return: Sorted A matrix
         """
-        # Create an array to store the organized solution
-        organized_x = np.array([[Decimal("0") for _ in range(x.shape[1])]], dtype=object)
+        return np.dot(permutation_matrix, A)
 
-        # Organize the solutions
-        for i in range(x.shape[1]):
-
-            organized_x[0][mark[i]] = x[0][i]
-
-        self.x = organized_x
-        # Return the organized solutions
-        return organized_x
     
     def get_set_vectorial_error(self, x: np.array = None, A: np.array = None, b: np.array = None) -> np.array:
         """
