@@ -82,6 +82,7 @@ class NumericalMethodResponse(BaseModel):
     Xn: List[str] = Field(description="List of approximations of the root.")
     Fx: List[str] = Field(description="List of function values at each approximation.")
     Error: List[str] = Field(description="List of errors at each approximation.")
+    Message: str = Field(description="Message to be displayed to the user.")
 
 
 class BisectionFalseRuleModel(NumericalMethodRequest):
@@ -156,3 +157,56 @@ class SecondNewtonModified(NewtonRaphsonModel):
         second_derivative_expression (Optional[str])
     """
     second_derivative_expression: Optional[str] = Field(None, description="Second derivative expression of the function to be used in the Second Modified Newton-Raphson method.")
+
+class EquationSystemsRequest(BaseModel):
+    """
+    Data model for equation systems requests.
+
+    This model is used for equation systems requests. It contains the `A` attribute, which represents the matrix of coefficients, the `b` attribute, which represents the vector of solutions, and the `n` attribute, which represents the number of equations.
+    
+    Attributes:
+        A (List[List[float]]): Matrix of coefficients of the system of equations.
+        b (List[List[float]]): Vector of solutions of the system of equations.
+        n (Optional[int]): Number of equations in the system.
+    """
+    A: List[List[float]] = Field(..., description="Matrix of coefficients of the system of equations.")
+    b: List[List[float]] = Field(..., description="Vector of solutions of the system of equations.")
+    n: Optional[int] = Field(None, description="Number of equations in the system.")
+    precision: Optional[int] = Field(16, description="Number of decimal places to round the values.")
+    order: int = Field(0, description="Positive integer which indicates the order of the norm used to calculate the error, 0 for infinite norm")
+
+
+class GaussEliminationRequest(EquationSystemsRequest):
+    """
+    Data model for the Gauss Elimination method.
+
+    This model extends the `EquationSystemsRequest` model and adds specific attributes for the Gauss Elimination method.
+    
+    pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
+    """
+    pivot_type: Optional[Literal[None, 1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
+
+class EquationSystemsResponse(BaseModel):
+    """
+    Data model for equation systems responses.
+
+    This model is used for equation systems responses. It contains the `x` attribute, which represents the solutions of the system of equations.
+    
+    Attributes:
+        x (List[float]): List of the solutions of the system of equations.
+    """
+    x: List[List[str]] = Field(description="List of the solutions of the system of equations.")
+
+class GaussEliminationResponse(EquationSystemsResponse):
+    """
+    Data model for the Gauss Elimination method response.
+
+    This model is used for the Gauss Elimination method response.
+    
+    Attributes:
+        vectorial_error (List[List[str]]): List of the vectorial errors of the system of  solution by gauss elimination.
+        absolute_error (str): Absolute error of the system of equations solution by gauss elimination.
+    """
+    vectorial_error: List[List[str]] = Field(description="List of the vectorial errors of the system of  solution by gauss elimination.")
+    absolute_error: str = Field(description="Absolute error of the system of equations solution by gauss elimination.")
+    

@@ -7,7 +7,7 @@ from app.config.limiter import limiter
 from app.models.models import ResponseError, NumericalMethodResponse, BisectionFalseRuleModel, FixedPointModel, NewtonRaphsonModel, SecantModel, FirstNewtonModified, SecondNewtonModified
 from app.auth.auth import auth_handler
 from app.utils.utils import raise_exception, parse_expression
-from app.utils.methods import bisection as bisection_method, false_rule as false_rule_method, fixed_point as fixed_point_method, newton_raphson as newton_raphson_method, secant as secant_method, first_modified_newton_method as first_modified_newton_method, second_modified_newton_method as second_modified_newton_method
+from app.domain.methods import bisection as bisection_method, false_rule as false_rule_method, fixed_point as fixed_point_method, newton_raphson as newton_raphson_method, secant as secant_method, first_modified_newton_method as first_modified_newton_method, second_modified_newton_method as second_modified_newton_method
 from app.routes.routes import logger
 
 router = APIRouter()
@@ -21,7 +21,7 @@ router = APIRouter()
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Bisection method route.
@@ -40,14 +40,18 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = bisection_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = bisection_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        logger.info(f"Request successful: {message}")
+
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -65,7 +69,7 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     False Rule method route.
@@ -84,14 +88,18 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = false_rule_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = false_rule_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        logger.info(f"Request successful: {message}")
+
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -108,7 +116,7 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 }) 
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Fixed Point method route.
@@ -127,6 +135,8 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -134,9 +144,11 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = fixed_point_method(function, variable, function_g, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = fixed_point_method(function, variable, function_g, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        logger.info(f"Request successful: {message}")
+
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -154,7 +166,7 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Newton Raphson method route.
@@ -173,6 +185,8 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -183,9 +197,11 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = newton_raphson_method(function, variable, data.initial, derivative=derivative, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = newton_raphson_method(function, variable, data.initial, derivative=derivative, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        logger.info(f"Request successful: {message}")
+
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -203,7 +219,7 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handler.authenticate)):
     """
     Secant method route.
@@ -222,14 +238,18 @@ def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handle
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
         absolute_error = True if data.error_type == "absolute" else False
 
-        iterations, x, fx, error = secant_method(function, variable, data.initial, data.second_initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+        iterations, x, fx, error, message = secant_method(function, variable, data.initial, data.second_initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        logger.info(f"Request successful: {message}")
+
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -246,7 +266,7 @@ def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handle
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dict = Depends(auth_handler.authenticate)):
     """
     First Modified Newton method route.
@@ -265,6 +285,8 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -275,9 +297,11 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
         else:
             derivative = None
 
-        iterations, x, fx, error = first_modified_newton_method(function, variable, data.initial, multiplicity=data.multiplicity, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative)
+        iterations, x, fx, error, message = first_modified_newton_method(function, variable, data.initial, multiplicity=data.multiplicity, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        logger.info(f"Request successful: {message}")
+
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
@@ -295,7 +319,7 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
                 })
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 def second_modified_newton(request: Request, data: SecondNewtonModified, auth: dict = Depends(auth_handler.authenticate)):
     """
     Second Modified Newton method route.
@@ -314,6 +338,8 @@ def second_modified_newton(request: Request, data: SecondNewtonModified, auth: d
         HTTPException: If an error occurs during the method.
     """
     try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+        
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
 
@@ -329,9 +355,11 @@ def second_modified_newton(request: Request, data: SecondNewtonModified, auth: d
         else:
             second_derivative = None
 
-        iterations, x, fx, error = second_modified_newton_method(function, variable, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative, second_derivative=second_derivative)
+        iterations, x, fx, error, message = second_modified_newton_method(function, variable, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative, second_derivative=second_derivative)
 
-        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error)
+        logger.info(f"Request successful: {message}")
+
+        return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
