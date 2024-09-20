@@ -219,7 +219,7 @@ class GaussianElimination:
         # Return the vectorial error
         return error
     
-    def get_set_absolute_error(self, vectorial_error: np.array = None) -> Decimal:
+    def get_set_absolute_error(self, vectorial_error: np.array = None, order: int = 0) -> Decimal:
         """
         This function calculates the absolute error of the solution of a system of equations.
 
@@ -232,8 +232,14 @@ class GaussianElimination:
             else:
                 vectorial_error = self.vectorial_error
 
-        # Calculate the absolute error
-        error = np.linalg.norm(vectorial_error)
+        if order == 0:
+            # Calculate the absolute error with the infinity norm
+            error = np.linalg.norm(vectorial_error, ord=np.inf)
+        elif order < 0:
+            raise_exception(ValueError("El orden de la norma no es válido, este debe ser 0 o entero positivo"), logger)
+        else:
+            # Calculate the absolute error with the order
+            error = np.linalg.norm(vectorial_error, ord=order)
 
         # Store the absolute error
         self.absolute_error = error

@@ -173,6 +173,7 @@ class EquationSystemsRequest(BaseModel):
     b: List[List[float]] = Field(..., description="Vector of solutions of the system of equations.")
     n: Optional[int] = Field(None, description="Number of equations in the system.")
     precision: Optional[int] = Field(16, description="Number of decimal places to round the values.")
+    order: int = Field(0, description="Positive integer which indicates the order of the norm used to calculate the error, 0 for infinite norm")
 
 
 class GaussEliminationRequest(EquationSystemsRequest):

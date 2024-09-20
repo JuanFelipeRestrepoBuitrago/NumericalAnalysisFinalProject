@@ -38,7 +38,7 @@ def gauss_elimination(request: Request, data: GaussEliminationRequest, auth: dic
     GaussEliminationResponse: JSON with the solutions of the system of equations, the vectorial errors, and the absolute error.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
         
         # Get the data from the request
         A = np.array(data.A)
@@ -52,7 +52,7 @@ def gauss_elimination(request: Request, data: GaussEliminationRequest, auth: dic
         # Solve the system of equations
         x = gauss_elimination_object.solve(pivot_type=pivot_type)
         vectorial_error = gauss_elimination_object.get_set_vectorial_error()
-        absolute_error = gauss_elimination_object.get_set_absolute_error()
+        absolute_error = gauss_elimination_object.get_set_absolute_error(order=data.order)
 
         # Convert to Strings
         x = gauss_elimination_object.convert_matrix_to_string(x)
