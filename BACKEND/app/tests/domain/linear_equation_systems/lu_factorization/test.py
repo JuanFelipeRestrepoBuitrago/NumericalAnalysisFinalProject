@@ -57,3 +57,19 @@ def test_progressive_substitution():
     result = object.progressive_substitution(Ab)
 
     assert allclose_decimal(result, x), "Test failed for a system of equations with 3 variables"
+
+
+def test_pivot():
+    """
+    Test the pivot method.
+    """
+    A = np.array([[1, -2, 3], [5, 1, -2], [10, 0, 9]])
+    object = LUFactorization(A, np.array([[7, -3, 9]]), 3)
+    A_Result = np.array([[Decimal("10"), Decimal("0"), Decimal("9")], [Decimal("5"), Decimal("1"), Decimal("-2")], [Decimal("1"), Decimal("-2"), Decimal("3")]])
+    permutation_matrix = np.array([[Decimal("0"), Decimal("0"), Decimal("1")], [Decimal("0"), Decimal("1"), Decimal("0")], [Decimal("1"), Decimal("0"), Decimal("0")]])
+
+    result, result_permutation_matrix = object.pivot(0, 1, Ab=A, n=3)
+    assert allclose_decimal(result, A_Result), "Test failed for a system of equations with 3 variables"
+    assert allclose_decimal(result_permutation_matrix, permutation_matrix), "Test failed for a system of equations with 3 variables"
+
+

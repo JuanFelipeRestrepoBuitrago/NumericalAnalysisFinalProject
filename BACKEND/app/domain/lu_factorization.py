@@ -150,13 +150,13 @@ class LUFactorization:
         # Return the solution
         return x
 
-    def pivot(self, k: int, pivot_type: int, mark: np.array = None, Ab: np.array = None, n: int = None) -> np.array:
+    def pivot(self, k: int, pivot_type: int, permutation_matrix: np.array = None, Ab: np.array = None, n: int = None) -> List[np.array]:
         """
         This function performs the total pivot method to solve a system of equations.
 
         :param k: current iteration
         :param pivot_type: number 1 or 2 to indicate if the pivot is partial or total
-        :param mark: numpy array with the permutation of the columns in order to keep track of the solutions
+        :param permutation_matrix: numpy matrix with the permutation of the rows
         :param Ab: numpy array with the coefficients of the system of equations
         :param n: length of the system of equations
         :return: numpy array with the coefficients of the system of equations after the total pivot method
@@ -166,52 +166,40 @@ class LUFactorization:
         if n is None:
             n = self.n
 
-        # Create an array to store the permutation of the columns
-        if mark is None:
-            mark = np.arange(n)
+        # Create an array to store the permutation of the rows
+        if permutation_matrix is None:
+            permutation_matrix = self.redefine_to_decimal(np.eye(n))
 
         # Initialize necessary variables
-        max = 0
-        max_col = k
+        max = Ab[k, k]
         max_row = k
         
         # Check if the pivot is total
-        if pivot_type == 2:
-            column_condition = n
-        elif pivot_type == 1:
-            column_condition = k + 1
-        else:
+        if pivot_type != 1:
             raise_exception(ValueError("El tipo de pivote no es válido"), logger)
 
         # Iterate over the rows
-        for i in range(k, n):
-            # Iterate over the columns to find the maximum value
-            for j in range(k, column_condition):
-                # Check if the current value is greater than the maximum value
-                if np.abs(Ab[i, j]) > max:
-                    max = np.abs(Ab[i, j])
-                    max_row = i
-                    max_col = j
+        for i in range(k + 1, n):
+            # Check if the current element is greater than the maximum
+            if abs(Ab[i, k]) > abs(max):
+                # Update the maximum and the row
+                max = Ab[i, k]
+                max_row = i
 
-        # Check if the maximum value is zero
+        # Check if the maximum is zero
         if max == 0:
-            raise_exception(SystemError("El sistema no tiene solución única"), logger)
+            raise_exception(ValueError("El sistema no tiene solución única"), logger)
 
-        # Swap the columns if the maximum value is not in the current column
-        if max_col != k:
-            # Swap the columns
-            Ab[:, [k, max_col]] = Ab[:, [max_col, k]]
-            
-            # Swap the elements in the permutation array
-            mark[k], mark[max_col] = mark[max_col], mark[k]
-
-        # Swap the rows if the maximum value is not in the current row
+        # Check if the maximum is different from the current element
         if max_row != k:
-            # Swap the rows
+            # Swap the rows in the augmented matrix
             Ab[[k, max_row]] = Ab[[max_row, k]]
 
-        # Return the coefficients of the system of equations after the total pivot method
-        return Ab, mark
+            # Swap the rows in the permutation matrix
+            permutation_matrix[[k, max_row]] = permutation_matrix[[max_row, k]]
+
+        # Return the augmented matrix and the permutation matrix
+        return Ab, permutation_matrix
     
     def organize_solution(self, x: np.array, mark: np.array) -> np.array:
         """
@@ -315,7 +303,7 @@ class LUFactorization:
         for k in range(n - 1):
             # Perform the pivot method
             if pivot_type is not None and pivot_type == 1:
-                Ab, mark = self.pivot(k, pivot_type, mark, Ab, n)
+                Ab, permutation_matrix = self.pivot(k, pivot_type, permutation_matrix, Ab, n)
 
             # Iterate over the rows
             for i in range(k + 1, n):
