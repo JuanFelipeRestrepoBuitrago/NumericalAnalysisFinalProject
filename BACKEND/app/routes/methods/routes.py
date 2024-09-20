@@ -40,7 +40,7 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
         HTTPException: If an error occurs during the method.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
 
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
@@ -48,6 +48,8 @@ def bisection(request: Request, data: BisectionFalseRuleModel, auth: dict = Depe
         absolute_error = True if data.error_type == "absolute" else False
 
         iterations, x, fx, error, message = bisection_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+
+        logger.info(f"Request successful: {message}")
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
@@ -86,7 +88,7 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
         HTTPException: If an error occurs during the method.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
 
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
@@ -94,6 +96,8 @@ def false_rule(request: Request, data: BisectionFalseRuleModel, auth: dict = Dep
         absolute_error = True if data.error_type == "absolute" else False
 
         iterations, x, fx, error, message = false_rule_method(function, variable, data.initial, data.final, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+
+        logger.info(f"Request successful: {message}")
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
@@ -131,7 +135,7 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
         HTTPException: If an error occurs during the method.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
 
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
@@ -141,6 +145,8 @@ def fixed_point(request: Request, data: FixedPointModel, auth: dict = Depends(au
         absolute_error = True if data.error_type == "absolute" else False
 
         iterations, x, fx, error, message = fixed_point_method(function, variable, function_g, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+
+        logger.info(f"Request successful: {message}")
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
@@ -179,7 +185,7 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
         HTTPException: If an error occurs during the method.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
 
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
@@ -192,6 +198,8 @@ def newton_raphson(request: Request, data: NewtonRaphsonModel, auth: dict = Depe
         absolute_error = True if data.error_type == "absolute" else False
 
         iterations, x, fx, error, message = newton_raphson_method(function, variable, data.initial, derivative=derivative, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+
+        logger.info(f"Request successful: {message}")
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
@@ -230,7 +238,7 @@ def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handle
         HTTPException: If an error occurs during the method.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
 
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
@@ -238,6 +246,8 @@ def secant(request: Request, data: SecantModel, auth: dict = Depends(auth_handle
         absolute_error = True if data.error_type == "absolute" else False
 
         iterations, x, fx, error, message = secant_method(function, variable, data.initial, data.second_initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision)
+
+        logger.info(f"Request successful: {message}")
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
@@ -275,7 +285,7 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
         HTTPException: If an error occurs during the method.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
 
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
@@ -288,6 +298,8 @@ def first_modified_newton(request: Request, data: FirstNewtonModified, auth: dic
             derivative = None
 
         iterations, x, fx, error, message = first_modified_newton_method(function, variable, data.initial, multiplicity=data.multiplicity, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative)
+
+        logger.info(f"Request successful: {message}")
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
@@ -326,7 +338,7 @@ def second_modified_newton(request: Request, data: SecondNewtonModified, auth: d
         HTTPException: If an error occurs during the method.
     """
     try:
-        logger.info(f"Request from {request.client.host}: {data}")
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
         
         function, variables = parse_expression(data.expression, logger)
         variable = variables[0]
@@ -344,6 +356,8 @@ def second_modified_newton(request: Request, data: SecondNewtonModified, auth: d
             second_derivative = None
 
         iterations, x, fx, error, message = second_modified_newton_method(function, variable, data.initial, tolerance=data.tolerance, iterations=data.max_iterations, absolute_error=absolute_error, precision=data.precision, derivative=derivative, second_derivative=second_derivative)
+
+        logger.info(f"Request successful: {message}")
 
         return NumericalMethodResponse(Iterations=iterations, Xn=x, Fx=fx, Error=error, Message=message)
     except RateLimitExceeded:
