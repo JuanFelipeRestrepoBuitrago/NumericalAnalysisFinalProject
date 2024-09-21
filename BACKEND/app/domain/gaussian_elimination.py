@@ -210,8 +210,11 @@ class GaussianElimination:
         if b is None:
             b = self.b
 
+        if b.shape == (1, A.shape[0]):
+            b = b.T
+
         # Calculate the vectorial error
-        error = (np.dot(A, x.T) - b.T).T
+        error = (np.dot(A, x.T) - b).T
 
         # Store the vectorial error
         self.vectorial_error = error        

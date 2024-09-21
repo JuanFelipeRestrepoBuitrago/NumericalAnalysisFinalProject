@@ -231,8 +231,12 @@ class LUFactorization:
         if b is None:
             b = self.b
 
+        # Transpose if necessary
+        if b.shape == (1, A.shape[0]):
+            b = b.T
+
         # Calculate the vectorial error
-        error = (np.dot(A, x.T) - b.T).T
+        error = (np.dot(A, x.T) - b).T
 
         # Store the vectorial error
         self.vectorial_error = error        
@@ -268,7 +272,7 @@ class LUFactorization:
         # Return the absolute error
         return error
     
-    def solve(self, A: np.array = None, b: np.array = None, n: int = None, pivot_type: int = None) -> np.array:
+    def solve(self, A: np.array = None, b: np.array = None, n: int = None, pivot_type: int = None) -> List[np.array]:
         """
         This function performs the Gaussian Elimination method to solve a system of equations.
 
@@ -276,42 +280,59 @@ class LUFactorization:
         :param b: numpy array with the solutions of the system of equations
         :param n: length of the system of equations
         :param pivot_type: number 1 or 2 to indicate if the pivot is partial or total, None for no pivot
-        :return: numpy array with the solutions of the system of equations
+        :return: numpy array with the solutions of the system of equations, the L matrix and the U matrix
         """
         if A is None:
-            A = self.A
+            A = self.A.copy()
         if b is None:
             b = self.b
         if n is None:
             n = self.n
 
         # Construct the augmented matrix
-        Ab = construct_augmented_matrix(A, b)
+        
         # Build the permutation matrix
-        permutation_matrix = np.eye(n)
+        permutation_matrix = self.redefine_to_decimal(np.eye(n))
+        L = permutation_matrix.copy()
 
         # Iterate over the rows
         for k in range(n - 1):
             # Perform the pivot method
             if pivot_type is not None and pivot_type == 1:
-                Ab, permutation_matrix = self.pivot(k, pivot_type, permutation_matrix, Ab, n)
+                A, permutation_matrix = self.pivot(k, pivot_type, permutation_matrix, A, n)
 
             # Iterate over the rows
             for i in range(k + 1, n):
                 # Calculate the factor to eliminate the coefficient
-                factor = Ab[i, k] / Ab[k, k]
+                factor = A[i, k] / A[k, k]
 
                 # Iterate over the columns
-                for j in range(k, n + 1):
+                for j in range(k, n):
                     # Update the coefficient
-                    Ab[i, j] = Ab[i, j] - factor * Ab[k, j]
+                    A[i, j] = A[i, j] - factor * A[k, j]
+                    
+                # Store the factor in the lower triangular matrix
+                A[i, k] = factor
+
+        U = np.triu(A)
+        L = np.tril(A, k=-1) + L
+
+        if b.shape == (A.shape[0], 1):
+            b = self.organize_matrix(b, permutation_matrix=permutation_matrix)
+        elif b.shape == (1, A.shape[0]):
+            b = self.organize_matrix(b.T, permutation_matrix=permutation_matrix).T
+
+        LB = construct_augmented_matrix(L, b)
+        z = self.progressive_substitution(LB, n)
+        Uz = construct_augmented_matrix(U, z)
 
         # Perform the regressive substitution method
-        x = self.regressive_substitution(Ab=Ab, n=n)
+        x = self.regressive_substitution(Ab=Uz, n=n)
 
-        # Organize the solution
-        x = self.organize_solution(x, mark)
-        return x
+        # Store the solution in the object
+        self.x = x
+
+        return x, L, U
     
     def convert_matrix_to_string(self, matrix: np.array) -> List[List[str]]:
         """

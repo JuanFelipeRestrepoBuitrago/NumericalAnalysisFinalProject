@@ -89,3 +89,36 @@ def test_organize_matrix():
     assert allclose_decimal(result, object.A)
     assert allclose_decimal(object.organize_matrix(object.b.T, result_permutation_matrix).T, np.array([[9, -3, 7]]))
 
+
+def test_lu_factorization():
+    # Test 1
+    A = np.array([[3, 4, -2], [2, -3, 4], [1, -2, 3]])
+    object = LUFactorization(A, np.array([[0, 11, 7]]), 3)
+
+
+    x_expected = np.array([[Decimal("2"), Decimal("-1"), Decimal("1")]])
+    
+    x, L, U = object.solve()
+
+    assert allclose_decimal(object.x, x_expected), "Test failed for a system of equations with 3 variables"
+    assert allclose_decimal(L, np.array([[Decimal("1"), Decimal("0"), Decimal("0")], [Decimal("2")/Decimal("3"), Decimal("1"), Decimal("0")], [Decimal("1")/Decimal("3"), Decimal("0.5882352941176470"), Decimal("1")]]))
+    assert allclose_decimal(U, np.array([[Decimal("3"), Decimal("4"), Decimal("-2")], [Decimal("0"), Decimal("-5.666666666666667"), Decimal("5.333333333333333")], [Decimal("0"), Decimal("0"), Decimal("0.529411764705883")]]))
+    assert allclose_decimal(object.get_set_vectorial_error(x, object.A, object.b), np.array([[Decimal("0"), Decimal("0"), Decimal("0")]])), "Test failed for a system of equations with 3 variables"
+    assert object.get_set_absolute_error(object.get_set_vectorial_error(x, object.A, object.b)) == 0, "Test failed for a system of equations with 3 variables"
+
+    # Test 2
+    # A = [4 3 2 1;3 12 3 -2; -2 8 -9 -5; -7 -3 3 6];
+    # b = [0;8;7;1];
+    A = np.array([[4, 3, 2, 1], [3, 12, 3, -2], [-2, 8, -9, -5], [-7, -3, 3, 6]])
+    object = LUFactorization(A, np.array([[0, 8, 7, 1]]), 4, precision=20)
+    x_expected = np.array([[Decimal("-0.5743319533308244"), Decimal("0.7485886337975161"), Decimal("0.1204365826119690"), Decimal("-0.1893112532931884")]])
+    L_expected = np.array([[Decimal("1"), Decimal("0"), Decimal("0"), Decimal("0")], [Decimal("-0.4285714285714286"), Decimal("1"), Decimal("0"), Decimal("0")], [Decimal("0.2857142857142857"), Decimal('0.8266666666666670'), Decimal("1"), Decimal("0")], [Decimal("-0.5714285714285714"), Decimal('0.1200000000000001'), Decimal("-0.2388059701492537"), Decimal("1")]])
+    U_expected = np.array([[Decimal("-7.000000000000000"), Decimal("-3.000000000000000"), Decimal("3.000000000000000"), Decimal("6.000000000000000")], [Decimal("0"), Decimal("10.71428571428571"), Decimal("4.285714285714286"), Decimal("0.571428571428572")], [Decimal("0"), Decimal("0"), Decimal("-13.400000000000000"), Decimal("-7.186666666666667")], [Decimal("0"), Decimal("0"), Decimal("0"), Decimal("2.643781094527362")]])
+
+    x, L, U = object.solve(pivot_type=1)
+    object.get_set_vectorial_error()
+    object.get_set_absolute_error()
+
+    assert allclose_decimal(object.x, x_expected), "Test failed for a system of equations with 4 variables"
+    assert allclose_decimal(L, L_expected)
+    assert allclose_decimal(U, U_expected)
