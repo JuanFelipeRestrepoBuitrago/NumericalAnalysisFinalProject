@@ -31,6 +31,7 @@ def incremental_search():
 
 @app.route('/bisection')
 def bisection():
+    
     return render_template('bisection.html', url='/bisection')
 
 @app.route('/false_position')

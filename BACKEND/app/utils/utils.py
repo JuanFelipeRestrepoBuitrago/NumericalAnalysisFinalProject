@@ -82,6 +82,9 @@ def construct_augmented_matrix(A: np.ndarray, b: np.ndarray) -> np.ndarray:
         b = b.reshape(-1, 1)
     
     # Horizontally stack A and b to create the augmented matrix
-    Ab = np.hstack((A, b))
+    if b.shape == (A.shape[0], 1):
+        Ab = np.hstack((A, b))
+    elif b.shape == (1, A.shape[0]):
+        Ab = np.hstack((A, b.T))
     
     return Ab

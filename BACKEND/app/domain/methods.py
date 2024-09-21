@@ -3,7 +3,7 @@ from app.routes.routes import logger
 import sympy as sp
 from typing import List, Tuple
 
-def bisection(function: sp.Expr, variable: sp.Symbol, initial: float, final: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[str], List[str], List[str], List[str]]:
+def bisection(function: sp.Expr, variable: sp.Symbol, initial: float, final: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[str], List[str], List[str], List[str], str]:
     """
     Find the root of a function using the bisection method. The function must have a sign change in the interval [initial, final].
 
@@ -16,7 +16,7 @@ def bisection(function: sp.Expr, variable: sp.Symbol, initial: float, final: flo
         absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
         precision: Number of decimal places to round the values (default 15).
     Returns:
-        List or table with the iterations, the values of x, the values of f(x) and the errors.
+        List or table with the iterations, the values of x, the values of f(x), the errors and a message indicating the result.
     """
     # Initialize the lists to store the function values and errors
     function_values_list = []
@@ -30,9 +30,9 @@ def bisection(function: sp.Expr, variable: sp.Symbol, initial: float, final: flo
     f_final = function.subs(variable, final).evalf(precision)
     # Check if the initial or final point is a root
     if f_initial == 0:
-        return [[0], [str(initial)], [str(f_initial)], ["0"]]
+        return [[0], [str(initial)], [str(f_initial)], ["0"], str(initial) + " es raíz de la función."]
     elif f_final == 0:
-        return [[0], [str(final)], [str(f_final)], ["0"]]
+        return [[0], [str(final)], [str(f_final)], ["0"], str(final) + " es raíz de la función."]
     # Check if there is a sign change in the interval [initial, final]
     
     elif f_initial * f_final > 0:
@@ -76,11 +76,18 @@ def bisection(function: sp.Expr, variable: sp.Symbol, initial: float, final: flo
             counter += 1
             counter_values_list.append(counter + 1)
 
+        if f_medium == 0:
+            message = str(medium) + " es raíz de la función."
+        elif previous_error < tolerance:
+            message = str(medium) + " es una aproximación a la raíz con una tolerancia de " + str(tolerance) + "."
+        else:
+            message = "El método no converge en " + str(iterations) + " iteraciones."
+            
         # Return the list of iterations, values, function values and errors
-        return [counter_values_list, values_list, function_values_list, error_values_list]
+        return counter_values_list, values_list, function_values_list, error_values_list, message
     
 
-def false_rule(function: sp.Expr, variable: sp.Symbol, initial: float, final: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+def false_rule(function: sp.Expr, variable: sp.Symbol, initial: float, final: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str], str]:
     """
     Find the root of a function using the false rule method. The function must have a sign change in the interval [initial, final].
 
@@ -93,7 +100,7 @@ def false_rule(function: sp.Expr, variable: sp.Symbol, initial: float, final: fl
         absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
         precision: Number of decimal places to round the values (default 15).
     Returns:
-        List or table with the iterations, the values of x, the values of f(x) and the errors.
+        List or table with the iterations, the values of x, the values of f(x), the errors and a message indicating the result.
     """
     # Initialize the lists to store the function values and errors
     function_values_list = []
@@ -107,9 +114,9 @@ def false_rule(function: sp.Expr, variable: sp.Symbol, initial: float, final: fl
     f_final = function.subs(variable, final).evalf(precision)
     # Check if the initial or final point is a root
     if f_initial == 0:
-        return [[0], [str(initial)], [str(f_initial)], ["0"]]
+        return [[0], [str(initial)], [str(f_initial)], ["0"], str(initial) + " es raíz de la función."]
     elif f_final == 0:
-        return [[0], [str(final)], [str(f_final)], ["0"]]
+        return [[0], [str(final)], [str(f_final)], ["0"], str(final) + " es raíz de la función."]
     # Check if there is a sign change in the interval [initial, final]
     elif f_initial * f_final > 0:
         raise_exception(ValueError("La función no tiene cambio de signo en el intervalo dado"), logger)
@@ -152,11 +159,18 @@ def false_rule(function: sp.Expr, variable: sp.Symbol, initial: float, final: fl
             counter += 1
             counter_values_list.append(counter + 1)
 
+        if f_medium == 0:
+            message = str(medium) + " es raíz de la función."
+        elif previous_error < tolerance:
+            message = str(medium) + " es una aproximación a la raíz con una tolerancia de " + str(tolerance) + "."
+        else:
+            message = "El método no converge en " + str(iterations) + " iteraciones."
+
         # Return the list of iterations, values, function values and errors
-        return [counter_values_list, values_list, function_values_list, error_values_list]
+        return counter_values_list, values_list, function_values_list, error_values_list, message
     
 
-def fixed_point(function: sp.Expr, variable: sp.Symbol, g_function: sp.Expr, initial_value: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+def fixed_point(function: sp.Expr, variable: sp.Symbol, g_function: sp.Expr, initial_value: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str], str]:
     """
     Find the root of a function using the fixed point method.
     
@@ -169,7 +183,7 @@ def fixed_point(function: sp.Expr, variable: sp.Symbol, g_function: sp.Expr, ini
         absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
         precision: Number of decimal places to round the values (default 15).
     Returns:
-        List or table with the iterations, the values of x, the values of f(x) and the errors.
+        List or table with the iterations, the values of x, the values of f(x), the errors and a message indicating the result.
     """
     # Initialize the lists to store the function values and errors
     function_values_list = []
@@ -183,7 +197,7 @@ def fixed_point(function: sp.Expr, variable: sp.Symbol, g_function: sp.Expr, ini
 
     # Check if the initial point is a root
     if f_initial == 0:
-        return [[0], [str(initial_value)], [str(f_initial)], ["0"]]
+        return [[0], [str(initial_value)], [str(f_initial)], ["0"], str(initial_value) + " es raíz de la función."]
     else:
         # Set the variables needed for the iterations
         x = initial_value
@@ -222,11 +236,18 @@ def fixed_point(function: sp.Expr, variable: sp.Symbol, g_function: sp.Expr, ini
             previous_error = error
             counter_values_list.append(counter)
 
+        if f_x == 0:
+            message = str(x) + " es raíz de la función."
+        elif previous_error < tolerance:
+            message = str(x) + " es una aproximación a la raíz con una tolerancia de " + str(tolerance) + "."
+        else:
+            message = "El método no converge en " + str(iterations) + " iteraciones."
+
         # Return the list of iterations, values, function values and errors
-        return [counter_values_list, values_list, function_values_list, error_values_list]
+        return counter_values_list, values_list, function_values_list, error_values_list, message
     
 
-def newton_raphson(function: sp.Expr, variable: sp.Symbol, initial: float, derivative: sp.Expr = None, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+def newton_raphson(function: sp.Expr, variable: sp.Symbol, initial: float, derivative: sp.Expr = None, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str], str]:
     """
     Find the root of a function using the Newton-Raphson method.
     
@@ -239,7 +260,7 @@ def newton_raphson(function: sp.Expr, variable: sp.Symbol, initial: float, deriv
         absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
         precision: Number of decimal places to round the values (default 15).
     Returns:
-        List or table with the iterations, the values of x, the values of f(x) and the errors.
+        List or table with the iterations, the values of x, the values of f(x), the errors and a message indicating the result.
     """
     # Initialize the lists to store the function values and errors
     function_values_list = []
@@ -253,7 +274,7 @@ def newton_raphson(function: sp.Expr, variable: sp.Symbol, initial: float, deriv
 
     # Check if the initial point is a root
     if f_initial == 0:
-        return [[0], [str(initial)], [str(f_initial)], ["0"]]
+        return [[0], [str(initial)], [str(f_initial)], ["0"], str(initial) + " es raíz de la función."]
     else:
         # Set the variables needed for the iterations
         x = initial
@@ -275,7 +296,14 @@ def newton_raphson(function: sp.Expr, variable: sp.Symbol, initial: float, deriv
         while previous_error > tolerance and f_x != 0 and counter < iterations:
             # Sets the previous x value and calculate the new value of x using the Newton-Raphson method
             x_previous = x
-            x = x - f_x / derivative.subs(variable, x).evalf(precision)
+
+            # Calculate the derivate of the current x value
+            derivative_x = derivative.subs(variable, x).evalf(precision)
+
+            if derivative_x == 0:
+                break
+
+            x = x - f_x / derivative_x
 
             # Calculate the function value at the new x value
             f_x = function.subs(variable, x).evalf(precision)
@@ -296,11 +324,20 @@ def newton_raphson(function: sp.Expr, variable: sp.Symbol, initial: float, deriv
             previous_error = error
             counter_values_list.append(counter)
 
+        if f_x == 0:
+            message = str(x) + " es raíz de la función."
+        elif previous_error < tolerance:
+            message = str(x) + " es una aproximación a la raíz con una tolerancia de " + str(tolerance) + "."
+        elif derivative_x == 0:
+            message = "La derivada de la función en x = " + str(x) + " es cero, podría haber una raíz múltiple."
+        else:
+            message = "El método no converge en " + str(iterations) + " iteraciones."
+
         # Return the list of iterations, values, function values and errors
-        return [counter_values_list, values_list, function_values_list, error_values_list]
+        return counter_values_list, values_list, function_values_list, error_values_list, message
     
 
-def secant(function: sp.Expr, variable: sp.Symbol, initial: float, second_initial: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+def secant(function: sp.Expr, variable: sp.Symbol, initial: float, second_initial: float, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str], str]:
     """
     Find the root of a function using the secant method.
     
@@ -313,7 +350,7 @@ def secant(function: sp.Expr, variable: sp.Symbol, initial: float, second_initia
         absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
         precision: Number of decimal places to round the values (default 15).
     Returns:
-        List or table with the iterations, the values of x, the values of f(x) and the errors.
+        List or table with the iterations, the values of x, the values of f(x), the errors and a message indicating the result.
     """
     # Initialize the lists to store the function values and errors
     function_values_list = []
@@ -328,9 +365,9 @@ def secant(function: sp.Expr, variable: sp.Symbol, initial: float, second_initia
 
     # Check if the initial or second initial points are roots
     if f_initial == 0:
-        return [[0], [str(initial)], [str(f_initial)], ["0"]]
+        return [[0], [str(initial)], [str(f_initial)], ["0"], str(initial) + " es raíz de la función."]
     elif f_second_initial == 0:
-        return [[0], [str(second_initial)], [str(f_second_initial)], ["0"]]
+        return [[0], [str(second_initial)], [str(f_second_initial)], ["0"], str(second_initial) + " es raíz de la función."]
     else:
         # Set the variables needed for the iterations
         x = second_initial
@@ -354,6 +391,8 @@ def secant(function: sp.Expr, variable: sp.Symbol, initial: float, second_initia
 
         # Iterate until the error is less than the tolerance, the function value is zero or the maximum number of iterations is reached
         while previous_error > tolerance and f_x != 0 and counter < iterations:
+            if f_x - f_x_previous == 0:
+                break
             # Calculate the new value of x using the secant method
             x_new = x - f_x * (x - x_previous) / (f_x - f_x_previous)
 
@@ -384,11 +423,18 @@ def secant(function: sp.Expr, variable: sp.Symbol, initial: float, second_initia
             previous_error = error
             counter_values_list.append(counter)
 
+        if f_x == 0:
+            message = str(x) + " es raíz de la función."
+        elif previous_error < tolerance:
+            message = str(x) + " es una aproximación a la raíz con una tolerancia de " + str(tolerance) + "."
+        else:
+            message = "El método no converge en " + str(iterations) + " iteraciones."
+
         # Return the list of iterations, values, function values and errors
-        return [counter_values_list, values_list, function_values_list, error_values_list]
+        return counter_values_list, values_list, function_values_list, error_values_list, message
     
 
-def first_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial: float, multiplicity: int, derivative: sp.Expr = None, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+def first_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial: float, multiplicity: int, derivative: sp.Expr = None, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str], str]:
     """
     Find the root of a function using the first modified Newton method. This method is for multiple roots.
 
@@ -403,7 +449,7 @@ def first_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial
         absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
         precision: Number of decimal places to round the values (default 15).
     Returns:
-        List or table with the iterations, the values of x, the values of f(x) and the errors.
+        List or table with the iterations, the values of x, the values of f(x), the errors and a message indicating the result.
     """
     # Initialize the lists to store the function values and errors
     function_values_list = []
@@ -417,7 +463,7 @@ def first_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial
 
     # Check if the initial point is a root
     if f_initial == 0:
-        return [[0], [str(initial)], [str(f_initial)], ["0"]]
+        return [[0], [str(initial)], [str(f_initial)], ["0"], str(initial) + " es raíz de la función."]
     else:
         # Set the variables needed for the iterations
         x = initial
@@ -439,7 +485,13 @@ def first_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial
         while previous_error > tolerance and f_x != 0 and counter < iterations:
             # Sets the previous x value and calculate the new value of x using the first modified Newton method
             x_previous = x
-            x = x - multiplicity * f_x / derivative.subs(variable, x).evalf(precision)
+
+            # Calculate the derivate of the current x value
+            derivative_x = derivative.subs(variable, x).evalf(precision)
+            if derivative_x == 0:
+                break
+
+            x = x - multiplicity * f_x / derivative_x
 
             # Calculate the function value at the new x value
             f_x = function.subs(variable, x).evalf(precision)
@@ -460,11 +512,20 @@ def first_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial
             previous_error = error
             counter_values_list.append(counter)
 
+        if f_x == 0:
+            message = str(x) + " es raíz de la función."
+        elif previous_error < tolerance:
+            message = str(x) + " es una aproximación a la raíz con una tolerancia de " + str(tolerance) + "."
+        elif derivative_x == 0:
+            message = "La derivada de la función en x = " + str(x) + " es cero, podría haber una raíz múltiple."
+        else:
+            message = "El método no converge en " + str(iterations) + " iteraciones."
+
         # Return the list of iterations, values, function values and errors
-        return [counter_values_list, values_list, function_values_list, error_values_list]
+        return counter_values_list, values_list, function_values_list, error_values_list, message
     
 
-def second_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial: float,  derivative: sp.Expr = None, second_derivative: sp.Expr = None, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str]]:
+def second_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initial: float,  derivative: sp.Expr = None, second_derivative: sp.Expr = None, tolerance: float = 0.5, iterations: int = 100, absolute_error: bool = True, precision: int = 16) -> Tuple[List[int], List[str], List[str], List[str], str]:
     """
     Find the root of a function using the second modified Newton method. This method is for multiple roots.
 
@@ -479,7 +540,7 @@ def second_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initia
         absolute_error: If True, the error is calculated as the absolute value of the difference between the current and previous values. If False, the error is calculated as the absolute value of the difference between the current and previous values divided by the current value (default True).
         precision: Number of decimal places to round the values (default 15).
     Returns:
-        List or table with the iterations, the values of x, the values of f(x) and the errors.
+        List or table with the iterations, the values of x, the values of f(x), the errors and a message indicating the result.
     """
     # Initialize the lists to store the function values and errors
     function_values_list = []
@@ -493,7 +554,7 @@ def second_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initia
 
     # Check if the initial point is a root
     if f_initial == 0:
-        return [[0], [str(initial)], [str(f_initial)], ["0"]]
+        return [[0], [str(initial)], [str(f_initial)], ["0"], str(initial) + " es raíz de la función."]
     else:
         # Set the variables needed for the iterations
         x = initial
@@ -519,6 +580,8 @@ def second_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initia
         while previous_error > tolerance and f_x != 0 and counter < iterations:
             # Sets the previous x value and calculate the new value of x using the second modified Newton method
             x_previous = x
+            if (derivative.subs(variable, x).evalf(precision) ** 2 - f_x * second_derivative.subs(variable, x).evalf(precision)) == 0:
+                break
             x = x - f_x * derivative.subs(variable, x).evalf(precision) / (derivative.subs(variable, x).evalf(precision) ** 2 - f_x * second_derivative.subs(variable, x).evalf(precision))
 
             # Calculate the function value at the new x value
@@ -540,5 +603,14 @@ def second_modified_newton_method(function: sp.Expr, variable: sp.Symbol, initia
             previous_error = error
             counter_values_list.append(counter)
 
+        if f_x == 0:
+            message = str(x) + " es raíz de la función."
+        elif previous_error < tolerance:
+            message = str(x) + " es una aproximación a la raíz con una tolerancia de " + str(tolerance) + "."
+        elif (derivative.subs(variable, x).evalf(precision) ** 2 - f_x * second_derivative.subs(variable, x).evalf(precision)) == 0:
+            message = "El denominador de la fórmula es cero, no se puede continuar con el método."
+        else:
+            message = "El método no converge en " + str(iterations) + " iteraciones."
+
         # Return the list of iterations, values, function values and errors
-        return [counter_values_list, values_list, function_values_list, error_values_list]
+        return counter_values_list, values_list, function_values_list, error_values_list, message
