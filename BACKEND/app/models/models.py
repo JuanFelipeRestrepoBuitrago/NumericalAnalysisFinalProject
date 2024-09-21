@@ -209,4 +209,35 @@ class GaussEliminationResponse(EquationSystemsResponse):
     """
     vectorial_error: List[List[str]] = Field(description="List of the vectorial errors of the system of  solution by gauss elimination.")
     absolute_error: str = Field(description="Absolute error of the system of equations solution by gauss elimination.")
+
+
+class LUFactorizationRequest(EquationSystemsRequest):
+    """
+    Data model for the LU Factorization method.
+
+    This model extends the `EquationSystemsRequest` model and adds specific attributes for the LU Factorization method.
+
+    Attributes:
+        pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
+    """
+    pivot_type: Optional[Literal[None, 1]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 value.")
+
+
+class LUFactorizationResponse(EquationSystemsResponse):
+    """
+    Data model for the LU Factorization method response.
+
+    This model is used for the LU Factorization method response.
+
+    Attributes:
+        vectorial_error (List[List[str]]): List of the vectorial errors of the system of  solution by gauss elimination.
+        absolute_error (str): Absolute error of the system of equations solution by gauss elimination.
+        L (List[List[str]]): Lower triangular matrix of the LU factorization.
+        U (List[List[str]]): Upper triangular matrix of the LU factorization.
+    """
+    vectorial_error: List[List[str]] = Field(description="List of the vectorial errors of the system of  solution by gauss elimination.")
+    absolute_error: str = Field(description="Absolute error of the system of equations solution by gauss elimination.")
+    L: List[List[str]] = Field(description="Lower triangular matrix of the LU factorization.")
+    U: List[List[str]] = Field(description="Upper triangular matrix of the LU factorization.")
+
     

@@ -110,7 +110,7 @@ def test_lu_factorization():
     # A = [4 3 2 1;3 12 3 -2; -2 8 -9 -5; -7 -3 3 6];
     # b = [0;8;7;1];
     A = np.array([[4, 3, 2, 1], [3, 12, 3, -2], [-2, 8, -9, -5], [-7, -3, 3, 6]])
-    object = LUFactorization(A, np.array([[0, 8, 7, 1]]), 4, precision=20)
+    object = LUFactorization(A, np.array([[0, 8, 7, 1]]), 4)
     x_expected = np.array([[Decimal("-0.5743319533308244"), Decimal("0.7485886337975161"), Decimal("0.1204365826119690"), Decimal("-0.1893112532931884")]])
     L_expected = np.array([[Decimal("1"), Decimal("0"), Decimal("0"), Decimal("0")], [Decimal("-0.4285714285714286"), Decimal("1"), Decimal("0"), Decimal("0")], [Decimal("0.2857142857142857"), Decimal('0.8266666666666670'), Decimal("1"), Decimal("0")], [Decimal("-0.5714285714285714"), Decimal('0.1200000000000001'), Decimal("-0.2388059701492537"), Decimal("1")]])
     U_expected = np.array([[Decimal("-7.000000000000000"), Decimal("-3.000000000000000"), Decimal("3.000000000000000"), Decimal("6.000000000000000")], [Decimal("0"), Decimal("10.71428571428571"), Decimal("4.285714285714286"), Decimal("0.571428571428572")], [Decimal("0"), Decimal("0"), Decimal("-13.400000000000000"), Decimal("-7.186666666666667")], [Decimal("0"), Decimal("0"), Decimal("0"), Decimal("2.643781094527362")]])

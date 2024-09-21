@@ -294,6 +294,7 @@ class LUFactorization:
         # Build the permutation matrix
         permutation_matrix = self.redefine_to_decimal(np.eye(n))
         L = permutation_matrix.copy()
+        U = self.redefine_to_decimal(np.zeros((n, n)))
 
         # Iterate over the rows
         for k in range(n - 1):
@@ -314,7 +315,7 @@ class LUFactorization:
                 # Store the factor in the lower triangular matrix
                 A[i, k] = factor
 
-        U = np.triu(A)
+        U = np.triu(A) + U
         L = np.tril(A, k=-1) + L
 
         if b.shape == (A.shape[0], 1):
