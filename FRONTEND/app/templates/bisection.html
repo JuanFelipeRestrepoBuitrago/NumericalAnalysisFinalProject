@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Método de Bisección</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/test.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png">
+
+    <style>
+      /* Ajustes generales para el contenedor */
+      .method-container {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 30px; /* Ajustado */
+      }
+  
+      /* Contenedor de parámetros y resultados */
+      .parameters-container,
+      .results-container {
+          flex: 1;
+          background-color: #f8f9fa;
+          border-radius: 10px; /* Ajustado */
+          padding: 15px; /* Ajustado */
+          margin: 5px; /* Ajustado */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajustado */
+          transition: transform 0.3s ease, background-color 0.3s ease;
+      }
+  
+      /* Ancho máximo del contenedor de parámetros */
+      .parameters-container {
+          max-width: 350px; /* Ajustado */
+      }
+  
+      /* Contenedor de resultados */
+      .results-container {
+          flex-grow: 2;
+      }
+  
+      /* Campos de entrada del formulario */
+      .form-control {
+          font-size: 0.9rem; /* Ajustado */
+          padding: 8px; /* Ajustado */
+          border-radius: 6px; /* Ajustado */
+          border: 1.5px solid #67568c; /* Ajustado */
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          width: 100%;
+      }
+  
+      /* Estilo del botón */
+      .btn-primary {
+          background-color: #ff6e6c;
+          border-color: #ff6e6c;
+          color: #ffffff;
+          padding: 8px 15px; /* Ajustado */
+          font-size: 1rem; /* Ajustado */
+          font-weight: 600;
+          border-radius: 8px; /* Ajustado */
+          transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+      }
+  
+      /* Hover del botón */
+      .btn-primary:hover {
+          background-color: #fbdd74;
+          border-color: #fbdd74;
+          transform: translateY(-2px); /* Ajustado */
+      }
+  
+      /* Tabla de resultados */
+      table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 15px; /* Ajustado */
+      }
+  
+      /* Encabezados y celdas de la tabla */
+      th,
+      td {
+          padding: 8px; /* Ajustado */
+          border: 1px solid #ddd;
+          text-align: left;
+          font-size: 0.85rem; /* Ajustado */
+      }
+  
+      /* Estilo de los encabezados de la tabla */
+      th {
+          background-color: #67568c;
+          color: #ffffff;
+      }
+  
+      /* Alternar colores de fila en la tabla */
+      tbody tr:nth-child(even) {
+          background-color: #f9f9f9;
+      }
+  
+      /* Hover de las filas de la tabla */
+      tbody tr:hover {
+          background-color: #ff6e6c;
+          color: #ffffff;
+      }
+  
+      /* Contenedor de la tabla */
+      .table-container {
+         max-height: 680px; /* Ajusta la altura máxima según tu preferencia */
+         overflow-y: auto;
+     }
+  </style>
+  
+</head>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+   <div class="container-fluid">
+       <a class="navbar-brand" href="#">
+           <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="Ícono de MethodSolve" width="50"
+               height="50" class="d-inline-block align-text-top">
+           MethodSolver
+       </a>
+       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+       </button>
+       <div class="collapse navbar-collapse" id="navbarNav">
+           <ul class="navbar-nav ms-auto">
+               <li class="nav-item">
+                   <a class="nav-link" href="{{ url_for('index_page') }}">
+                       <i class="bi bi-house-door-fill"></i> Inicio
+                   </a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="{{ url_for('metodos_page') }}">
+                       <i class="bi bi-book-fill"></i> Métodos
+                   </a>
+               </li>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('guia_page') }}">
+               <i class="bi bi-patch-question-fill"></i> Guía
+               </a>
+            </li>
+           </ul>
+       </div>
+   </div>
+</nav>
+
+<body>
+<div class="container my-5">
+    <h1 class="text-center mb-4">Método de Bisección</h1>
+    <div class="method-container">
+        <!-- Contenedor de parámetros -->
+        <div class="parameters-container">
+            <h2 class="text-center">Parámetros</h2>
+            <p class="text-center">
+                Sino sabes como escribir la expresión <a href="{{ url_for('guia_page') }}">haz clic aquí</a>.
+            </p>
+            <form id="bisectionForm">
+                <div class="mb-3">
+                    <label for="expression" class="form-label">Function</label>
+                    <input
+                        type="text"
+                        id="expression"
+                        name="expression"
+                        class="form-control"
+                        value="log(sin(x)^2 + 1) - (1/2)"
+                        required
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="initial" class="form-label"
+                    >Lower interval value (a)</label>
+                    <input
+                        type="number"
+                        step="any"
+                        id="initial"
+                        name="initial"
+                        class="form-control"
+                        value="0"
+                        required
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="final" class="form-label"
+                    >Higher interval value (b)</label>
+                    <input
+                        type="number"
+                        step="any"
+                        id="final"
+                        name="final"
+                        class="form-control"
+                        value="1"
+                        required
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="tolerance" class="form-label">Tolerance</label>
+                    <input
+                        type="number"
+                        step="any"
+                        id="tolerance"
+                        name="tolerance"
+                        class="form-control"
+                        value="1e-7"
+                        required
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="max_iterations" class="form-label"
+                    >Max iterations (max 100)</label>
+                    <input
+                        type="number"
+                        id="max_iterations"
+                        name="max_iterations"
+                        class="form-control"
+                        value="100"
+                        required
+                    />
+                </div>
+
+                <!-- Campo para seleccionar el tipo de error -->
+                <div class="mb-3">
+                    <label for="error_type" class="form-label">Error Type</label>
+                    <select id="error_type" name="error_type" class="form-control">
+                        <option value="absolute">Absolute</option>
+                        <option value="relative">Relative</option>
+                    </select>
+                </div>
+
+                <!-- Campo opcional para precisión -->
+                <div class="mb-3">
+                    <label for="precision" class="form-label">Precision (optional)</label>
+                    <input
+                        type="number"
+                        id="precision"
+                        name="precision"
+                        class="form-control"
+                        placeholder="16"
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    onclick="calculateBisection()"
+                    class="btn btn-primary w-100"
+                >
+                    Run
+                </button>
+            </form>
+        </div>
+        <div class="results-container">
+            <h2>Resultados</h2>
+            <div class="table-container">
+                <table id="resultsTable">
+                    <thead>
+                    <tr>
+                        <th>Iteration</th>
+                        <th>a</th>
+                        <th>xm</th>
+                        <th>b</th>
+                        <th>f(xm)</th>
+                        <th>E</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Aquí se mostrarán los resultados generados -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Contenedor para el mensaje de la raíz de la función -->
+            <div id="rootMessage" class="mt-4">
+                <!-- Aquí se mostrará el mensaje de la raíz -->
+            </div>
+        </div>
+    </div>
+</div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+        &copy;2024 MethodSolver Team. Todos los derechos reservados.
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='/js/bisection.js') }}"></script>
+</body>
+</html>

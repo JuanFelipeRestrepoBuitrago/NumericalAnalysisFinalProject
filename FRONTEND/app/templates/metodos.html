@@ -36,6 +36,12 @@
                             <i class="bi bi-book-fill"></i> Métodos
                         </a>
                     </li>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('guia_page') }}">
+                   <i class="bi bi-patch-question-fill"></i> Guía
+                   </a>
+                </li>
                 </ul>
             </div>
         </div>
@@ -57,123 +63,33 @@
                 <h2 class="mb-4"><i class="bi bi-graph-up"></i> Resolver sistemas mediante gráficos</h2>
                 <div class="row">
                     <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('graphing') }}" class="btn btn-outline-primary btn-lg w-100">Graficador de
-                            funciones</a>
+                        <a href="{{ url_for('graphing') }}" class="btn btn-outline-primary btn-lg w-100">Graficador de funciones</a>
                     </div>
                 </div>
             </div>
 
             <!-- Grupo 2: Resolver Ecuaciones de Una Variable -->
             <div class="mb-5">
-                <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
-                <div class="row">
+                    <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
                     <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('function_evaluator') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Evaluador de funciones</a>
+                        <a href="{{ url_for('calculate_bisection') }}" class="btn btn-outline-primary btn-lg w-100">Bisección</a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('incremental_search') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Búsqueda incremental</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('bisection') }}" class="btn btn-outline-primary btn-lg w-100">Bisección</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('false_position') }}" class="btn btn-outline-primary btn-lg w-100">Falsa
-                            posición</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('fixed_point') }}" class="btn btn-outline-primary btn-lg w-100">Punto
-                            fijo</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('newton_raphson') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Newton-Raphson</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('secant') }}" class="btn btn-outline-primary btn-lg w-100">Secante</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('multiple_roots') }}" class="btn btn-outline-primary btn-lg w-100">Raíces
-                            múltiples</a>
-                    </div>
+                        <a href="{{ url_for('false_rule_page') }}" class="btn btn-outline-primary btn-lg w-100">Regla Falsa</a>
                 </div>
+                <div class="col-md-4 mb-4">
+                    <a href="{{ url_for('fixed_point_page') }}" class="btn btn-outline-primary btn-lg w-100">Punto Fijo</a>
             </div>
-
-            <!-- Grupo 3: Solución de Sistemas de Ecuaciones -->
-            <div class="mb-5">
-                <h2 class="mb-4"><i class="bi bi-bar-chart-fill"></i> Solución de sistemas de ecuaciones</h2>
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('gaussian_elimination_simple') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Eliminación gaussiana (simple)</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('gaussian_elimination_partial') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Eliminación gaussiana (pivoteo parcial)</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('gaussian_elimination_total') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Eliminación gaussiana (pivoteo total)</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('direct_factorization_lu_simple') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Factorización directa LU (simple)</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('direct_factorization_lu_partial_pivot') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Factorización directa LU (pivoteo parcial)</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('croult') }}" class="btn btn-outline-primary btn-lg w-100">Crout</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('doolittle') }}" class="btn btn-outline-primary btn-lg w-100">Doolittle</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('cholesky') }}" class="btn btn-outline-primary btn-lg w-100">Cholesky</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('jacobi') }}" class="btn btn-outline-primary btn-lg w-100">Jacobi</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('gauss_seidel') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Gauss-Seidel</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('sor') }}" class="btn btn-outline-primary btn-lg w-100">SOR (Relaxación
-                            Sucesiva)</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grupo 4: Interpolación -->
-            <div class="mb-5">
-                <h2 class="mb-4"><i class="bi bi-spline"></i> Interpolación</h2>
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('vandermonde') }}"
-                            class="btn btn-outline-primary btn-lg w-100">Vandermonde</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('newton_divided') }}" class="btn btn-outline-primary btn-lg w-100">Newton
-                            (diferencias divididas)</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('lagrange') }}" class="btn btn-outline-primary btn-lg w-100">Lagrange</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('spline') }}" class="btn btn-outline-primary btn-lg w-100">Spline</a>
-                    </div>
-                </div>
-            </div>
+            <div class="col-md-4 mb-4">
+                <a href="{{ url_for('secant_page') }}" class="btn btn-outline-primary btn-lg w-100">Secante</a>
         </div>
+
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy;2024 MethodSolve. Todos los derechos reservados.</p>
+            &copy;2024 MethodSolver Team. Todos los derechos reservados.
         </div>
     </footer>
 
