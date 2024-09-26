@@ -27,7 +27,6 @@ class UserLogin(BaseModel):
     Attributes:
         username (str): Unique identifier for the user.
         password (str): Password for the user.
-        email (Optional[str]): Email address of the user.
     """
     username: str = Field(..., description="Unique identifier for the user.")
     password: str = Field(..., description="Password for the user.")
@@ -55,16 +54,16 @@ class NumericalMethodRequest(BaseModel):
 
     Attributes:
         expression (str): Mathematical expression to be evaluated.
-        error_type (Optional[str]): Type of error to be used in the method.
+        error_type (str): Type of error to be used in the method.
         tolerance (float): Tolerance value for the error in the method.
         max_iterations (int): Maximum number of iterations for the method.
         precision (int): Number of decimal places to round the values.
     """
     expression: str = Field(..., description="Mathematical expression or function to be evaluated.")
-    error_type: Optional[Literal["absolute", "relative"]] = Field("absolute", description="Type of error to be used in the method.")
+    error_type: Literal["absolute", "relative"] = Field("absolute", description="Type of error to be used in the method.")
     tolerance: float = Field(..., description="Tolerance value for the error in the method.")
     max_iterations: int = Field(..., description="Maximum number of iterations for the method.")
-    precision: Optional[int] = Field(16, description="Number of decimal places to round the values.")
+    precision: int = Field(16, description="Number of decimal places to round the values.")
 
 class NumericalMethodResponse(BaseModel):
     """
@@ -168,11 +167,13 @@ class EquationSystemsRequest(BaseModel):
         A (List[List[float]]): Matrix of coefficients of the system of equations.
         b (List[List[float]]): Vector of solutions of the system of equations.
         n (Optional[int]): Number of equations in the system.
+        precision (int): Number of decimal places to round the values.
+        order (int): Positive integer which indicates the order of the norm used to calculate the error, 0
     """
     A: List[List[float]] = Field(..., description="Matrix of coefficients of the system of equations.")
     b: List[List[float]] = Field(..., description="Vector of solutions of the system of equations.")
     n: Optional[int] = Field(None, description="Number of equations in the system.")
-    precision: Optional[int] = Field(16, description="Number of decimal places to round the values.")
+    precision: int = Field(16, description="Number of decimal places to round the values.")
     order: int = Field(0, description="Positive integer which indicates the order of the norm used to calculate the error, 0 for infinite norm")
 
 
@@ -184,7 +185,7 @@ class GaussEliminationRequest(EquationSystemsRequest):
     
     pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
     """
-    pivot_type: Optional[Literal[None, 1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
+    pivot_type: Optional[Literal[1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
 
 class EquationSystemsResponse(BaseModel):
     """
@@ -220,7 +221,7 @@ class LUFactorizationRequest(EquationSystemsRequest):
     Attributes:
         pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
     """
-    pivot_type: Optional[Literal[None, 1]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 value.")
+    pivot_type: Optional[Literal[1]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 value.")
 
 
 class LUFactorizationResponse(EquationSystemsResponse):
