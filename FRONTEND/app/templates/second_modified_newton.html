@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Método de la Secante</title>
+    <title>Método Newton Modificado 2</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/test.css') }}">
@@ -16,7 +16,7 @@
           justify-content: space-between;
           margin-top: 30px;
       }
-  
+
       /* Contenedor de parámetros y resultados */
       .parameters-container,
       .results-container {
@@ -28,17 +28,17 @@
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           transition: transform 0.3s ease, background-color 0.3s ease;
       }
-  
+
       /* Ancho máximo del contenedor de parámetros */
       .parameters-container {
           max-width: 350px;
       }
-  
+
       /* Contenedor de resultados */
       .results-container {
           flex-grow: 2;
       }
-  
+
       /* Campos de entrada del formulario */
       .form-control {
           font-size: 0.9rem;
@@ -48,7 +48,7 @@
           transition: border-color 0.3s ease, box-shadow 0.3s ease;
           width: 100%;
       }
-  
+
       /* Estilo del botón */
       .btn-primary {
           background-color: #ff6e6c;
@@ -60,21 +60,21 @@
           border-radius: 8px;
           transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
       }
-  
+
       /* Hover del botón */
       .btn-primary:hover {
           background-color: #fbdd74;
           border-color: #fbdd74;
           transform: translateY(-2px);
       }
-  
+
       /* Tabla de resultados */
       table {
           width: 100%;
           border-collapse: collapse;
           margin-top: 15px;
       }
-  
+
       /* Encabezados y celdas de la tabla */
       th,
       td {
@@ -83,31 +83,31 @@
           text-align: left;
           font-size: 0.85rem;
       }
-  
+
       /* Estilo de los encabezados de la tabla */
       th {
           background-color: #67568c;
           color: #ffffff;
       }
-  
+
       /* Alternar colores de fila en la tabla */
       tbody tr:nth-child(even) {
           background-color: #f9f9f9;
       }
-  
+
       /* Hover de las filas de la tabla */
       tbody tr:hover {
           background-color: #ff6e6c;
           color: #ffffff;
       }
-  
+
       /* Contenedor de la tabla */
       .table-container {
           max-height: 680px;
           overflow-y: auto;
       }
-  </style>
-  
+    </style>
+
 </head>
 
 <!-- Navbar -->
@@ -146,7 +146,7 @@
 
 <body>
 <div class="container my-5">
-    <h1 class="text-center mb-4">Método de la Secante</h1>
+    <h1 class="text-center mb-4">Segundo Método Newton Modificado</h1>
     <div class="method-container">
         <!-- Contenedor de parámetros -->
         <div class="parameters-container">
@@ -154,21 +154,21 @@
             <p class="text-center">
                 Sino sabes cómo escribir la expresión <a href="{{ url_for('guia_page') }}">haz clic aquí</a>.
             </p>
-            <form id="secantForm">
+            <form id="secondModifiedNewtonForm">
                 <div class="mb-3">
-                    <label for="expression" class="form-label">Function</label>
+                    <label for="expression" class="form-label">Función (f(x))</label>
                     <input
                         type="text"
                         id="expression"
                         name="expression"
                         class="form-control"
-                        value="x**2 - 4"
+                        value="x^2 - 4"
                         required
                     />
                 </div>
 
                 <div class="mb-3">
-                    <label for="initial" class="form-label">First initial value</label>
+                    <label for="initial" class="form-label">Valor inicial</label>
                     <input
                         type="number"
                         step="any"
@@ -181,20 +181,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="second_initial" class="form-label">Second initial value</label>
-                    <input
-                        type="number"
-                        step="any"
-                        id="second_initial"
-                        name="second_initial"
-                        class="form-control"
-                        value="1"
-                        required
-                    />
-                </div>
-
-                <div class="mb-3">
-                    <label for="tolerance" class="form-label">Tolerance</label>
+                    <label for="tolerance" class="form-label">Tolerancia</label>
                     <input
                         type="number"
                         step="any"
@@ -207,7 +194,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="max_iterations" class="form-label">Max iterations</label>
+                    <label for="max_iterations" class="form-label">Máximas iteraciones</label>
                     <input
                         type="number"
                         id="max_iterations"
@@ -220,16 +207,16 @@
 
                 <!-- Campo para seleccionar el tipo de error -->
                 <div class="mb-3">
-                    <label for="error_type" class="form-label">Error Type</label>
+                    <label for="error_type" class="form-label">Tipo de error</label>
                     <select id="error_type" name="error_type" class="form-control">
-                        <option value="absolute">Absolute</option>
-                        <option value="relative">Relative</option>
+                        <option value="absolute">Absoluto</option>
+                        <option value="relative">Relativo</option>
                     </select>
                 </div>
 
                 <!-- Campo opcional para precisión -->
                 <div class="mb-3">
-                    <label for="precision" class="form-label">Precision (optional)</label>
+                    <label for="precision" class="form-label">Precisión (opcional)</label>
                     <input
                         type="number"
                         id="precision"
@@ -239,12 +226,36 @@
                     />
                 </div>
 
+                <!-- Campo para la derivada -->
+                <div class="mb-3">
+                    <label for="derivative_expression" class="form-label">Derivada (f'(x))</label>
+                    <input
+                        type="text"
+                        id="derivative_expression"
+                        name="derivative_expression"
+                        class="form-control"
+                        placeholder="2x"
+                    />
+                </div>
+
+                <!-- Campo para la segunda derivada -->
+                <div class="mb-3">
+                    <label for="second_derivative_expression" class="form-label">Segunda Derivada (f''(x))</label>
+                    <input
+                        type="text"
+                        id="second_derivative_expression"
+                        name="second_derivative_expression"
+                        class="form-control"
+                        placeholder="2"
+                    />
+                </div>
+
                 <button
                     type="button"
-                    onclick="calculateSecant()"
+                    onclick="calculateSecondModifiedNewton()"
                     class="btn btn-primary w-100"
                 >
-                    Run
+                    Calcular
                 </button>
             </form>
         </div>
@@ -254,9 +265,9 @@
                 <table id="resultsTable">
                     <thead>
                     <tr>
-                        <th>Iteration</th>
-                        <th>X<sub>i</sub></th>
-                        <th>F(X<sub>i</sub>)</th>
+                        <th>Iteración</th>
+                        <th>X<sub>n</sub></th>
+                        <th>f(X<sub>n</sub>)</th>
                         <th>Error</th>
                     </tr>
                     </thead>
@@ -280,6 +291,6 @@
     </div>
 </footer>
 
-<script src="{{ url_for('static', filename='/js/secant.js') }}"></script>
+<script src="{{ url_for('static', filename='/js/second_modified_newton.js') }}"></script>
 </body>
 </html>

@@ -67,6 +67,21 @@ def fixed_point_page():
 def secant_page():
     return render_template('secant.html')
 
+# Ruta para la página del método Newton-Raphson
+@app.route('/newton_raphson')
+def newton_raphson_page():
+    return render_template('newton_raphson.html')
+
+@app.route('/first_modified_newton')
+def first_modified_newton_page():
+    return render_template('first_modified_newton.html')
+
+
+@app.route('/second_modified_newton', methods=['GET'])
+def second_modified_newton_page():
+    return render_template('second_modified_newton.html')
+
+
 # Nueva ruta para la guía de expresiones
 @app.route('/guia')
 def guia_page():

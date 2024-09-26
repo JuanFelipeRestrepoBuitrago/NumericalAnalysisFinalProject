@@ -68,23 +68,34 @@
                 </div>
             </div>
 
-            <!-- Grupo 2: Resolver Ecuaciones de Una Variable -->
-            <div class="mb-5">
-                    <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('calculate_bisection') }}" class="btn btn-outline-primary btn-lg w-100">Bisección</a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="{{ url_for('false_rule_page') }}" class="btn btn-outline-primary btn-lg w-100">Regla Falsa</a>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <a href="{{ url_for('fixed_point_page') }}" class="btn btn-outline-primary btn-lg w-100">Punto Fijo</a>
-            </div>
-            <div class="col-md-4 mb-4">
-                <a href="{{ url_for('secant_page') }}" class="btn btn-outline-primary btn-lg w-100">Secante</a>
+<!-- Grupo 2: Resolver Ecuaciones de Una Variable -->
+<div class="container">
+    <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('calculate_bisection') }}" class="btn btn-outline-primary btn-lg w-100">Bisección</a>
         </div>
-
-    </section>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('false_rule_page') }}" class="btn btn-outline-primary btn-lg w-100">Regla Falsa</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('fixed_point_page') }}" class="btn btn-outline-primary btn-lg w-100">Punto Fijo</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('secant_page') }}" class="btn btn-outline-primary btn-lg w-100">Secante</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('newton_raphson_page') }}" class="btn btn-outline-primary btn-lg w-100">Newton-Raphson</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('first_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Newton-Raphson Modificado</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('second_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Segundo Método Modificado de Newton</a>
+        </div>
+    </div>
+</div>
+</section>
 
     <!-- Footer -->
     <footer class="footer">

@@ -27,7 +27,7 @@ function calculateBisection() {
     let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjczNzU3OTUsImlhdCI6MTcyNzIwMjk5NSwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.Sl-r-muvfEsq2x3PFlGbJTV8dY1SSQL4mknyWez5BZQ";
 
     // Realizar la solicitud POST a la API con el token en el encabezado
-    fetch("http://localhost:8000/api/v1.3.0/backend_numerical_methods/methods/bisection/", {
+    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/bisection/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -46,31 +46,31 @@ function calculateBisection() {
         let resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
         resultsTable.innerHTML = ''; // Limpiar resultados anteriores
         
-        // Rellenar la tabla con los resultados obtenidos de la API
-        result.Iterations.forEach((iteration, index) => {
-            let row = resultsTable.insertRow();
-            let a = result.Xn[index];
-            let xm = result.Xn[index];
-            let b = result.Xn[index];
-            let fx = result.Fx[index];
-            let error = result.Error[index];
-            
-            // Crear las celdas de la tabla
-            let iterationCell = row.insertCell(0);
-            let aCell = row.insertCell(1);
-            let xmCell = row.insertCell(2);
-            let bCell = row.insertCell(3);
-            let fxCell = row.insertCell(4);
-            let errorCell = row.insertCell(5);
+        // Verificar la estructura y existencia de las propiedades antes de llenar la tabla
+        if (result.Iterations && result.Xn && result.Fx && result.Error) {
+            // Iterar a través de las iteraciones y llenar la tabla
+            result.Iterations.forEach((iteration, index) => {
+                let row = resultsTable.insertRow();
+                let xn = result.Xn[index];
+                let fx = result.Fx[index];
+                let error = result.Error[index];
 
-            // Rellenar las celdas con los valores
-            iterationCell.textContent = iteration;
-            aCell.textContent = a;
-            xmCell.textContent = xm;
-            bCell.textContent = b;
-            fxCell.textContent = fx;
-            errorCell.textContent = error;
-        });
+                // Crear las celdas de la tabla
+                let iterationCell = row.insertCell(0);  // Número de iteración
+                let xnCell = row.insertCell(1);          // Valor de Xn
+                let fxCell = row.insertCell(2);          // Valor de f(X)
+                let errorCell = row.insertCell(3);       // Valor del error
+
+                // Rellenar las celdas con los valores
+                iterationCell.textContent = iteration + 1;  // Mostrar iteración comenzando desde 1
+                xnCell.textContent = xn;
+                fxCell.textContent = fx;
+                errorCell.textContent = error;
+            });
+        } else {
+            console.error('Estructura de respuesta incorrecta. Algunas propiedades están indefinidas.');
+            alert('Error: La estructura de la respuesta de la API no es la esperada.');
+        }
 
         // Mostrar el mensaje de la raíz de la función en el contenedor
         let rootMessage = document.getElementById('rootMessage');
