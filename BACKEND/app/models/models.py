@@ -166,13 +166,11 @@ class EquationSystemsRequest(BaseModel):
     Attributes:
         A (List[List[float]]): Matrix of coefficients of the system of equations.
         b (List[List[float]]): Vector of solutions of the system of equations.
-        n (Optional[int]): Number of equations in the system.
         precision (int): Number of decimal places to round the values.
         order (int): Positive integer which indicates the order of the norm used to calculate the error, 0
     """
     A: List[List[float]] = Field(..., description="Matrix of coefficients of the system of equations.")
     b: List[List[float]] = Field(..., description="Vector of solutions of the system of equations.")
-    n: Optional[int] = Field(None, description="Number of equations in the system.")
     precision: int = Field(16, description="Number of decimal places to round the values.")
     order: int = Field(0, description="Positive integer which indicates the order of the norm used to calculate the error, 0 for infinite norm")
 
@@ -183,9 +181,12 @@ class GaussEliminationRequest(EquationSystemsRequest):
 
     This model extends the `EquationSystemsRequest` model and adds specific attributes for the Gauss Elimination method.
     
-    pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
+    Attributes:
+        pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
+        n (Optional[int]): Number of equations in the system.
     """
     pivot_type: Optional[Literal[1, 2]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.")
+    n: Optional[int] = Field(None, description="Number of equations in the system.")
 
 class EquationSystemsResponse(BaseModel):
     """
@@ -220,8 +221,10 @@ class LUFactorizationRequest(EquationSystemsRequest):
 
     Attributes:
         pivot_type (Optional[int]): Type of pivot to be used in the method. Default is None and just can take the 1 and 2 values.
+        n (Optional[int]): Number of equations in the system.
     """
     pivot_type: Optional[Literal[1]] = Field(None, description="Type of pivot to be used in the method. Default is None and just can take the 1 value.")
+    n: Optional[int] = Field(None, description="Number of equations in the system.")
 
 
 class LUFactorizationResponse(EquationSystemsResponse):
@@ -241,4 +244,37 @@ class LUFactorizationResponse(EquationSystemsResponse):
     L: List[List[str]] = Field(description="Lower triangular matrix of the LU factorization.")
     U: List[List[str]] = Field(description="Upper triangular matrix of the LU factorization.")
 
+
+class IterativeMatrixEquationSystemResponse(BaseModel):
+    """
+    Data model for iterative matrix equation system responses.
+
+    This model is used for iterative matrix equation system responses. It contains the `x` attribute, which represents the solutions of the system of equations.
+
+    Attributes:
+        iterations (List[int]): List of the number of iterations taken to reach the result.
+        x (List[List[str]]): List of the solutions of the system of equations.
+        error (List[str]): List of the errors at each iteration.
+    """
+    iterations: List[int] = Field(description="List of the number of iterations taken to reach the result.")
+    x: List[List[str]] = Field(description="List of the solutions of the system of equations.")
+    error: List[str] = Field(description="List of the errors at each iteration.")
+
+class IterativeMatrixEquationSystemRequest(EquationSystemsRequest):
+    """
+    Data model for iterative matrix equation system requests.
+
+    This model extends the `EquationSystemsRequest` model and adds specific attributes for iterative matrix equation system methods.
+
+    Attributes:
+        tol (float): Tolerance for the solution.
+        max_iter (int): Maximum number of iterations.
+        error_type (str): Type of error to be used in the method
+        method_type (str): Type of iterative or matrix method to be used.
+    """
+    tol: float = Field(..., description="Tolerance for the solution.")
+    max_iter: int = Field(100, description="Maximum number of iterations.")
+    error_type: Literal["absolute", "relative"] = Field("absolute", description="Type of error to be used in the method.")
+    x_initial: List[List[float]] = Field(..., description="Initial guess for the solution.")
+    method_type: Literal["iterative", "matrix"] = Field("matrix", description="Type of iterative or matrix method to be used.")
     

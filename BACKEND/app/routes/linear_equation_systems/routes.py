@@ -5,7 +5,8 @@ import numpy as np
 
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
-from app.models.models import ResponseError, GaussEliminationRequest, GaussEliminationResponse, LUFactorizationRequest, LUFactorizationResponse
+from app.models.models import ResponseError, GaussEliminationRequest, GaussEliminationResponse, LUFactorizationRequest, LUFactorizationResponse, IterativeMatrixEquationSystemRequest, IterativeMatrixEquationSystemResponse
+from app.domain.jacobi import Jacobi
 from app.domain.gaussian_elimination import GaussianElimination
 from app.domain.lu_factorization import LUFactorization
 from app.auth.auth import auth_handler
@@ -116,6 +117,57 @@ def lu_factorization(request: Request, data: LUFactorizationRequest, auth: dict 
         absolute_error = str(absolute_error)
 
         return LUFactorizationResponse(x=x, L=L, U=U, vectorial_error=vectorial_error, absolute_error=absolute_error)
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise_exception(e, logger)
+
+
+@router.post('/jacobi/',
+                tags=["Linear Equations System", "Matrix and Iterative", "Protected"],
+                status_code=status.HTTP_200_OK,
+                summary="Jacobi method",
+                response_model=IterativeMatrixEquationSystemResponse,
+                responses={
+                    500: {"model": ResponseError, "description": "Internal server error."},
+                    429: {"model": ResponseError, "description": "Too many requests."}
+                })
+@limiter.limit("15/minute")
+def jacobi(request: Request, data: IterativeMatrixEquationSystemRequest, auth: dict = Depends(auth_handler.authenticate)):
+    """
+    Jacobi method.
+    
+    This endpoint solves a system of linear equations using the Jacobi method.
+    
+    Arguments:
+    data: IterativeMatrixEquationSystemRequest: JSON with the matrix of coefficients, the vector of solutions, the initial guess, and the precision.
+    
+    Returns:
+    IterativeMatrixEquationSystemResponse: JSON with the solutions of the system of equations, the vectorial errors, and the absolute error.
+    """
+    try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+        
+        # Get the data from the request
+        A = np.array(data.A)
+        b = np.array(data.b)
+        x_initial = np.array(data.x_initial)
+
+        # Create the object to solve the system of equations
+        jacobi_object = Jacobi(A, b, x_initial, precision=data.precision)
+
+        # Create the absolute_error boolean
+        error = True if data.error_type == "absolute" else False
+
+        # Solve the system of equations
+        result = jacobi_object.iterative_solve(tol=data.tol, max_iter=data.max_iter, order=data.order, absolute_error=error)
+        iterations = result[0]
+        x = result[1]
+        error = result[2]
+
+        return IterativeMatrixEquationSystemResponse(iterations=iterations, x=x, error=error)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:

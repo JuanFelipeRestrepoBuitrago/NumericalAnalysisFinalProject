@@ -77,4 +77,46 @@ def test_lu_factorization():
     assert answer["U"] == [['3.0', '4.0', '-2.0'], ['0.0', '-5.666666666666667', '5.333333333333333'], ['0.0', '0.0', '0.529411764705883']]
     assert answer["vectorial_error"] == [['0.0', '0.0', '0.0']]
     assert answer["absolute_error"] == "0.0"
+
+def test_jacobi():
+    """
+    Test the post lu factorization endpoint /linear_equations_system/jacobi/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "A": [[45, 13, -4, 8], [-5, -28, 4, -14], [9, 15, 63, -7], [2, 3, -8, -42]],
+        "b": [[-25], [82], [75], [-43]],
+        "x_initial": [[2], [2], [2], [2]],
+        "tol": 0.5e-4,
+        "max_iter": 100,
+        "order": 0,
+        "precision": 16,
+        "method_type": "iterative"
+    }
+
+    # Make the request
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/linear_equations_system/jacobi/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer["iterations"][-1] == 12
+    assert "0.38480376" in answer["x"][0][12]
+    assert "-2.96186574" in answer["x"][1][12]
+    assert "1.8929326" in answer["x"][2][12]
+    assert "0.4700089" in answer["x"][3][12]
     

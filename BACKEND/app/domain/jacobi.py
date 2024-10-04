@@ -107,7 +107,7 @@ class Jacobi:
             raise_exception(ValueError("El orden de la norma no es válido, este debe ser 0 o entero positivo"), logger)
 
         # Initialize the lists to store the function values and errors
-        values_list = []
+        values_list = None
         error_values_list = []
         counter_values_list = []
         counter = 0
@@ -120,15 +120,11 @@ class Jacobi:
         counter_values_list.append(counter)
     
         if x_current.shape[0] == 1:  # Shape (1, n)
-            values_list.append(
-                [[str(val[0, 0])] for val in np.split(x_current, x_current.shape[1], axis=1)]
-            )
+            values_list = [[str(val[0, 0])] for val in np.split(x_current, x_current.shape[1], axis=1)]
         elif x_current.shape[1] == 1:  # Shape (n, 1)
-            values_list.append(
-                [[str(val[0, 0])] for val in np.split(x_current, x_current.shape[0], axis=0)]
-            )
+            values_list = [[str(val[0, 0])] for val in np.split(x_current, x_current.shape[0], axis=0)]
 
-        error_values_list.append(["-"])
+        error_values_list.append("-")
 
         # Iterate while the error is greater than the tolerance and the number of iterations is less than the maximum
         while error > tol and counter < max_iter:
@@ -145,13 +141,21 @@ class Jacobi:
                     # Check if the element is not in the diagonal
                     if i != j:
                         # Sum the element of the row
-                        sum_row += A[i, j] * x_current[j]
+                        if x_current.shape[0] == 1:
+                            sum_row += A[i, j] * x_current[0, j]
+                        elif x_current.shape[1] == 1:
+                            sum_row += A[i, j] * x_current[j, 0]
+
+                if b.shape[0] == 1:
+                    b_element = b[0, i]
+                else:
+                    b_element = b[i, 0]
 
                 # Calculate the new value of the x vector
                 if x_new.shape[0] == 1:
-                    x_new[0, i] = (b[i] - sum_row) / A[i, i]
+                    x_new[0, i] = (b_element - sum_row) / A[i, i]
                 elif x_new.shape[1] == 1:
-                    x_new[i, 0] = (b[i] - sum_row) / A[i, i]
+                    x_new[i, 0] = (b_element - sum_row) / A[i, i]
 
             # Calculate the error
             if absolute_error:
