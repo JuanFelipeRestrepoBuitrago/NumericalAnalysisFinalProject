@@ -1,0 +1,200 @@
+body {
+   font-family: 'Open Sans', sans-serif; 
+   background-color: #FFFFFF; 
+   color: #1f1235; 
+   line-height: 1.6; 
+   overflow-x: hidden;
+}
+
+.navbar {
+   background-color: #1f1235;
+   padding: 1rem 2rem;
+   border-bottom: 3px solid #ff6e6c;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+   transition: background-color 0.3s ease; 
+   display: flex;
+   align-items: center;
+}
+
+.navbar-brand {
+   display: flex;
+   align-items: center;
+   font-weight: bold;
+   color: #67568c; 
+   font-size: 1.8rem; 
+   letter-spacing: 1.8px;
+   transition: color 0.3s ease;
+   text-transform: uppercase;
+}
+
+.navbar-brand img {
+   margin-right: 10px;
+}
+
+.navbar-brand:hover {
+   color: #ff6e6c; 
+}
+
+.navbar-nav .nav-link {
+   color: #67568c; 
+   font-weight: 600;
+   margin-left: 1.5rem;
+   font-size: 1.2rem; 
+   transition: color 0.3s ease;
+   position: relative;
+   padding-bottom: 5px;
+   text-transform: uppercase;
+}
+
+.navbar-nav .nav-link::after {
+   content: '';
+   position: absolute;
+   width: 0;
+   height: 3px;
+   background-color: #ff6e6c;
+   left: 0;
+   bottom: 0;
+   transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+   width: 100%; 
+}
+
+.navbar-nav .nav-link:hover {
+   color: #ff6e6c; 
+}
+
+.navbar-toggler {
+   border-color: #FFFFFF;
+}
+
+.navbar-toggler-icon {
+   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler:hover {
+   background-color: #ff6e6c;
+}
+/* Contenedor general */
+.method-container {
+   display: flex;
+   justify-content: space-between;
+   margin-top: 30px; /* Reducido */
+}
+
+/* Contenedor de parámetros y resultados */
+.parameters-container,
+.results-container {
+   flex: 1;
+   background-color: #f8f9fa;
+   border-radius: 10px; /* Ajustado */
+   padding: 15px; /* Reducido */
+   margin: 5px; /* Reducido */
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reducido */
+   transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Ancho máximo para el contenedor de parámetros */
+.parameters-container {
+   max-width: 350px; /* Reducido */
+}
+
+/* Contenedor de resultados */
+.results-container {
+   flex-grow: 2;
+}
+
+/* Campos de entrada */
+.form-control {
+   font-size: 0.9rem; /* Reducido */
+   padding: 8px; /* Reducido */
+   border-radius: 6px; /* Reducido */
+   border: 1.5px solid #67568c; /* Reducido */
+   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+   width: 100%;
+}
+
+/* Botón principal */
+.btn-primary {
+   background-color: #ff6e6c;
+   border-color: #ff6e6c;
+   color: #ffffff;
+   padding: 8px 15px; /* Reducido */
+   font-size: 1rem; /* Reducido */
+   font-weight: 600;
+   border-radius: 8px; /* Reducido */
+   transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover del botón principal */
+.btn-primary:hover {
+   background-color: #fbdd74;
+   border-color: #fbdd74;
+   transform: translateY(-2px); /* Reducido */
+}
+
+/* Tabla de resultados */
+table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-top: 15px; /* Reducido */
+}
+
+/* Celdas y encabezados de la tabla */
+th,
+td {
+   padding: 8px; /* Reducido */
+   border: 1px solid #ddd;
+   text-align: left;
+   font-size: 0.85rem; /* Reducido */
+}
+
+/* Encabezados de la tabla */
+th {
+   background-color: #67568c;
+   color: #ffffff;
+}
+
+/* Filas impares de la tabla */
+tbody tr:nth-child(even) {
+   background-color: #f9f9f9;
+}
+
+/* Hover de las filas de la tabla */
+tbody tr:hover {
+   background-color: #ff6e6c;
+   color: #ffffff;
+}
+
+/* Contenedor de la tabla */
+.table-container {
+   max-height: 350px; /* Reducido */
+   overflow-y: auto;
+}
+
+
+/* Footer */
+.footer {
+   background-color: #1f1235;
+   color: #ffffff;
+   padding: 30px 20px;
+   text-align: center;
+   border-top: 2px solid #ff6e6c;
+}
+
+.footer p {
+   margin: 0;
+   font-size: 1rem;
+   letter-spacing: 0.5px;
+}
+
+.footer a {
+   color: #ff6e6c;
+   text-decoration: none;
+   transition: color 0.3s ease;
+}
+
+.footer a:hover {
+   color: #fbdd74;
+}
