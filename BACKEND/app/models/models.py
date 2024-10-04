@@ -255,10 +255,12 @@ class IterativeMatrixEquationSystemResponse(BaseModel):
         iterations (List[int]): List of the number of iterations taken to reach the result.
         x (List[List[str]]): List of the solutions of the system of equations.
         error (List[str]): List of the errors at each iteration.
+        message (str): Message to be displayed to the user
     """
     iterations: List[int] = Field(description="List of the number of iterations taken to reach the result.")
     x: List[List[str]] = Field(description="List of the solutions of the system of equations.")
     error: List[str] = Field(description="List of the errors at each iteration.")
+    message: str = Field(description="Message to be displayed to the user.")
 
 class IterativeMatrixEquationSystemRequest(EquationSystemsRequest):
     """

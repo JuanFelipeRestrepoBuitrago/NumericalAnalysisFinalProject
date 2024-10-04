@@ -119,4 +119,21 @@ def test_jacobi():
     assert "-2.96186574" in answer["x"][1][12]
     assert "1.8929326" in answer["x"][2][12]
     assert "0.4700089" in answer["x"][3][12]
+    assert "es una aproximación de la solución del sistema con una tolerancia de" in answer["message"]
+
+    # Test 2
+    data["method_type"] = "matrix"
+
+    # Make the request
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/linear_equations_system/jacobi/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+
+    assert answer["iterations"][-1] == 12
+    assert "0.38480376" in answer["x"][0][12]
+    assert "-2.96186574" in answer["x"][1][12]
+    assert "1.8929326" in answer["x"][2][12]
+    assert "0.4700089" in answer["x"][3][12]
+    assert "es una aproximación de la solución del sistema con una tolerancia de" in answer["message"]
     

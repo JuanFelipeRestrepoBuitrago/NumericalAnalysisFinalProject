@@ -162,12 +162,16 @@ def jacobi(request: Request, data: IterativeMatrixEquationSystemRequest, auth: d
         error = True if data.error_type == "absolute" else False
 
         # Solve the system of equations
-        result = jacobi_object.iterative_solve(tol=data.tol, max_iter=data.max_iter, order=data.order, absolute_error=error)
+        if data.method_type == "iterative":
+            result = jacobi_object.iterative_solve(tol=data.tol, max_iter=data.max_iter, order=data.order, absolute_error=error)
+        else:
+            result = jacobi_object.matrix_solve(tol=data.tol, max_iter=data.max_iter, order=data.order, absolute_error=error)
         iterations = result[0]
         x = result[1]
         error = result[2]
+        message = result[3]
 
-        return IterativeMatrixEquationSystemResponse(iterations=iterations, x=x, error=error)
+        return IterativeMatrixEquationSystemResponse(iterations=iterations, x=x, error=error, message=message)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
