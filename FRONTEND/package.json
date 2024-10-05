@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "function-plot": "^1.25.0"
+  }
+}

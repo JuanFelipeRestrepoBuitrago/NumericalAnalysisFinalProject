@@ -1,0 +1,177 @@
+html, body {
+   font-family: 'Open Sans', sans-serif; 
+   background-color: #FFFFFF; 
+   color: #1f1235; 
+   line-height: 1.6; 
+   overflow-x: hidden;
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh; 
+   margin: 0;
+   padding: 0;
+   height: 100%;
+}
+
+.navbar {
+   background-color: #1f1235;
+   padding: 1rem 2rem;
+   border-bottom: 3px solid #ff6e6c;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+   transition: background-color 0.3s ease; 
+   display: flex;
+   align-items: center;
+}
+
+.navbar-brand {
+   display: flex;
+   align-items: center;
+   font-weight: bold;
+   color: #67568c; 
+   font-size: 1.8rem; 
+   letter-spacing: 1.8px;
+   transition: color 0.3s ease;
+   text-transform: uppercase;
+}
+
+.navbar-brand img {
+   margin-right: 10px;
+}
+
+.navbar-brand:hover {
+   color: #ff6e6c; 
+}
+
+.navbar-nav .nav-link {
+   color: #67568c; 
+   font-weight: 600;
+   margin-left: 1.5rem;
+   font-size: 1.2rem; 
+   transition: color 0.3s ease;
+   position: relative;
+   padding-bottom: 5px;
+   text-transform: uppercase;
+}
+
+.navbar-nav .nav-link::after {
+   content: '';
+   position: absolute;
+   width: 0;
+   height: 3px;
+   background-color: #ff6e6c;
+   left: 0;
+   bottom: 0;
+   transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+   width: 100%; 
+}
+
+.navbar-nav .nav-link:hover {
+   color: #ff6e6c; 
+}
+
+.navbar-toggler {
+   border-color: #FFFFFF;
+}
+
+.navbar-toggler-icon {
+   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler:hover {
+   background-color: #ff6e6c;
+}
+
+
+.container {
+   max-width: 800px;
+   background-color: #fff;
+   padding: 30px;
+   border-radius: 10px;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+   flex: 1; /* Para que el contenedor principal se ajuste al contenido */
+}
+h1, h2, h3 {
+   text-align: center;
+   color: #1f1235;
+   margin-bottom: 20px;
+}
+.expression-table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-bottom: 30px;
+}
+.expression-table th, .expression-table td {
+   border: 1px solid #ddd;
+   padding: 10px;
+   text-align: center;
+}
+.expression-table th {
+   background-color: #1f1235;
+   color: #fff;
+}
+.expression-table tbody tr:nth-child(even) {
+   background-color: #f9f9f9;
+}
+.expression-table tbody tr:hover {
+   background-color: #ff6e6c;
+   color: #ffffff;
+}
+.back-button {
+   background-color: #1f1235;
+   color: #fff;
+   padding: 10px 20px;
+   text-align: center;
+   border-radius: 5px;
+   text-decoration: none;
+   display: inline-block;
+   margin-bottom: 20px;
+   transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.back-button:hover {
+   background-color: #ff6e6c;
+   transform: translateY(-3px);
+}
+
+.display-4 {
+   font-weight: bolder;
+}
+
+/* Footer */
+.footer {
+   background-color: #1f1235; /* Color de fondo del footer */
+   color: #ffffff; /* Color del texto */
+   padding: 20px 0; /* Espaciado superior e inferior */
+   text-align: center; /* Alinear el texto al centro */
+   border-top: 3px solid #ff6e6c; /* Bordes superiores */
+   margin-top: 30px; /* Espacio superior para separar del contenido */
+   position: relative; /* Para cualquier ajuste de posición */
+   bottom: 0; /* Anclar al fondo de la página */
+   width: 100%; /* Ancho completo del footer */
+}
+
+/* Footer */
+.footer {
+   background-color: #1f1235;
+   color: #ffffff;
+   padding: 30px 20px;
+   text-align: center;
+   border-top: 2px solid #ff6e6c;
+}
+
+.footer p {
+   margin: 0;
+   font-size: 1rem;
+   letter-spacing: 0.5px;
+}
+
+.footer a {
+   color: #ff6e6c;
+   text-decoration: none;
+   transition: color 0.3s ease;
+}
+
+.footer a:hover {
+   color: #fbdd74;
+}

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graficador de funciones con GeoGebra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/test.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png">
+    <script src="https://cdn.geogebra.org/apps/deployggb.js"></script>
+    <style>
+      .graph-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        margin-top: 50px;
+        flex-wrap: wrap;
+      }
+      .form-container {
+        width: 30%;
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .graph-display {
+        width: 100%; /* Ancho completo del contenedor */
+        height: 900px; /* Altura del contenedor */
+        background-color: #ffffff;
+        border-radius: 1px; /* Mantener el redondeo exterior */
+        padding: 0; /* Eliminar padding */
+        box-shadow: none; /* Eliminar sombra */
+        margin: 20px auto; /* Centrar el contenedor */
+        overflow: hidden; /* Asegurar que el contenido no se salga */
+        border: none; /* Eliminar el borde */
+      }
+
+      #geogebra {
+        width: 100%;
+        height: 100%;
+        border-radius: 0; /* Eliminar el redondeo de bordes internos */
+        border: none; /* Eliminar el borde */
+        box-shadow: none; /* Eliminar sombra */
+        background-color: #ffffff; /* Fondo blanco */
+        padding: 0; /* Eliminar padding interno */
+        margin: 0; /* Eliminar margen interno */
+      }
+
+      .form-control {
+        font-size: 1rem;
+        padding: 10px;
+        border-radius: 8px;
+        border: 2px solid #67568c;
+        margin-bottom: 15px;
+      }
+      .btn-primary {
+        background-color: #ff6e6c;
+        border-color: #ff6e6c;
+        color: #ffffff;
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: background-color 0.3s ease, border-color 0.3s ease,
+          transform 0.3s ease;
+        width: 100%;
+        margin-top: 10px;
+      }
+      .btn-primary:hover {
+        background-color: #fbdd74;
+        border-color: #fbdd74;
+        transform: translateY(-3px);
+      }
+      .btn-outline-secondary {
+        background-color: #67568c;
+        border-color: #67568c;
+        color: #ffff;
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: background-color 0.3s ease, border-color 0.3s ease,
+          transform 0.3s ease;
+        width: 100%;
+        margin-top: 10px;
+      }
+      .btn-outline-secondary:hover {
+        background-color: #1f1235;
+        border-color: #fbdd74;
+        transform: translateY(-3px);
+      }
+      .domain-inputs {
+        display: none;
+        margin-top: 20px;
+      }
+      .graph-subtitle {
+        font-size: 1.5rem;
+        font-weight: bolder;
+        color: #67568c;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img
+          src="{{ url_for('static', filename='images/iconon.png') }}"
+          alt="MethodSolve Icon"
+          width="50"
+          height="50"
+          class="d-inline-block align-text-top"
+        />
+        MethodSolver
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('index_page') }}">
+              <i class="bi bi-house-door-fill"></i> Inicio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('metodos_page') }}">
+              <i class="bi bi-book-fill"></i> Métodos
+            </a>
+          </li>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('guia_page') }}">
+           <i class="bi bi-patch-question-fill"></i> Guía
+           </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <body>
+    <div class="container my-5">
+      <h1 class="text-center mb-4">Graficar función</h1>
+      <h3 class="text-center mb-4" id="graphSubtitle">Función: x^2</h3>
+      <!-- Subtítulo dinámico -->
+      <div class="graph-container">
+        <!-- Formulario para ingresar la función y el rango -->
+        <div class="form-container">
+          <h3 class="text-center">Parámetros</h3>
+          <form id="graphForm">
+            <div class="mb-3">
+              <label for="expression" class="form-label">Función f</label>
+              <input
+                type="text"
+                id="expression"
+                name="expression"
+                class="form-control"
+                value="x^2"
+                required
+              />
+            </div>
+
+            <!-- Inputs de dominio ocultos inicialmente -->
+            <div id="domainInputs" class="domain-inputs">
+              <div class="mb-3">
+                <label for="xLower" class="form-label"
+                  >x - axis: lower value</label
+                >
+                <input
+                  type="number"
+                  id="xLower"
+                  name="xLower"
+                  class="form-control"
+                  value="-5"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="xUpper" class="form-label"
+                  >x - axis: higher value</label
+                >
+                <input
+                  type="number"
+                  id="xUpper"
+                  name="xUpper"
+                  class="form-control"
+                  value="5"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="yLower" class="form-label"
+                  >y - axis: lower value</label
+                >
+                <input
+                  type="number"
+                  id="yLower"
+                  name="yLower"
+                  class="form-control"
+                  value="-10"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="yUpper" class="form-label"
+                  >y - axis: higher value</label
+                >
+                <input
+                  type="number"
+                  id="yUpper"
+                  name="yUpper"
+                  class="form-control"
+                  value="10"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="plotFunction()"
+              class="btn btn-primary"
+            >
+              Trazar la función
+            </button>
+          </form>
+        </div>
+
+        <!-- Contenedor donde se mostrará la gráfica con GeoGebra -->
+        <div class="graph-display" id="graph">
+          <div id="geogebra" style="width: 100%; height: 100%"></div>
+        </div>
+
+      <!-- Botón de descarga del SVG -->
+<button class="btn btn-secondary mt-4" onclick="downloadGeoGebraSVG()">
+    Download SVG
+</button>
+
+
+      </div>
+    </div>
+    
+
+     <!-- Footer -->
+     <footer class="footer">
+      <div class="container">
+          &copy;2024 MethodSolver Team. Todos los derechos reservados.
+      </div>
+  </footer>
+
+    <script src="{{ url_for('static', filename='/js/graph.js') }}"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+  </body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método Newton Modificado 2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/test.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png">
+
+    <style>
+      /* Ajustes generales para el contenedor */
+      .method-container {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 30px;
+      }
+
+      /* Contenedor de parámetros y resultados */
+      .parameters-container,
+      .results-container {
+          flex: 1;
+          background-color: #f8f9fa;
+          border-radius: 10px;
+          padding: 15px;
+          margin: 5px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease, background-color 0.3s ease;
+      }
+
+      /* Ancho máximo del contenedor de parámetros */
+      .parameters-container {
+          max-width: 350px;
+      }
+
+      /* Contenedor de resultados */
+      .results-container {
+          flex-grow: 2;
+      }
+
+      /* Campos de entrada del formulario */
+      .form-control {
+          font-size: 0.9rem;
+          padding: 8px;
+          border-radius: 6px;
+          border: 1.5px solid #67568c;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          width: 100%;
+      }
+
+      /* Estilo del botón */
+      .btn-primary {
+          background-color: #ff6e6c;
+          border-color: #ff6e6c;
+          color: #ffffff;
+          padding: 8px 15px;
+          font-size: 1rem;
+          font-weight: 600;
+          border-radius: 8px;
+          transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+      }
+
+      /* Hover del botón */
+      .btn-primary:hover {
+          background-color: #fbdd74;
+          border-color: #fbdd74;
+          transform: translateY(-2px);
+      }
+
+      /* Tabla de resultados */
+      table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 15px;
+      }
+
+      /* Encabezados y celdas de la tabla */
+      th,
+      td {
+          padding: 8px;
+          border: 1px solid #ddd;
+          text-align: left;
+          font-size: 0.85rem;
+      }
+
+      /* Estilo de los encabezados de la tabla */
+      th {
+          background-color: #67568c;
+          color: #ffffff;
+      }
+
+      /* Alternar colores de fila en la tabla */
+      tbody tr:nth-child(even) {
+          background-color: #f9f9f9;
+      }
+
+      /* Hover de las filas de la tabla */
+      tbody tr:hover {
+          background-color: #ff6e6c;
+          color: #ffffff;
+      }
+
+      /* Contenedor de la tabla */
+      .table-container {
+          max-height: 680px;
+          overflow-y: auto;
+      }
+    </style>
+
+</head>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+   <div class="container-fluid">
+       <a class="navbar-brand" href="#">
+           <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="Ícono de MethodSolve" width="50"
+               height="50" class="d-inline-block align-text-top">
+           MethodSolver
+       </a>
+       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+       </button>
+       <div class="collapse navbar-collapse" id="navbarNav">
+           <ul class="navbar-nav ms-auto">
+               <li class="nav-item">
+                   <a class="nav-link" href="{{ url_for('index_page') }}">
+                       <i class="bi bi-house-door-fill"></i> Inicio
+                   </a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="{{ url_for('metodos_page') }}">
+                       <i class="bi bi-book-fill"></i> Métodos
+                   </a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="{{ url_for('guia_page') }}">
+                       <i class="bi bi-patch-question-fill"></i> Guía
+                   </a>
+               </li>
+           </ul>
+       </div>
+   </div>
+</nav>
+
+<body>
+<div class="container my-5">
+    <h1 class="text-center mb-4">Segundo Método Newton Modificado</h1>
+    <div class="method-container">
+        <!-- Contenedor de parámetros -->
+        <div class="parameters-container">
+            <h2 class="text-center">Parámetros</h2>
+            <p class="text-center">
+                Sino sabes cómo escribir la expresión <a href="{{ url_for('guia_page') }}">haz clic aquí</a>.
+            </p>
+            <form id="secondModifiedNewtonForm">
+                <div class="mb-3">
+                    <label for="expression" class="form-label">Función (f(x))</label>
+                    <input
+                        type="text"
+                        id="expression"
+                        name="expression"
+                        class="form-control"
+                        value="x^2 - 4"
+                        required
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="initial" class="form-label">Valor inicial</label>
+                    <input
+                        type="number"
+                        step="any"
+                        id="initial"
+                        name="initial"
+                        class="form-control"
+                        value="0"
+                        required
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="tolerance" class="form-label">Tolerancia</label>
+                    <input
+                        type="number"
+                        step="any"
+                        id="tolerance"
+                        name="tolerance"
+                        class="form-control"
+                        value="1e-7"
+                        required
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="max_iterations" class="form-label">Máximas iteraciones</label>
+                    <input
+                        type="number"
+                        id="max_iterations"
+                        name="max_iterations"
+                        class="form-control"
+                        value="100"
+                        required
+                    />
+                </div>
+
+                <!-- Campo para seleccionar el tipo de error -->
+                <div class="mb-3">
+                    <label for="error_type" class="form-label">Tipo de error</label>
+                    <select id="error_type" name="error_type" class="form-control">
+                        <option value="absolute">Absoluto</option>
+                        <option value="relative">Relativo</option>
+                    </select>
+                </div>
+
+                <!-- Campo opcional para precisión -->
+                <div class="mb-3">
+                    <label for="precision" class="form-label">Precisión (opcional)</label>
+                    <input
+                        type="number"
+                        id="precision"
+                        name="precision"
+                        class="form-control"
+                        placeholder="16"
+                    />
+                </div>
+
+                <!-- Campo para la derivada -->
+                <div class="mb-3">
+                    <label for="derivative_expression" class="form-label">Derivada (f'(x))</label>
+                    <input
+                        type="text"
+                        id="derivative_expression"
+                        name="derivative_expression"
+                        class="form-control"
+                        placeholder="2x"
+                    />
+                </div>
+
+                <!-- Campo para la segunda derivada -->
+                <div class="mb-3">
+                    <label for="second_derivative_expression" class="form-label">Segunda Derivada (f''(x))</label>
+                    <input
+                        type="text"
+                        id="second_derivative_expression"
+                        name="second_derivative_expression"
+                        class="form-control"
+                        placeholder="2"
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    onclick="calculateSecondModifiedNewton()"
+                    class="btn btn-primary w-100"
+                >
+                    Calcular
+                </button>
+            </form>
+        </div>
+        <div class="results-container">
+            <h2>Resultados</h2>
+            <div class="table-container">
+                <table id="resultsTable">
+                    <thead>
+                    <tr>
+                        <th>Iteración</th>
+                        <th>X<sub>n</sub></th>
+                        <th>f(X<sub>n</sub>)</th>
+                        <th>Error</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Aquí se mostrarán los resultados generados -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Contenedor para el mensaje de la raíz de la función -->
+            <div id="rootMessage" class="mt-4">
+                <!-- Aquí se mostrará el mensaje de la raíz -->
+            </div>
+        </div>
+    </div>
+</div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+        &copy;2024 MethodSolver Team. Todos los derechos reservados.
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='/js/second_modified_newton.js') }}"></script>
+</body>
+</html>

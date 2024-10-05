@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Expresiones</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/guia.css') }}" />
+  <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png" />
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="MethodSolve Icon" width="50" height="50" class="d-inline-block align-text-top" />
+        MethodSolver
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('index_page') }}"><i class="bi bi-house-door-fill"></i> Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('metodos_page') }}"><i class="bi bi-book-fill"></i> Métodos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('guia_page') }}"><i class="bi bi-patch-question-fill"></i> Guía</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container my-5">
+    <div class="text-center">
+      <h1 class="display-4">Guía de Expresiones Matemáticas</h1>
+      <p class="lead">Esta guía te ayudará a entender cómo ingresar correctamente las expresiones matemáticas en nuestra página.</p>
+    </div>
+
+    <h2 class="section-title">Símbolos y Operadores Básicos</h2>
+    <table class="expression-table table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Operación</th>
+          <th>Expresión</th>
+          <th>Ejemplo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Potencia</td>
+          <td><code>**</code></td>
+          <td><code>x**2</code> (x al cuadrado)</td>
+        </tr>
+        <tr>
+          <td>Raíz Cuadrada</td>
+          <td><code>sqrt()</code></td>
+          <td><code>sqrt(x)</code></td>
+        </tr>
+        <tr>
+          <td>Logaritmo Natural</td>
+          <td><code>log()</code></td>
+          <td><code>log(x)</code></td>
+        </tr>
+        <tr>
+          <td>Logaritmo Base 10</td>
+          <td><code>log10()</code></td>
+          <td><code>log10(x)</code></td>
+        </tr>
+        <tr>
+          <td>Exponencial</td>
+          <td><code>exp()</code></td>
+          <td><code>exp(x)</code> (e^x)</td>
+        </tr>
+        <tr>
+          <td>Valor Absoluto</td>
+          <td><code>abs()</code></td>
+          <td><code>abs(x)</code></td>
+        </tr>
+        <tr>
+          <td>Raíz Enésima</td>
+          <td><code>x**(1/n)</code></td>
+          <td><code>x**(1/3)</code> (raíz cúbica)</td>
+        </tr>
+        <tr>
+          <td>Módulo</td>
+          <td><code>%</code></td>
+          <td><code>x % 2</code> (residuo de x entre 2)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-title">Funciones Trigonométricas</h2>
+    <table class="expression-table table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Función</th>
+          <th>Expresión</th>
+          <th>Ejemplo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Seno</td>
+          <td><code>sin()</code></td>
+          <td><code>sin(x)</code></td>
+        </tr>
+        <tr>
+          <td>Coseno</td>
+          <td><code>cos()</code></td>
+          <td><code>cos(x)</code></td>
+        </tr>
+        <tr>
+          <td>Tangente</td>
+          <td><code>tan()</code></td>
+          <td><code>tan(x)</code></td>
+        </tr>
+        <tr>
+          <td>Arcoseno</td>
+          <td><code>asin()</code></td>
+          <td><code>asin(x)</code></td>
+        </tr>
+        <tr>
+          <td>Arcocoseno</td>
+          <td><code>acos()</code></td>
+          <td><code>acos(x)</code></td>
+        </tr>
+        <tr>
+          <td>Arcotangente</td>
+          <td><code>atan()</code></td>
+          <td><code>atan(x)</code></td>
+        </tr>
+        <tr>
+          <td>Seno Hiperbólico</td>
+          <td><code>sinh()</code></td>
+          <td><code>sinh(x)</code></td>
+        </tr>
+        <tr>
+          <td>Coseno Hiperbólico</td>
+          <td><code>cosh()</code></td>
+          <td><code>cosh(x)</code></td>
+        </tr>
+        <tr>
+          <td>Tangente Hiperbólica</td>
+          <td><code>tanh()</code></td>
+          <td><code>tanh(x)</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-title">Funciones Especiales</h2>
+    <table class="expression-table table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Función</th>
+          <th>Expresión</th>
+          <th>Ejemplo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Signo</td>
+          <td><code>sign()</code></td>
+          <td><code>sign(x)</code> (devuelve -1, 0 o 1)</td>
+        </tr>
+        <tr>
+          <td>Máximo</td>
+          <td><code>max()</code></td>
+          <td><code>max(a, b)</code></td>
+        </tr>
+        <tr>
+          <td>Mínimo</td>
+          <td><code>min()</code></td>
+          <td><code>min(a, b)</code></td>
+        </tr>
+        <tr>
+          <td>Factorial</td>
+          <td><code>factorial()</code></td>
+          <td><code>factorial(5)</code> (devuelve 120)</td>
+        </tr>
+        <tr>
+          <td>Función de Paso</td>
+          <td><code>step()</code></td>
+          <td><code>step(x)</code> (devuelve 0 si x &lt; 0, 1 si x ≥ 0)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('index_page') }}" class="btn btn-outline-primary back-button"><i class="bi bi-arrow-left"></i> Volver al Inicio</a>
+    </div>
+  </div>
+
+   <!-- Footer -->
+   <footer class="footer">
+      <div class="container">
+          &copy;2024 MethodSolver Team. Todos los derechos reservados.
+      </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
