@@ -5,7 +5,7 @@ import sympy as sp
 from sympy import oo as sp_inf
 
 
-class GaussSeidel:
+class Sor:
     def __init__(self, A: sp.Matrix, b: sp.Matrix, x_initial:sp.Matrix, n: int = None, precision: int = 16):
         self.precision = precision
         self.A = A
@@ -67,13 +67,14 @@ class GaussSeidel:
         """
         return sp.Matrix([[A[i, j] / B[i, j] for j in range(A.shape[1])] for i in range(A.shape[0])])
 
-    def iterative_solve(self, tol: float, max_iter: int = 100, A: sp.Matrix = None, b: sp.Matrix = None, x_initial: sp.Matrix = None, absolute_error: bool = True, order: int = 0) -> Tuple[List[int], List[List[str]], List[str], str]:
+    def iterative_solve(self, w: float, tol: float, max_iter: int = 100, A: sp.Matrix = None, b: sp.Matrix = None, x_initial: sp.Matrix = None, absolute_error: bool = True, order: int = 0) -> Tuple[List[int], List[List[str]], List[str], str]:
         """
         This function solves a system of linear equations using the iterative Jacobi method.
 
         :param A: numpy array with the coefficients of the system of equations
         :param b: numpy array with the solutions of the system of equations
         :param x_initial: numpy array with the initial guess for the solution
+        :param w: relaxation factor
         :param tol: tolerance for the solution
         :param max_iter: maximum number of iterations
         :param absolute_error: boolean to determine if the absolute or relative error is calculated
@@ -137,11 +138,16 @@ class GaussSeidel:
                 else:
                     b_element = b[i, 0]
 
+                if x_current.shape[0] == 1:
+                    x_element = x_current[0, i]
+                elif x_current.shape[1] == 1:
+                    x_element = x_current[i, 0]
+
                 # Calculate the new value of the x vector
                 if x_new.shape[0] == 1:
-                    x_new[0, i] = ((b_element - sum_row) / A[i, i]).evalf(self.precision)
+                    x_new[0, i] = (w * ((b_element - sum_row) / A[i, i]) + (1 - w) * x_element).evalf(self.precision)
                 elif x_new.shape[1] == 1:
-                    x_new[i, 0] = ((b_element - sum_row) / A[i, i]).evalf(self.precision)
+                    x_new[i, 0] = (w * ((b_element - sum_row) / A[i, i]) + (1 - w) * x_element).evalf(self.precision)
 
             # Calculate the error
             if x_new.shape[0] == 1:
@@ -186,13 +192,14 @@ class GaussSeidel:
 
         return counter_values_list, values_list, error_values_list, message
     
-    def matrix_solve(self, tol: float, max_iter: int = 100, A: sp.Matrix = None, b: sp.Matrix = None, x_initial: sp.Matrix = None, absolute_error: bool = True, order: int = 0) -> Tuple[List[int], List[List[str]], List[str], str]:
+    def matrix_solve(self, w: float, tol: float, max_iter: int = 100, A: sp.Matrix = None, b: sp.Matrix = None, x_initial: sp.Matrix = None, absolute_error: bool = True, order: int = 0) -> Tuple[List[int], List[List[str]], List[str], str]:
         """
         This function solves a system of linear equations using the matrix Jacobi method.
 
         :param A: numpy array with the coefficients of the system of equations
         :param b: numpy array with the solutions of the system of equations
         :param x_initial: numpy array with the initial guess for the solution
+        :param w: relaxation factor
         :param tol: tolerance for the solution
         :param max_iter: maximum number of iterations
         :param absolute_error: boolean to determine if the absolute or relative error is calculated
@@ -249,8 +256,8 @@ class GaussSeidel:
                 b_element = b
 
             # Calculate the T and C matrices
-            T = ((D-L).inv() * U)
-            C = ((D-L).inv() * b_element)
+            T = ((D - w * L).inv() * ((1 - w) * D + w * U))
+            C = (w * (D - w * L).inv() * b_element)
 
             # Calculate the new x vector
             x_new = ((T * x_element) + C).evalf(self.precision)
@@ -262,7 +269,7 @@ class GaussSeidel:
 
             # Calculate the error
             if absolute_error:
-                error = ((x_new_element - x_element)).norm(order).evalf(self.precision)
+                error = (x_new_element - x_element).norm(order).evalf(self.precision)
             else:
                 error = self.element_wise_division((x_new_element - x_element), x_new_element).norm(order).evalf(self.precision)
 

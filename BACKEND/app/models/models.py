@@ -279,4 +279,17 @@ class IterativeMatrixEquationSystemRequest(EquationSystemsRequest):
     error_type: Literal["absolute", "relative"] = Field("absolute", description="Type of error to be used in the method.")
     x_initial: List[List[float]] = Field(..., description="Initial guess for the solution.")
     method_type: Literal["iterative", "matrix"] = Field("matrix", description="Type of iterative or matrix method to be used.")
+
+
+class SorRequest(IterativeMatrixEquationSystemRequest):
+    """
+    Data model for the SOR method.
+
+    This model extends the `IterativeMatrixEquationSystemRequest` model and adds specific attributes for the SOR method.
+
+    Attributes:
+        omega (float): Relaxation factor.
+    """
+    # Omega, but sent as w by users
+    omega: float = Field(..., description="Relaxation factor.", alias="w")
     
