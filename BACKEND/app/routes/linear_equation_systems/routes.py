@@ -6,18 +6,57 @@ import sympy as sp
 
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
-from app.models.models import ResponseError, GaussEliminationRequest, GaussEliminationResponse, LUFactorizationRequest, LUFactorizationResponse, IterativeMatrixEquationSystemRequest, IterativeMatrixEquationSystemResponse, SorRequest
+from app.models.models import ResponseError, GaussEliminationRequest, GaussEliminationResponse, LUFactorizationRequest, LUFactorizationResponse, IterativeMatrixEquationSystemRequest, IterativeMatrixEquationSystemResponse, SorRequest, SpectralRadiusRequest, SpectralRadiusResponse
 from app.domain.jacobi import Jacobi
 from app.domain.gauss_seidel import GaussSeidel
 from app.domain.sor import Sor
 from app.domain.gaussian_elimination import GaussianElimination
 from app.domain.lu_factorization import LUFactorization
 from app.auth.auth import auth_handler
-from app.utils.utils import raise_exception, parse_expression
+from app.utils.utils import raise_exception, calculate_spectral_radius
 from app.routes.routes import logger
 
 
 router = APIRouter()
+
+@router.post('/spectral_radius/',
+                tags=["Linear Equations System", "Protected"],
+                status_code=status.HTTP_200_OK,
+                summary="Calculate the spectral radius",
+                response_model=SpectralRadiusResponse,
+                responses={
+                    500: {"model": ResponseError, "description": "Internal server error."},
+                    429: {"model": ResponseError, "description": "Too many requests."}
+                })
+@limiter.limit("15/minute")
+def spectral_radius(request: Request, data: SpectralRadiusRequest, auth: dict = Depends(auth_handler.authenticate)):
+    """
+    Calculate the spectral radius of a matrix.
+    
+    This endpoint calculates the spectral radius of a matrix.
+    
+    Arguments:
+    data: SpectralRadiusRequest: JSON with the matrix of coefficients.
+    
+    Returns:
+    SpectralRadiusResponse: JSON with the spectral radius of the matrix.
+    """
+    try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+        
+        # Get the data from the request
+        A = sp.Matrix(data.A)
+
+        # Calculate the spectral radius
+        spectral_radius = calculate_spectral_radius(A, data.precision)
+
+        return SpectralRadiusResponse(spectral_radius=spectral_radius)
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise_exception(e, logger)
 
 
 @router.post('/gauss_elimination/',

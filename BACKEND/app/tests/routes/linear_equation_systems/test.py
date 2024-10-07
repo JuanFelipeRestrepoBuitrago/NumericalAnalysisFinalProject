@@ -256,4 +256,37 @@ def test_sor():
     assert "1.89293582381225" in answer["x"][2][10]
     assert "0.47001185882341" in answer["x"][3][10]
     assert "es una aproximación de la solución del sistema con una tolerancia de" in answer["message"]
+
+
+def test_calculate_spectral_radius():
+    """
+    Test the post lu factorization endpoint /linear_equations_system/calculate_spectral_radius/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+    data = {
+        "A": [[1, 2], [3, 4]],
+        "precision": 16
+    }
+
+    # Make the request
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/linear_equations_system/spectral_radius/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert "5.372281323269014" in answer["spectral_radius"]
     
