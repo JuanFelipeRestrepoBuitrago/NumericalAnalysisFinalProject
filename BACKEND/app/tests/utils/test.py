@@ -1,7 +1,8 @@
-from app.utils.utils import parse_expression, construct_augmented_matrix
+from app.utils.utils import parse_expression, construct_augmented_matrix, calculate_spectral_radius
 from app.routes.routes import logger
 from fastapi.exceptions import HTTPException
 import numpy as np
+import sympy as sp
 
 
 def test_parse_expression():
@@ -105,3 +106,17 @@ def test_construct_augmented_matrix():
     b = np.array([[5, 6]])
     Ab = np.array([[1, 2, 5], [3, 4, 6]])
     assert np.array_equal(construct_augmented_matrix(A, b), Ab), "Test failed for a 2x2 matrix"
+
+
+def test_calculate_spectral_radius():
+    # Test 1
+    A = sp.Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    assert calculate_spectral_radius(A, 8) == "16.116844", "Test failed for a 3x3 matrix"
+
+    # Test 2
+    A = sp.Matrix([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+    assert calculate_spectral_radius(A, 8) == "36.209373", "Test failed for a 3x4 matrix"
+
+    # Test 3
+    A = sp.Matrix([[1, 2], [3, 4]])
+    assert calculate_spectral_radius(A) == "5.372281323269014", "Test failed for a 2x2 matrix"
