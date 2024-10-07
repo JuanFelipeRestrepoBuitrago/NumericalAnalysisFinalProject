@@ -172,6 +172,174 @@ tbody tr:hover {
    max-height: 350px; /* Reducido */
    overflow-y: auto;
 }
+#results-container {
+   padding: 20px;
+   background-color: #f8f9fa;
+   border-radius: 10px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   display: block; /* Cambiado de flex a block para evitar que estire el contenedor */
+   max-width: 900px; /* Limita el ancho máximo */
+   margin-left: auto;  /* Centra el contenedor horizontalmente */
+   margin-right: auto; /* Centra el contenedor horizontalmente */
+   margin-top: 20px; /* Añadido espacio en la parte superior */
+   width: 100%; /* Asegura que ocupe todo el ancho */
+   height: 100%; /* Ajusta la altura automáticamente según el contenido */
+}
+
+#results, #error-message, #absolute-error {
+   font-size: 1.5rem;
+   text-align: center;
+   margin-top: 10px;
+}
+
+#results {
+   color: #333;
+}
+
+#error-message {
+   color: red;
+}
+
+#absolute-error {
+   color: #ff6e6c;
+}
+
+
+
+/* Eliminar los controles de incremento/decremento de los inputs de tipo número */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    appearance: textfield;  /* Para navegadores Firefox */
+}
+
+
+/* Estilos generales para el contenedor de la matriz */
+.grid-matrix {
+   display: grid;
+   justify-content: center;
+   align-items: center;
+   gap: 10px; /* Espacio entre las celdas */
+}
+
+/* Ajuste para una matriz 2x2 */
+.grid-matrix.size-2x2 {
+   grid-template-columns: repeat(2, 1fr);
+}
+
+/* Ajuste para una matriz 3x3 */
+.grid-matrix.size-3x3 {
+   grid-template-columns: repeat(3, 1fr);
+}
+
+/* Ajuste para una matriz 4x4 */
+.grid-matrix.size-4x4 {
+   grid-template-columns: repeat(4, 1fr);
+}
+
+/* Ajuste para una matriz 5x5 */
+.grid-matrix.size-5x5 {
+   grid-template-columns: repeat(5, 1fr);
+}
+
+/* Ajuste para una matriz 6x6 */
+.grid-matrix.size-6x6 {
+   grid-template-columns: repeat(6, 1fr);
+}
+
+
+/* Estilo general para el contenedor */
+.grid-matrix {
+   background-color: #f7f7f7;  /* Color de fondo suave */
+   padding: 15px;
+   border-radius: 10px;
+   margin-bottom: 20px;  /* Espacio debajo del contenedor */
+}
+
+/* Estilo de los inputs de las celdas */
+.grid-matrix input.matrix-cell{
+   display: block;
+   margin: 5px auto;
+   width: 30px;  /* Tamaño más pequeño (20x20) */
+   height: 30px; /* Altura más pequeña (20x20) */
+   font-size: 0.8rem;  /* Ajustar tamaño del número para que encaje bien */
+   text-align: center;
+   border: none;  /* Quitar completamente el borde */
+   border-radius: 6px;
+   padding: 0;  /* Eliminar el padding interno */
+   box-shadow: none;  /* Elimina la sombra */
+   background-color: white;
+   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilo para el hover de los inputs */
+.grid-matrix input.matrix-cell:hover, .grid-vector input.vector-cell:hover {
+   background-color: #f0f0f0; /* Color de fondo al hacer hover */
+}
+
+/* Estilo para el foco (cuando el input es seleccionado) */
+.grid-matrix input.matrix-cell:focus, .grid-vector input.vector-cell:focus {
+   background-color: #fff;
+   outline: none;  /* Elimina el borde de enfoque del navegador */
+}
+
+/* Centrar el vector de soluciones (b) */
+.vector-grid-container {
+   display: flex;
+   justify-content: center;
+   margin-top: 10px;
+}
+
+/* Ajustar el tamaño de los inputs del vector (b) */
+.grid-vector input.vector-cell {
+   width: 20px;  /* Tamaño más pequeño (20x20) */
+   height: 20px; /* Altura más pequeña (20x20) */
+   font-size: 0.8rem;  /* Ajustar tamaño del número para que encaje bien */
+   text-align: center;
+   border: none;  /* Quitar bordes */
+   border-radius: 6px;
+   padding: 0;  /* Eliminar padding interno */
+   box-shadow: none;  /* Quitar sombras */
+   background-color: white;
+   transition: background-color 0.3s ease;
+   margin: 3px;  /* Espaciado entre las celdas del vector */
+}
+
+/* Centrar el grid del vector */
+.grid-vector {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 10px;
+}
+
+
+
+/* Botón para generar la matriz */
+button.btn-secondary {
+   background-color: #ff6e6c; /* Color naranja */
+   border-color: #ff6e6c;
+   color: #ffffff;
+   border-radius: 25px;
+   padding: 10px 20px;
+   font-size: 1rem;
+   font-weight: 500;
+   transition: all 0.3s ease;
+   display: block;
+   margin: 20px auto; /* Centra el botón */
+   text-align: center;
+}
+
+/* Hover para el botón */
+button.btn-secondary:hover {
+   background-color: #fbdd74; /* Cambia a un tono más claro de naranja */
+   border-color: #fbdd74;
+   color: #ffffff;
+}
+
 
 
 /* Footer */

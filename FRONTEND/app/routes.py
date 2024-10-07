@@ -81,6 +81,9 @@ def first_modified_newton_page():
 def second_modified_newton_page():
     return render_template('second_modified_newton.html')
 
+@app.route('/gauss_elimination')
+def gauss_elimination_page():
+    return render_template('gauss_elimination.html')
 
 # Nueva ruta para la guía de expresiones
 @app.route('/guia')
