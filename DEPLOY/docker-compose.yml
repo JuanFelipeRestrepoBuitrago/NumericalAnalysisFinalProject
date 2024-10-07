@@ -26,7 +26,7 @@ services:
       - mysql
     environment:
       - API_NAME=backend_numerical_methods
-      - API_VERSION=v1.3.1
+      - API_VERSION=v1.4.0
       - JWT_SECRET=supersecretkeythatissufficientlylong123
       - PRODUCTION_SERVER_URL=http://method-solver.sytes.net
       - DEVELOPMENT_SERVER_URL=http://method-solver.sytes.net

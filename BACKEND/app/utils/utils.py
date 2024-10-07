@@ -88,3 +88,23 @@ def construct_augmented_matrix(A: np.ndarray, b: np.ndarray) -> np.ndarray:
         Ab = np.hstack((A, b.T))
     
     return Ab
+
+
+def calculate_spectral_radius(A: sp.Matrix, precision: int = 16) -> str:
+    """
+    Calculate the spectral radius of the matrix A
+
+    Arguments:
+        A (sp.Matrix) : The matrix to calculate the spectral radius
+        precision (int) : The precision to calculate the spectral radius
+
+    Returns:
+        str : The spectral radius of the matrix A
+    """
+    # Get the eigenvalues of the matrix A
+    eigenvalues = A.eigenvals()
+
+    # Get the maximum eigenvalue
+    max_eigenvalue = str(max([sp.Abs(eig).evalf(precision) for eig in eigenvalues.keys()]))
+
+    return max_eigenvalue
