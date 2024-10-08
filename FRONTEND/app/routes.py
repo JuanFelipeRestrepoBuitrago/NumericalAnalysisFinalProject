@@ -85,6 +85,10 @@ def second_modified_newton_page():
 def gauss_elimination_page():
     return render_template('gauss_elimination.html')
 
+@app.route('/factorization_lu')
+def factorization_lu_page():
+    return render_template('factorizacion_lu.html')
+
 # Nueva ruta para la guía de expresiones
 @app.route('/guia')
 def guia_page():

@@ -66,8 +66,8 @@ function getVectorFromTable() {
     return vector;
 }
 
-// Función principal de eliminación gaussiana
-function calculateGaussElimination() {
+// Función principal de factorization LU
+function calculateLUFactorization() {
     const matrix = getMatrixFromTable();
     const vector = getVectorFromTable();
 
@@ -93,10 +93,10 @@ function calculateGaussElimination() {
     console.log("Datos enviados a la API:", JSON.stringify(data));
 
     // Token de autenticación
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0MTIwMzEsImlhdCI6MTcyODIzOTIzMSwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.3JoKuJVgq7_XX7hxJqRKrE7UODHIUSWiXoznRjdMthQ";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0OTYyNjQsImlhdCI6MTcyODMyMzQ2NCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VbzqMestAYMgOSIW-Bg5lF179l-aVu3ZqSujniYXUx4";
 
     // Realizar la solicitud POST a la API con el token en el encabezado
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/gauss_elimination/", {
+    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/lu_factorization/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -125,26 +125,25 @@ function calculateGaussElimination() {
         resultsContainer.innerHTML = '';
         absoluteErrorContainer.innerHTML = '';
 
-        // Mostrar los resultados de X en formato LaTeX
-        const xResult = result.x[0];
-        const vectorialError = result.vectorial_error[0];
-        const absoluteError = result.absolute_error;
+       
+        // Función para convertir una matriz de strings a LaTeX
+        function matrixToLatex(matrix) {
+         return matrix.map(row => row.join(' & ')).join(' \\\\ ');
+     }
 
-        // Crear una matriz en LaTeX con los elementos de x en una columna
-        let xLatex = `x = \\begin{pmatrix} ${xResult.join(' \\\\ ')} \\end{pmatrix}`;
-        
-        // Crear una matriz en LaTeX con los elementos del error vectorial
-        let errorVectorialLatex = `\\text{Error Vectorial} = \\begin{pmatrix} ${vectorialError.join(' \\\\ ')} \\end{pmatrix}`;
-        
-        // Mensaje para el error absoluto
-        let absoluteErrorText = `Error absoluto: ${absoluteError}`;
+     // Mostrar los resultados en formato LaTeX
+     let xLatex = `x = \\begin{pmatrix} ${result.x[0].join(' \\\\ ')} \\end{pmatrix}`;
+     let lLatex = `L = \\begin{pmatrix} ${matrixToLatex(result.L)} \\end{pmatrix}`;
+     let uLatex = `U = \\begin{pmatrix} ${matrixToLatex(result.U)} \\end{pmatrix}`;
+     let errorVectorialLatex = `\\text{Error Vectorial} = \\begin{pmatrix} ${result.vectorial_error[0].join(' \\\\ ')} \\end{pmatrix}`;
+     let absoluteErrorText = `Error absoluto: ${result.absolute_error}`;
 
-        // Insertar las expresiones en el contenedor
-        resultsContainer.innerHTML = `\\[ ${xLatex} \\] \\[ ${errorVectorialLatex} \\]`;
-        absoluteErrorContainer.textContent = absoluteErrorText;
+     resultsContainer.innerHTML = `\\[ ${xLatex} \\] \\[ ${lLatex} \\] \\[ ${uLatex} \\] \\[ ${errorVectorialLatex} \\]`;
+     absoluteErrorContainer.textContent = absoluteErrorText;
 
-        // Rerenderizar MathJax para que muestre las fórmulas
-        MathJax.typesetPromise();
+     // Rerenderizar MathJax para que muestre las fórmulas
+     MathJax.typesetPromise();
+
 
         // Solo graficar si la matriz es 2x2
         if (matrix.length === 2 && matrix[0].length === 2) {
@@ -155,56 +154,23 @@ function calculateGaussElimination() {
         }
     })
     .catch(error => {
-       error.then(err => {
-           console.error('Error al conectarse a la API:', err);
-           const errorMessageElement = document.getElementById('error-message');
-           errorMessageElement.style.display = 'block';
+      error.then(err => {
+          console.error('Error al conectarse a la API:', err);
+          const errorMessageElement = document.getElementById('error-message');
+          errorMessageElement.style.display = 'block';
 
-           // Extraer y mostrar el mensaje enviado por la API, manejando ambos casos (string o array de objetos)
-           if (typeof err.detail === 'string') {
-               errorMessageElement.textContent = err.detail;  // Si `detail` es string, lo mostramos
-           } else if (Array.isArray(err.detail) && err.detail[0].msg) {
-               errorMessageElement.textContent = err.detail[0].msg;  // Si `detail` es array, mostramos el mensaje
-           } else {
-               errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';  // Mensaje genérico
-           }
-
-           errorMessageElement.style.textAlign = 'center';  // Centrar el mensaje de error
-           document.getElementById('geogebra-container').style.display = 'none'; // Ocultar el gráfico si hay error de API
-           document.getElementById('downloadButton').style.display = 'none';  // Ocultar el botón de descarga
-       });
-   });
-}
-
-function downloadGeoGebraSVG() {
-   console.log("Botón de descarga SVG presionado"); // Verificar si la función se llama
-   if (typeof ggbApplet !== 'undefined' && typeof ggbApplet.exportSVG === 'function') {
-       // Llamar a exportSVG con una función de callback para procesar el SVG
-       ggbApplet.exportSVG(function(svgContent) {
-           console.log("SVG Content: ", svgContent); // Verificar el contenido del SVG
-
-           // Asegurarse de que el SVG no esté vacío o indefinido
-           if (!svgContent || !svgContent.startsWith('<svg')) {
-               alert("El contenido exportado no es un SVG válido.");
-               return;
-           }
-
-           // Crear un enlace para descargar el archivo SVG
-           let link = document.createElement('a');
-           link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent);
-           link.download = 'geogebra_graph.svg';
-           link.style.display = 'none';
-           document.body.appendChild(link);
-           link.click();
-           document.body.removeChild(link);
-       });
-   } else {
-       alert('No se pudo exportar el SVG. Asegúrate de que la API de GeoGebra esté disponible.');
-   }
+          // Mostrar el mensaje de error que proviene de la API
+          if (err.detail) {
+              errorMessageElement.textContent = err.detail;  // Si 'detail' existe en el JSON del error
+          } else {
+              errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';  // Mensaje genérico
+          }
+      });
+  });
 }
 
 // Función para inicializar GeoGebra vacío (sin ecuaciones)
-function initializeEmptyGeoGebra() {
+function initializeGeoGebra() {
     ggbApplet.reset();  // Limpiar cualquier gráfica anterior en GeoGebra
     ggbApplet.setCoordSystem(-10, 10, -10, 10);  // Ajustar el sistema de coordenadas
 }

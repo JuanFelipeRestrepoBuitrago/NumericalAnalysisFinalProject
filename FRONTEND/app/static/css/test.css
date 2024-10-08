@@ -316,31 +316,28 @@ input[type="number"] {
    gap: 10px;
 }
 
-
-
 /* Botón para generar la matriz */
 button.btn-secondary {
-   background-color: #ff6e6c; /* Color naranja */
-   border-color: #ff6e6c;
+   background-color: #67568c;
+   border-color: #67568c;
    color: #ffffff;
-   border-radius: 25px;
-   padding: 10px 20px;
-   font-size: 1rem;
-   font-weight: 500;
-   transition: all 0.3s ease;
-   display: block;
-   margin: 20px auto; /* Centra el botón */
-   text-align: center;
+   padding: 8px 15px; /* Reducido */
+   font-size: 1rem; /* Reducido */
+   font-weight: 600;
+   border-radius: 8px; /* Reducido */
+   width: 100%; /* Ocupa todo el ancho del contenedor */
+   text-align: center; /* Centra el texto dentro del botón */
+   transition: background-color 0.3s ease, border-color 0.3s ease;
+   display: block; /* Asegura que el botón sea un bloque, ocupando todo el ancho */
+   margin: 0 auto; /* Centra el botón horizontalmente */
 }
 
 /* Hover para el botón */
 button.btn-secondary:hover {
-   background-color: #fbdd74; /* Cambia a un tono más claro de naranja */
-   border-color: #fbdd74;
-   color: #ffffff;
+   background-color: #1f1235;
+   border-color: #1f1235;
+   transform: translateY(-2px);
 }
-
-
 
 /* Footer */
 .footer {

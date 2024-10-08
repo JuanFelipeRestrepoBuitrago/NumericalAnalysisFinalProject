@@ -4,7 +4,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Eliminación Gaussiana</title>
+   <title>Factorización LU</title>
    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
    <link rel="stylesheet" href="{{ url_for('static', filename='css/test.css') }}">
@@ -51,12 +51,12 @@
 
    <!-- Contenido principal -->
    <div class="container my-5">
-      <h1 class="text-center mb-4">Método de Eliminación Gaussiana</h1>
+      <h1 class="text-center mb-4">Método de Factorización LU</h1>
       <div class="method-container">
          <!-- Contenedor de parámetros -->
          <div class="parameters-container">
             <h2 class="text-center">Parámetros</h2>
-            <form id="gaussEliminationForm">
+            <form id="luFactorizationForm">
                <!-- Tamaño de la matriz -->
                <div class="mb-3">
                   <label for="matrixSize" class="form-label">¿De qué tamaño deseas tu matriz?</label>
@@ -82,54 +82,50 @@
                </div>
 
                <div class="mb-3">
-                  <label for="precision" class="form-label">Precisión (opcional)</label>
-                  <input type="number" id="precision" name="precision" class="form-control" placeholder="16" />
-               </div>
-
-               <div class="mb-3">
                   <label for="pivot_type" class="form-label">Tipo de Pivote</label>
                   <select id="pivot_type" name="pivot_type" class="form-control" required>
                      <option value="null">Sin Pivote</option>
                      <option value="1">Pivote Parcial</option>
-                     <option value="2">Pivote Total</option>
                   </select>
                </div>
 
-               <button type="button" onclick="calculateGaussElimination()" class="btn btn-primary w-100">Calcular</button>
+               <div class="mb-3">
+                  <label for="precision" class="form-label">Precisión (opcional)</label>
+                  <input type="number" id="precision" name="precision" class="form-control" placeholder="16" />
+               </div>
+
+               <button type="button" onclick="calculateLUFactorization()" class="btn btn-primary w-100">Calcular</button>
             </form>
          </div>
 
-<!-- Contenedor de resultados -->
-<div id="results-container">
-   <h2>Resultados</h2>
-   <div id="results"></div>
-   <div id="error-message" style="color: red;"></div>
-   <div id="absolute-error"></div>
+         <!-- Contenedor de resultados -->
+         <div id="results-container">
+            <h2>Resultados</h2>
+            <div id="results"></div>
+            <div id="error-message" style="color: red;"></div>
+            <div id="absolute-error"></div>
 
-   <!-- Graficador GeoGebra dentro del mismo contenedor -->
-   <div class="graph-display mt-4" style="margin-top: 20px;" id="geogebra-container">
-       <div id="geogebra" style="width: 100%; height: 450px;"></div>
+            <!-- Graficador GeoGebra dentro del mismo contenedor -->
+            <div class="graph-display mt-4" style="margin-top: 20px;" id="geogebra-container">
+                <div id="geogebra" style="width: 100%; height: 450px;"></div>
+            </div>
+            <button id="downloadButton" class="btn btn-secondary mt-4" style="display:none;" onclick="downloadGeoGebraSVG()">
+               Descargar SVG
+            </button>
+         </div>
+      </div>
    </div>
-   <button id="downloadButton" class="btn btn-secondary mt-4" style="display:none;" onclick="downloadGeoGebraSVG()">
-      Descargar SVG
-   </button>
-</div>
-</div>
-
-
-</div>
    
-<!-- Footer -->
-<footer class="footer">
-   <div class="container">
-       &copy;2024 MethodSolver Team. Todos los derechos reservados.
-   </div>
-</footer>
-
+   <!-- Footer -->
+   <footer class="footer">
+      <div class="container">
+          &copy;2024 MethodSolver Team. Todos los derechos reservados.
+      </div>
+   </footer>
 
    <!-- Scripts -->
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-   <script src="static/js/gauss_elimination.js"></script> <!-- Enlace al archivo externo -->
+   <script src="static/js/factorizacion_lu.js"></script> <!-- Enlace al archivo externo -->
 </body>
 
 </html>
