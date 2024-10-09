@@ -144,10 +144,10 @@ table {
 /* Celdas y encabezados de la tabla */
 th,
 td {
-   padding: 8px; /* Reducido */
+   padding: 5px; /* Reducido */
    border: 1px solid #ddd;
    text-align: left;
-   font-size: 0.85rem; /* Reducido */
+   font-size: 0.7rem; /* Reducido */
 }
 
 /* Encabezados de la tabla */
@@ -169,7 +169,7 @@ tbody tr:hover {
 
 /* Contenedor de la tabla */
 .table-container {
-   max-height: 350px; /* Reducido */
+   max-height: 600px; /* Ajustado para mostrar más filas */
    overflow-y: auto;
 }
 #results-container {
@@ -315,6 +315,49 @@ input[type="number"] {
    grid-template-columns: 1fr;
    gap: 10px;
 }
+
+/* Estilos generales para el contenedor del vector (grid-x) */
+.grid-x {
+   display: grid;
+   grid-template-columns: 1fr;
+   justify-content: center;  /* Centra los elementos horizontalmente */
+   align-items: center;  /* Centra los elementos verticalmente */
+   gap: 10px; /* Espacio entre los elementos */
+   background-color: #f7f7f7; /* Color de fondo */
+   padding: 15px;
+   border-radius: 10px;
+   margin-bottom: 20px; /* Espacio debajo del contenedor */
+   width: fit-content; /* Ajustar el tamaño del contenedor al contenido */
+   margin-left: auto;  /* Alineación horizontal centrada */
+   margin-right: auto; /* Alineación horizontal centrada */
+}
+
+/* Estilo de los inputs de las celdas del vector (grid-x) */
+.grid-x input.vector-cell {
+   display: block;
+   margin: 5px auto;
+   width: 30px;  /* Tamaño ajustado */
+   height: 30px;
+   font-size: 0.8rem;
+   text-align: center;
+   border: none;
+   border-radius: 6px;
+   padding: 0;
+   background-color: white;
+   transition: background-color 0.3s ease;
+}
+
+/* Hover y focus para los inputs del vector (grid-x) */
+.grid-x input.vector-cell:hover {
+   background-color: #f0f0f0;
+}
+
+.grid-x input.vector-cell:focus {
+   background-color: #fff;
+   outline: none;  /* Elimina el borde de enfoque del navegador */
+}
+
+
 
 /* Botón para generar la matriz */
 button.btn-secondary {

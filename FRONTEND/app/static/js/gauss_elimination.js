@@ -93,7 +93,7 @@ function calculateGaussElimination() {
     console.log("Datos enviados a la API:", JSON.stringify(data));
 
     // Token de autenticación
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0MTIwMzEsImlhdCI6MTcyODIzOTIzMSwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.3JoKuJVgq7_XX7hxJqRKrE7UODHIUSWiXoznRjdMthQ";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2MDM2MjMsImlhdCI6MTcyODQzMDgyMywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VIpuHO5lvZBT93IEkKaHt5zlnoOpRkkqmx0PcLzpKW0";
 
     // Realizar la solicitud POST a la API con el token en el encabezado
     fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/gauss_elimination/", {

@@ -89,6 +89,10 @@ def gauss_elimination_page():
 def factorization_lu_page():
     return render_template('factorizacion_lu.html')
 
+@app.route('/metodos/jacobi')
+def jacobi_page():
+    return render_template('jacobi_method.html')
+
 # Nueva ruta para la guía de expresiones
 @app.route('/guia')
 def guia_page():
