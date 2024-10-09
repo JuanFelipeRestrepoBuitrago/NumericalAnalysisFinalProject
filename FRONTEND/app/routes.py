@@ -55,11 +55,11 @@ def calculate_bisection():
 def graphing():
     return render_template('graphing.html')
 
-@app.route('/false_rule', methods=['GET'])
+@app.route('/false_rule')
 def false_rule_page():
     return render_template('false_rule.html')
 
-@app.route('/fixed_point', methods=['GET'])
+@app.route('/fixed_point')
 def fixed_point_page():
     return render_template('fixed_point.html')
 
@@ -77,10 +77,29 @@ def first_modified_newton_page():
     return render_template('first_modified_newton.html')
 
 
-@app.route('/second_modified_newton', methods=['GET'])
+@app.route('/second_modified_newton')
 def second_modified_newton_page():
     return render_template('second_modified_newton.html')
 
+@app.route('/gauss_elimination')
+def gauss_elimination_page():
+    return render_template('gauss_elimination.html')
+
+@app.route('/factorization_lu')
+def factorization_lu_page():
+    return render_template('factorizacion_lu.html')
+
+@app.route('/metodos/jacobi')
+def jacobi_page():
+    return render_template('jacobi_method.html')
+
+@app.route('/gauss_seidel')
+def gauss_seidel_page():
+    return render_template('gauss_seidel_method.html')
+
+@app.route('/metodo_sor')
+def metodo_sor_page():
+    return render_template('sor_method.html')
 
 # Nueva ruta para la guía de expresiones
 @app.route('/guia')

@@ -88,14 +88,33 @@
             <a href="{{ url_for('newton_raphson_page') }}" class="btn btn-outline-primary btn-lg w-100">Newton-Raphson</a>
         </div>
         <div class="col-md-4 mb-4">
-            <a href="{{ url_for('first_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Newton-Raphson Modificado</a>
+            <a href="{{ url_for('first_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Primer Método Modificado de Newton</a>
         </div>
         <div class="col-md-4 mb-4">
             <a href="{{ url_for('second_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Segundo Método Modificado de Newton</a>
         </div>
     </div>
 </div>
-</section>
+
+<!-- Grupo 3: Resolver Ecuaciones de Varias Variables -->
+  <div class="mb-5">
+    <h2 class="mb-4"><i class="bi bi-bar-chart-fill"></i> Solución de sistemas de ecuaciones</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('gauss_elimination_page') }}" class="btn btn-outline-primary btn-lg w-100">Eliminación Gaussiana</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('factorization_lu_page') }}" class="btn btn-outline-primary btn-lg w-100">Factorización LU</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('jacobi_page') }}" class="btn btn-outline-primary btn-lg w-100">Método Jacobi</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('gauss_seidel_page') }}" class="btn btn-outline-primary btn-lg w-100">Método Gauss-Seidel</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('metodo_sor_page') }}" class="btn btn-outline-primary btn-lg w-100">Método SOR</a>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">

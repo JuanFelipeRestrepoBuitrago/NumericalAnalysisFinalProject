@@ -9,7 +9,6 @@ html, body {
    min-height: 100vh; 
    margin: 0;
    padding: 0;
-   height: 100%;
 }
 
 .navbar {
@@ -83,15 +82,15 @@ html, body {
    background-color: #ff6e6c;
 }
 
-
 .container {
    max-width: 800px;
    background-color: #fff;
    padding: 30px;
    border-radius: 10px;
    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-   flex: 1; /* Para que el contenedor principal se ajuste al contenido */
+   flex: 1; /* Para que el contenedor principal se ajuste al contenido y empuje el footer hacia abajo */
 }
+
 h1, h2, h3 {
    text-align: center;
    color: #1f1235;
@@ -138,20 +137,6 @@ h1, h2, h3 {
    font-weight: bolder;
 }
 
-/* Footer */
-.footer {
-   background-color: #1f1235; /* Color de fondo del footer */
-   color: #ffffff; /* Color del texto */
-   padding: 20px 0; /* Espaciado superior e inferior */
-   text-align: center; /* Alinear el texto al centro */
-   border-top: 3px solid #ff6e6c; /* Bordes superiores */
-   margin-top: 30px; /* Espacio superior para separar del contenido */
-   position: relative; /* Para cualquier ajuste de posición */
-   bottom: 0; /* Anclar al fondo de la página */
-   width: 100%; /* Ancho completo del footer */
-}
-
-/* Footer */
 .footer {
    background-color: #1f1235;
    color: #ffffff;

@@ -1,3 +1,58 @@
+// Inicializar el applet de GeoGebra
+function initializeGeoGebra(expression, derivative_expression = null, root = null) {
+    const ggbApp = new GGBApplet({
+        "appName": "graphing",
+        "width": 800,
+        "height": 400,
+        "showToolBar": false,
+        "showAlgebraInput": false,
+        "showMenuBar": false,
+        "enableRightClick": false,
+        "enableShiftDragZoom": true,
+        "showResetIcon": true,
+        "language": "es",
+        "showZoomButtons": true,
+        "capturingThreshold": null,
+        "enableFileFeatures": true,
+        "appletOnLoad": function () {
+            // Graficar la función f(x)
+            ggbApplet.evalCommand(`f(x) = ${expression}`);
+
+            // Si se proporciona una derivada o se calcula automáticamente
+            if (derivative_expression !== null) {
+                ggbApplet.evalCommand(`g(x) = ${derivative_expression}`);
+            }
+
+            // Graficar el punto de la raíz si existe
+            if (root !== null) {
+                ggbApplet.evalCommand(`RootPoint = (${root}, f(${root}))`);
+                ggbApplet.evalCommand(`SetPointStyle(RootPoint, 3)`);  // Cambia el estilo del punto
+                ggbApplet.evalCommand(`SetPointSize(RootPoint, 5)`);   // Aumenta el tamaño del punto
+            }
+        }
+    }, true);
+    ggbApp.inject('geogebra'); // Inyecta el gráfico en el contenedor 'geogebra'
+}
+
+// Función para calcular la derivada automáticamente si no se proporciona
+function calculateDerivative(expression) {
+    try {
+        // Derivar la función utilizando math.js
+        let node = math.parse(expression);
+        let derivative = math.derivative(node, 'x');
+        return derivative.toString();
+    } catch (error) {
+        console.error("Error al derivar la función:", error);
+        return null;
+    }
+}
+
+// Ejecutar la inicialización de GeoGebra al cargar la página
+window.onload = function () {
+    // Inicializa con funciones por defecto
+    initializeGeoGebra('x^3 - x - 2');
+};
+
 function calculateModifiedNewton() {
    // Obtener valores del formulario
    let expression = document.getElementById('expression').value;
@@ -8,6 +63,15 @@ function calculateModifiedNewton() {
    let error_type = document.getElementById('error_type').value;
    let multiplicity = parseInt(document.getElementById('multiplicity').value);
 
+   // Si no se proporciona una derivada, calcularla automáticamente
+   if (derivative_expression === "" || derivative_expression === null) {
+       derivative_expression = calculateDerivative(expression);
+       if (!derivative_expression) {
+           alert("No se pudo calcular la derivada de la función proporcionada.");
+           return;
+       }
+   }
+
    // Crear el objeto de datos para enviar a la API
    let data = {
        "expression": expression,
@@ -15,16 +79,12 @@ function calculateModifiedNewton() {
        "tolerance": tolerance,
        "max_iterations": max_iterations,
        "initial": initial,
-       "multiplicity": multiplicity
+       "multiplicity": multiplicity,
+       "derivative_expression": derivative_expression  // Incluye la derivada calculada o proporcionada
    };
 
-      //Agregar "derivada" solo si el usuario lo ha proporcionado y no es null
-      if (derivative_expression != "" && derivative_expression != null) {
-         data.derivative_expression = derivative_expression;
-        }
-
-   // Define el token de autenticación
-   let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjczNzU3OTUsImlhdCI6MTcyNzIwMjk5NSwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.Sl-r-muvfEsq2x3PFlGbJTV8dY1SSQL4mknyWez5BZQ";
+    // Define el token de autenticación
+    let token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0OTYyNjQsImlhdCI6MTcyODMyMzQ2NCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VbzqMestAYMgOSIW-Bg5lF179l-aVu3ZqSujniYXUx4";
 
    // Realizar la solicitud POST a la API con el token en el encabezado
    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/first_modified_newton_method/", {
@@ -69,6 +129,13 @@ function calculateModifiedNewton() {
                fxCell.textContent = fx;
                errorCell.textContent = error;
            });
+
+           // Obtener la raíz final
+           let root = result.Xn[result.Xn.length - 1];
+
+           // Actualizar el gráfico con la nueva función, derivada y la raíz
+           initializeGeoGebra(expression, derivative_expression, root);
+
        } else {
            console.error('Estructura de respuesta incorrecta. Algunas propiedades están indefinidas.');
            alert('Error: La estructura de la respuesta de la API no es la esperada.');
@@ -83,7 +150,21 @@ function calculateModifiedNewton() {
        }
    })
    .catch(error => {
-       console.error('Error al conectarse a la API:', error);
-       alert(`Error al conectarse a la API: ${error.message}`);
-   });
+    error.then(err => {
+        console.error('Error al conectarse a la API:', err);
+        const errorMessageElement = document.getElementById('error-message');
+        errorMessageElement.style.display = 'block';
+
+        // Extraer y mostrar el mensaje enviado por la API, manejando ambos casos (string o array de objetos)
+        if (typeof err.detail === 'string') {
+            errorMessageElement.textContent = err.detail;  // Si `detail` es string, lo mostramos
+        } else if (Array.isArray(err.detail) && err.detail[0].msg) {
+            errorMessageElement.textContent = err.detail[0].msg;  // Si `detail` es array, mostramos el mensaje
+        } else {
+            errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';  // Mensaje genérico
+        }
+
+        errorMessageElement.style.textAlign = 'center';  // Centrar el mensaje de error
+    });
+});
 }

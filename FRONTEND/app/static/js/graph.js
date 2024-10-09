@@ -3,13 +3,15 @@ function initializeGeoGebra() {
    const ggbApp = new GGBApplet({
       "appName": "graphing",
       "width": 800,
-      "height": 500,
+      "height": 450,
       "showToolBar": false,
       "showAlgebraInput": false,
       "showMenuBar": false,
       "enableRightClick": false,
       "enableShiftDragZoom": true,
       "showResetIcon": true,
+      "language": "es",
+      "showZoomButtons": true,
       "capturingThreshold": null,
       "enableFileFeatures": true,  // Habilitar características de archivo
       "appletOnLoad": function () {
