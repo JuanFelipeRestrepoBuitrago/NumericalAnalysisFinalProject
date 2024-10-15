@@ -1,4 +1,4 @@
-from app.utils.utils import raise_exception
+from app.utils.utils import raise_exception, calculate_spectral_radius, is_strictly_diagonally_dominant
 from app.routes.routes import logger
 from typing import List, Tuple
 import sympy as sp
@@ -56,6 +56,54 @@ class Sor:
         # Check if the length of n is equal to the number of rows in the matrix A
         if n is not None and n != A.shape[0]:
             raise_exception(ValueError("La longitud de n no es igual al número de filas y columnas de la matriz A"), logger)
+
+    def get_t_spectral_radius(self, w: float, A: sp.Matrix = None) -> str:
+        """
+        This function calculates the spectral radius of the T matrix obtained from the A matrix.
+
+        :param A: numpy array with the coefficients of the system of equations
+        :param w: relaxation factor
+
+        :return: String with the spectral radius of the T matrix
+        """
+        if A is None:
+            A = self.A
+
+        # Calculate the T matrix
+        D = sp.diag(*A.diagonal())  # Diagonal matrix from A
+        L = - (A.lower_triangular() - D)  # Strict lower triangular (excluding diagonal)
+        U = - (A.upper_triangular() - D) # Strict upper triangular (excluding diagonal)
+        
+        T = ((D - w * L).inv() * ((1 - w) * D + w * U))
+
+        # Calculate the spectral radius
+        spectral_radius = calculate_spectral_radius(T, self.precision)
+
+        return spectral_radius
+    
+    def converges(self, w: float, A: sp.Matrix = None) -> str:
+        """
+        This function checks if the matrix A converges using the spectral radius of the T matrix.
+
+        :param A: numpy array with the coefficients of the system of equations
+        :param w: relaxation factor
+
+        :return: String with the result of the convergence
+        """
+        if A is None:
+            A = self.A
+
+        # Check if the spectral radius of T is less than 1
+        spectral_radius = self.get_t_spectral_radius(w, A)
+        spectral_radius_condition = float(spectral_radius) < 1
+
+        # Check if the matrix is strictly diagonally dominant
+        diagonally_dominant_condition = is_strictly_diagonally_dominant(A)
+
+        if spectral_radius_condition or diagonally_dominant_condition:
+            return "El método converge, el radio espectral de T es menor a 1 y/o la matriz es estrictamente diagonal dominante"
+        else:
+            return "El método no converge, el radio espectral de T es mayor o igual a 1 y la matriz no es estrictamente diagonal dominante"   
 
     def element_wise_division(self, A: sp.Matrix, B: sp.Matrix) -> sp.Matrix:
         """
