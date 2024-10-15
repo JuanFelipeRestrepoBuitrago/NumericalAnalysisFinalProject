@@ -1,4 +1,4 @@
-from app.utils.utils import parse_expression, construct_augmented_matrix, calculate_spectral_radius
+from app.utils.utils import parse_expression, construct_augmented_matrix, calculate_spectral_radius, is_strictly_diagonally_dominant
 from app.routes.routes import logger
 from fastapi.exceptions import HTTPException
 import numpy as np
@@ -120,3 +120,20 @@ def test_calculate_spectral_radius():
     # Test 3
     A = sp.Matrix([[1, 2], [3, 4]])
     assert calculate_spectral_radius(A) == "5.372281323269014", "Test failed for a 2x2 matrix"
+
+def test_is_strictly_diagonally_dominant():
+    # Test 1
+    A = np.array([[10, 2, 3], [4, 20, 6], [7, 8, 30]])
+    assert is_strictly_diagonally_dominant(A), "Test failed for a 3x3 matrix"
+
+    # Test 2
+    A = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+    assert not is_strictly_diagonally_dominant(A), "Test failed for a 4x4 matrix"
+
+    # Test 3
+    A = np.array([[1, 2], [3, 4]])
+    assert not is_strictly_diagonally_dominant(A), "Test failed for a 2x2 matrix"
+
+    # Test 4
+    A = np.array([[45, 13, -4, 8], [-5, -28, 4, -14], [9, 15, 63, -7], [2, 3, -8, -42]])
+    assert is_strictly_diagonally_dominant(A), "Test failed for a 4x4 matrix"
