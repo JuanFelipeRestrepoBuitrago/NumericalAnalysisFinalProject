@@ -258,9 +258,9 @@ def test_sor():
     assert "es una aproximación de la solución del sistema con una tolerancia de" in answer["message"]
 
 
-def test_calculate_spectral_radius():
+def test_jacobi_spectral_radius_and_convergence():
     """
-    Test the post lu factorization endpoint /linear_equations_system/calculate_spectral_radius/
+    Test the post lu factorization endpoint /linear_equations_system/jacobi/spectral_radius_and_convergence/
     """
     # First, we need to login
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
@@ -278,15 +278,105 @@ def test_calculate_spectral_radius():
     }
 
     # Prepare the data
+
     data = {
-        "A": [[1, 2], [3, 4]],
-        "precision": 16
+        "A": [[45, 13, -4, 8], [-5, -28, 4, -14], [9, 15, 63, -7], [2, 3, -8, -42]],
+        "b": [[-25], [82], [75], [-43]],
+        "x_initial": [[2], [2], [2], [2]],
+        "tol": 0.5e-4,
+        "max_iter": 100,
+        "order": 0,
+        "precision": 16,
+        "method_type": "iterative"
     }
 
     # Make the request
-    response = client.post(f"/api/{API_VERSION}/{API_NAME}/linear_equations_system/spectral_radius/", json=data, headers=headers)
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/linear_equations_system/jacobi/spectral_radius_and_convergence/", json=data, headers=headers)
 
     assert response.status_code == 200
     answer = response.json()
-    assert "5.372281323269014" in answer["spectral_radius"]
+    assert "0.33974160954560" in answer["spectral_radius"]
+    assert answer["convergence"] == "El método converge, el radio espectral de T es menor a 1 y/o la matriz es estrictamente diagonal dominante"
+
+
+def test_gauss_seidel_spectral_radius_and_convergence():
+    """
+    Test the post lu factorization endpoint /linear_equations_system/gauss_seidel/spectral_radius_and_convergence/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+
+    data = {
+        "A": [[45, 13, -4, 8], [-5, -28, 4, -14], [9, 15, 63, -7], [2, 3, -8, -42]],
+        "b": [[-25], [82], [75], [-43]],
+        "x_initial": [[2], [2], [2], [2]],
+        "tol": 0.5e-5,
+        "max_iter": 100,
+        "order": 0,
+        "precision": 16,
+        "method_type": "iterative"
+    }
+
+    # Make the request
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/linear_equations_system/gauss_seidel/spectral_radius_and_convergence/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert "0.18881517244860" in answer["spectral_radius"]
+    assert answer["convergence"] == "El método converge, el radio espectral de T es menor a 1 y/o la matriz es estrictamente diagonal dominante"
+
+def test_sor_spectral_radius_and_convergence():
+    """
+    Test the post lu factorization endpoint /linear_equations_system/sor/spectral_radius_and_convergence/
+    """
+    # First, we need to login
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/login/", json={
+        "username": DEFAULT_USER_NAME,
+        "password": DEFAULT_USER_PASSWORD
+    })
+    assert response.status_code == 200
+
+    # Prepare the headers
+    answer = response.json()
+    token = answer["access_token"]
+    token_type = answer["token_type"]
+    headers = {
+        "Authorization": f"{token_type} {token}"
+    }
+
+    # Prepare the data
+
+    data = {
+        "A": [[45, 13, -4, 8], [-5, -28, 4, -14], [9, 15, 63, -7], [2, 3, -8, -42]],
+        "b": [[-25], [82], [75], [-43]],
+        "x_initial": [[2], [2], [2], [2]],
+        "tol": 0.5e-5,
+        "max_iter": 100,
+        "order": 0,
+        "precision": 16,
+        "method_type": "iterative",
+        "w": 1.001
+    }
+
+    # Make the request
+    response = client.post(f"/api/{API_VERSION}/{API_NAME}/linear_equations_system/sor/spectral_radius_and_convergence/", json=data, headers=headers)
+
+    assert response.status_code == 200
+    answer = response.json()
+    assert "0.19091650493849" in answer["spectral_radius"]
+    assert answer["convergence"] == "El método converge, el radio espectral de T es menor a 1 y/o la matriz es estrictamente diagonal dominante"
     
