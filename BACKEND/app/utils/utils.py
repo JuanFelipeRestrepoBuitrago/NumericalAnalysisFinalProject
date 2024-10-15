@@ -105,7 +105,7 @@ def calculate_spectral_radius(A: sp.Matrix, precision: int = 16) -> str:
     eigenvalues = A.eigenvals()
 
     # Get the maximum eigenvalue
-    max_eigenvalue = str(max([sp.Abs(eig).evalf(precision) for eig in eigenvalues.keys()]))
+    max_eigenvalue = str(max([sp.Abs(eig.evalf(precision)).evalf(precision) for eig in eigenvalues.keys()]))
 
     return max_eigenvalue
 

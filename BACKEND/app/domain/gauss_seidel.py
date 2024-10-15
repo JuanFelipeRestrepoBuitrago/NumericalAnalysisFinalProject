@@ -1,4 +1,4 @@
-from app.utils.utils import raise_exception
+from app.utils.utils import raise_exception, is_strictly_diagonally_dominant, calculate_spectral_radius
 from app.routes.routes import logger
 from typing import List, Tuple
 import sympy as sp
@@ -56,6 +56,25 @@ class GaussSeidel:
         # Check if the length of n is equal to the number of rows in the matrix A
         if n is not None and n != A.shape[0]:
             raise_exception(ValueError("La longitud de n no es igual al número de filas y columnas de la matriz A"), logger)
+
+    def get_t_spectral_radius(self, A: sp.Matrix = None) -> str:
+        """
+        This function calculates the spectral radius of the T matrix obtained from the A matrix.
+        """
+        if A is None:
+            A = self.A
+
+        # Calculate the T matrix
+        D = sp.diag(*A.diagonal())  # Diagonal matrix from A
+        L = - (A.lower_triangular() - D)  # Strict lower triangular (excluding diagonal)
+        U = - (A.upper_triangular() - D) # Strict upper triangular (excluding diagonal)
+        
+        T = ((D-L).inv() * U)
+
+        # Calculate the spectral radius
+        spectral_radius = calculate_spectral_radius(T, self.precision)
+
+        return spectral_radius
 
     def element_wise_division(self, A: sp.Matrix, B: sp.Matrix) -> sp.Matrix:
         """
