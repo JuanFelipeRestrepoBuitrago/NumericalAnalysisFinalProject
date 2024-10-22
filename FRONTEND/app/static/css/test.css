@@ -144,10 +144,10 @@ table {
 /* Celdas y encabezados de la tabla */
 th,
 td {
-   padding: 8px; /* Reducido */
+   padding: 5px; /* Reducido */
    border: 1px solid #ddd;
    text-align: left;
-   font-size: 0.85rem; /* Reducido */
+   font-size: 0.7rem; /* Reducido */
 }
 
 /* Encabezados de la tabla */
@@ -169,10 +169,218 @@ tbody tr:hover {
 
 /* Contenedor de la tabla */
 .table-container {
-   max-height: 350px; /* Reducido */
+   max-height: 600px; /* Ajustado para mostrar más filas */
    overflow-y: auto;
 }
+#results-container {
+   padding: 20px;
+   background-color: #f8f9fa;
+   border-radius: 10px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   display: block; /* Cambiado de flex a block para evitar que estire el contenedor */
+   max-width: 900px; /* Limita el ancho máximo */
+   margin-left: auto;  /* Centra el contenedor horizontalmente */
+   margin-right: auto; /* Centra el contenedor horizontalmente */
+   margin-top: 20px; /* Añadido espacio en la parte superior */
+   width: 100%; /* Asegura que ocupe todo el ancho */
+   height: 100%; /* Ajusta la altura automáticamente según el contenido */
+}
 
+#results, #error-message, #absolute-error {
+   font-size: 1.5rem;
+   text-align: center;
+   margin-top: 10px;
+}
+
+#results {
+   color: #333;
+}
+
+#error-message {
+   color: red;
+}
+
+#absolute-error {
+   color: #ff6e6c;
+}
+
+
+
+/* Eliminar los controles de incremento/decremento de los inputs de tipo número */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    appearance: textfield;  /* Para navegadores Firefox */
+}
+
+
+/* Estilos generales para el contenedor de la matriz */
+.grid-matrix {
+   display: grid;
+   justify-content: center;
+   align-items: center;
+   gap: 10px; /* Espacio entre las celdas */
+}
+
+/* Ajuste para una matriz 2x2 */
+.grid-matrix.size-2x2 {
+   grid-template-columns: repeat(2, 1fr);
+}
+
+/* Ajuste para una matriz 3x3 */
+.grid-matrix.size-3x3 {
+   grid-template-columns: repeat(3, 1fr);
+}
+
+/* Ajuste para una matriz 4x4 */
+.grid-matrix.size-4x4 {
+   grid-template-columns: repeat(4, 1fr);
+}
+
+/* Ajuste para una matriz 5x5 */
+.grid-matrix.size-5x5 {
+   grid-template-columns: repeat(5, 1fr);
+}
+
+/* Ajuste para una matriz 6x6 */
+.grid-matrix.size-6x6 {
+   grid-template-columns: repeat(6, 1fr);
+}
+
+
+/* Estilo general para el contenedor */
+.grid-matrix {
+   background-color: #f7f7f7;  /* Color de fondo suave */
+   padding: 15px;
+   border-radius: 10px;
+   margin-bottom: 20px;  /* Espacio debajo del contenedor */
+}
+
+/* Estilo de los inputs de las celdas */
+.grid-matrix input.matrix-cell{
+   display: block;
+   margin: 5px auto;
+   width: 30px;  /* Tamaño más pequeño (20x20) */
+   height: 30px; /* Altura más pequeña (20x20) */
+   font-size: 0.8rem;  /* Ajustar tamaño del número para que encaje bien */
+   text-align: center;
+   border: none;  /* Quitar completamente el borde */
+   border-radius: 6px;
+   padding: 0;  /* Eliminar el padding interno */
+   box-shadow: none;  /* Elimina la sombra */
+   background-color: white;
+   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilo para el hover de los inputs */
+.grid-matrix input.matrix-cell:hover, .grid-vector input.vector-cell:hover {
+   background-color: #f0f0f0; /* Color de fondo al hacer hover */
+}
+
+/* Estilo para el foco (cuando el input es seleccionado) */
+.grid-matrix input.matrix-cell:focus, .grid-vector input.vector-cell:focus {
+   background-color: #fff;
+   outline: none;  /* Elimina el borde de enfoque del navegador */
+}
+
+/* Centrar el vector de soluciones (b) */
+.vector-grid-container {
+   display: flex;
+   justify-content: center;
+   margin-top: 10px;
+}
+
+/* Ajustar el tamaño de los inputs del vector (b) */
+.grid-vector input.vector-cell {
+   width: 20px;  /* Tamaño más pequeño (20x20) */
+   height: 20px; /* Altura más pequeña (20x20) */
+   font-size: 0.8rem;  /* Ajustar tamaño del número para que encaje bien */
+   text-align: center;
+   border: none;  /* Quitar bordes */
+   border-radius: 6px;
+   padding: 0;  /* Eliminar padding interno */
+   box-shadow: none;  /* Quitar sombras */
+   background-color: white;
+   transition: background-color 0.3s ease;
+   margin: 3px;  /* Espaciado entre las celdas del vector */
+}
+
+/* Centrar el grid del vector */
+.grid-vector {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 10px;
+}
+
+/* Estilos generales para el contenedor del vector (grid-x) */
+.grid-x {
+   display: grid;
+   grid-template-columns: 1fr;
+   justify-content: center;  /* Centra los elementos horizontalmente */
+   align-items: center;  /* Centra los elementos verticalmente */
+   gap: 10px; /* Espacio entre los elementos */
+   background-color: #f7f7f7; /* Color de fondo */
+   padding: 15px;
+   border-radius: 10px;
+   margin-bottom: 20px; /* Espacio debajo del contenedor */
+   width: fit-content; /* Ajustar el tamaño del contenedor al contenido */
+   margin-left: auto;  /* Alineación horizontal centrada */
+   margin-right: auto; /* Alineación horizontal centrada */
+}
+
+/* Estilo de los inputs de las celdas del vector (grid-x) */
+.grid-x input.vector-cell {
+   display: block;
+   margin: 5px auto;
+   width: 30px;  /* Tamaño ajustado */
+   height: 30px;
+   font-size: 0.8rem;
+   text-align: center;
+   border: none;
+   border-radius: 6px;
+   padding: 0;
+   background-color: white;
+   transition: background-color 0.3s ease;
+}
+
+/* Hover y focus para los inputs del vector (grid-x) */
+.grid-x input.vector-cell:hover {
+   background-color: #f0f0f0;
+}
+
+.grid-x input.vector-cell:focus {
+   background-color: #fff;
+   outline: none;  /* Elimina el borde de enfoque del navegador */
+}
+
+
+
+/* Botón para generar la matriz */
+button.btn-secondary {
+   background-color: #67568c;
+   border-color: #67568c;
+   color: #ffffff;
+   padding: 8px 15px; /* Reducido */
+   font-size: 1rem; /* Reducido */
+   font-weight: 600;
+   border-radius: 8px; /* Reducido */
+   width: 100%; /* Ocupa todo el ancho del contenedor */
+   text-align: center; /* Centra el texto dentro del botón */
+   transition: background-color 0.3s ease, border-color 0.3s ease;
+   display: block; /* Asegura que el botón sea un bloque, ocupando todo el ancho */
+   margin: 0 auto; /* Centra el botón horizontalmente */
+}
+
+/* Hover para el botón */
+button.btn-secondary:hover {
+   background-color: #1f1235;
+   border-color: #1f1235;
+   transform: translateY(-2px);
+}
 
 /* Footer */
 .footer {

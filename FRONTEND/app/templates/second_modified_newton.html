@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/test.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/iconon.png') }}" type="image/png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.2/math.min.js"></script>
+    <script src="https://cdn.geogebra.org/apps/deployggb.js"></script>
 
     <style>
       /* Ajustes generales para el contenedor */
@@ -106,6 +108,16 @@
           max-height: 680px;
           overflow-y: auto;
       }
+
+      .graph-display {
+        display: flex;
+        justify-content: center; /* Centra el gráfico horizontalmente */
+        width: 100%; /* Asegura que ocupe todo el ancho disponible */
+        height: 400px; /* Ajusta la altura del contenedor */
+        margin: 20px auto; /* Centra el contenedor en el eje horizontal */
+        background-color: #ffffff;
+        overflow: hidden;
+    }
     </style>
 
 </head>
@@ -164,6 +176,30 @@
                         class="form-control"
                         value="x^2 - 4"
                         required
+                    />
+                </div>
+
+                  <!-- Campo para la derivada -->
+                  <div class="mb-3">
+                    <label for="derivative_expression" class="form-label">Derivada (f'(x))</label>
+                    <input
+                        type="text"
+                        id="derivative_expression"
+                        name="derivative_expression"
+                        class="form-control"
+                        placeholder="2x"
+                    />
+                </div>
+
+                <!-- Campo para la segunda derivada -->
+                <div class="mb-3">
+                    <label for="second_derivative_expression" class="form-label">Segunda Derivada (f''(x))</label>
+                    <input
+                        type="text"
+                        id="second_derivative_expression"
+                        name="second_derivative_expression"
+                        class="form-control"
+                        placeholder="2"
                     />
                 </div>
 
@@ -226,29 +262,7 @@
                     />
                 </div>
 
-                <!-- Campo para la derivada -->
-                <div class="mb-3">
-                    <label for="derivative_expression" class="form-label">Derivada (f'(x))</label>
-                    <input
-                        type="text"
-                        id="derivative_expression"
-                        name="derivative_expression"
-                        class="form-control"
-                        placeholder="2x"
-                    />
-                </div>
-
-                <!-- Campo para la segunda derivada -->
-                <div class="mb-3">
-                    <label for="second_derivative_expression" class="form-label">Segunda Derivada (f''(x))</label>
-                    <input
-                        type="text"
-                        id="second_derivative_expression"
-                        name="second_derivative_expression"
-                        class="form-control"
-                        placeholder="2"
-                    />
-                </div>
+              
 
                 <button
                     type="button"
@@ -278,11 +292,21 @@
             </div>
             <!-- Contenedor para el mensaje de la raíz de la función -->
             <div id="rootMessage" class="mt-4">
+                <div id="error-message" class="error-message" style="color: black; text-align: center; display: none;"></div>
                 <!-- Aquí se mostrará el mensaje de la raíz -->
             </div>
         </div>
     </div>
 </div>
+
+        <!-- Contenedor del gráfico -->
+        <div class="graph-display">
+            <div id="geogebra" style="width: 800px; height: 400px;"></div>
+        </div>
+    </div>
+</div>
+</div>
+
 
   <!-- Footer -->
   <footer class="footer">
