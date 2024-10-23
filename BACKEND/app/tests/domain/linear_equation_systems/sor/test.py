@@ -143,4 +143,26 @@ def test_matrix_solve():
     assert "1.89293601557986" in result[1][2][-1], "Test 5 failed for matrix_solve"
     assert "0.47001177633405" in result[1][3][-1], "Test 5 failed for matrix_solve"
     assert "es una aproximación de la solución del sistema con una tolerancia de" in result[-1], "Test 5 failed for iterative_solve"
+
+def test_get_t_spectral_radius():
+    # test 1
+    A = sp.Matrix([[45, 13, -4, 8], [-5, -28, 4, -14], [9, 15, 63, -7], [2, 3, -8, -42]])
+    b = sp.Matrix([[-25], [82], [75], [-43]])
+    x_initial = sp.Matrix([[2, 2, 2, 2]])
+
+    object = Sor(A, b, x_initial, precision=16)
+    result = object.get_t_spectral_radius(w=1.001)
+
+    assert "0.19091650493849" in result, "Test 1 failed for get_t_spectral_radius"
+
+def test_converges():
+    # test 1
+    A = sp.Matrix([[45, 13, -4, 8], [-5, -28, 4, -14], [9, 15, 63, -7], [2, 3, -8, -42]])
+    b = sp.Matrix([[-25], [82], [75], [-43]])
+    x_initial = sp.Matrix([[2, 2, 2, 2]])
+
+    object = Sor(A, b, x_initial, precision=16)
+    result = object.converges(w=1.001)
+
+    assert "El método converge, el radio espectral de T es menor a 1 y/o la matriz es estrictamente diagonal dominante", "Test 1 failed for converges"
     

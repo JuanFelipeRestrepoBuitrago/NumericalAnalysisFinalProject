@@ -155,7 +155,7 @@ class LUFactorization:
         This function performs the total pivot method to solve a system of equations.
 
         :param k: current iteration
-        :param pivot_type: number 1 or 2 to indicate if the pivot is partial or total
+        :param pivot_type: number 1 for partial pivot
         :param permutation_matrix: numpy matrix with the permutation of the rows
         :param Ab: numpy array with the coefficients of the system of equations
         :param n: length of the system of equations
@@ -279,7 +279,7 @@ class LUFactorization:
         :param A: numpy array with the coefficients of the system of equations
         :param b: numpy array with the solutions of the system of equations
         :param n: length of the system of equations
-        :param pivot_type: number 1 or 2 to indicate if the pivot is partial or total, None for no pivot
+        :param pivot_type: number 1 indicate if the pivot is partial or None if not pivot
         :return: numpy array with the solutions of the system of equations, the L matrix and the U matrix
         """
         if A is None:

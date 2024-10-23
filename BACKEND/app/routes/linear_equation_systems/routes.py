@@ -6,7 +6,7 @@ import sympy as sp
 
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
-from app.models.models import ResponseError, GaussEliminationRequest, GaussEliminationResponse, LUFactorizationRequest, LUFactorizationResponse, IterativeMatrixEquationSystemRequest, IterativeMatrixEquationSystemResponse, SorRequest, SpectralRadiusRequest, SpectralRadiusResponse
+from app.models.models import ResponseError, GaussEliminationRequest, GaussEliminationResponse, LUFactorizationRequest, LUFactorizationResponse, IterativeMatrixEquationSystemRequest, IterativeMatrixEquationSystemResponse, SorRequest, SpectralAndConvergenceResponse
 from app.domain.jacobi import Jacobi
 from app.domain.gauss_seidel import GaussSeidel
 from app.domain.sor import Sor
@@ -18,45 +18,6 @@ from app.routes.routes import logger
 
 
 router = APIRouter()
-
-@router.post('/spectral_radius/',
-                tags=["Linear Equations System", "Protected"],
-                status_code=status.HTTP_200_OK,
-                summary="Calculate the spectral radius",
-                response_model=SpectralRadiusResponse,
-                responses={
-                    500: {"model": ResponseError, "description": "Internal server error."},
-                    429: {"model": ResponseError, "description": "Too many requests."}
-                })
-@limiter.limit("15/minute")
-def spectral_radius(request: Request, data: SpectralRadiusRequest, auth: dict = Depends(auth_handler.authenticate)):
-    """
-    Calculate the spectral radius of a matrix.
-    
-    This endpoint calculates the spectral radius of a matrix.
-    
-    Arguments:
-    data: SpectralRadiusRequest: JSON with the matrix of coefficients.
-    
-    Returns:
-    SpectralRadiusResponse: JSON with the spectral radius of the matrix.
-    """
-    try:
-        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
-        
-        # Get the data from the request
-        A = sp.Matrix(data.A)
-
-        # Calculate the spectral radius
-        spectral_radius = calculate_spectral_radius(A, data.precision)
-
-        return SpectralRadiusResponse(spectral_radius=spectral_radius)
-    except RateLimitExceeded:
-        raise HTTPException(status_code=429, detail="Too many requests.")
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise_exception(e, logger)
 
 
 @router.post('/gauss_elimination/',
@@ -222,6 +183,52 @@ def jacobi(request: Request, data: IterativeMatrixEquationSystemRequest, auth: d
         raise_exception(e, logger)
 
 
+@router.post('/jacobi/spectral_radius_and_convergence/',
+                tags=["Linear Equations System", "Matrix and Iterative", "Protected"],
+                status_code=status.HTTP_200_OK,
+                summary="Jacobi method",
+                response_model=SpectralAndConvergenceResponse,
+                responses={
+                    500: {"model": ResponseError, "description": "Internal server error."},
+                    429: {"model": ResponseError, "description": "Too many requests."}
+                })
+@limiter.limit("15/minute")
+def jacobi_spectral_radius_and_convergence(request: Request, data: IterativeMatrixEquationSystemRequest, auth: dict = Depends(auth_handler.authenticate)):
+    """
+    Get the spectral radius and the convergence of the Jacobi method.
+    
+    This endpoint calculates the spectral radius and the convergence of the Jacobi method.
+    
+    Arguments:
+    data: IterativeMatrixEquationSystemRequest: JSON with the matrix of coefficients, the vector of solutions, the initial guess, and the precision.
+    
+    Returns:
+    SpectralAndConvergenceResponse: JSON with the spectral radius and the convergence of the Jacobi method.
+    """
+    try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+        
+        # Get the data from the request
+        A = np.array(data.A)
+        b = np.array(data.b)
+        x_initial = np.array(data.x_initial)
+
+        # Create the object to solve the system of equations
+        jacobi_object = Jacobi(A, b, x_initial, precision=data.precision)
+
+        # Calculate the spectral radius and the convergence
+        spectral_radius = jacobi_object.get_t_spectral_radius()
+        convergence = jacobi_object.converges()
+
+        return SpectralAndConvergenceResponse(spectral_radius=spectral_radius, convergence=convergence)
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise_exception(e, logger)
+    
+
 @router.post('/gauss_seidel/',
                 tags=["Linear Equations System", "Matrix and Iterative", "Protected"],
                 status_code=status.HTTP_200_OK,
@@ -277,6 +284,52 @@ def gauss_seidel(request: Request, data: IterativeMatrixEquationSystemRequest, a
         raise_exception(e, logger)
 
 
+@router.post('/gauss_seidel/spectral_radius_and_convergence/',
+                tags=["Linear Equations System", "Matrix and Iterative", "Protected"],
+                status_code=status.HTTP_200_OK,
+                summary="Gauss Seidel method",
+                response_model=SpectralAndConvergenceResponse,
+                responses={
+                    500: {"model": ResponseError, "description": "Internal server error."},
+                    429: {"model": ResponseError, "description": "Too many requests."}
+                })
+@limiter.limit("15/minute")
+def gauss_seidel_spectral_radius_and_convergence(request: Request, data: IterativeMatrixEquationSystemRequest, auth: dict = Depends(auth_handler.authenticate)):
+    """
+    Get the spectral radius and the convergence of the Gauss Seidel method.
+    
+    This endpoint calculates the spectral radius and the convergence of the Gauss Seidel method.
+    
+    Arguments:
+    data: IterativeMatrixEquationSystemRequest: JSON with the matrix of coefficients, the vector of solutions, the initial guess, and the precision.
+    
+    Returns:
+    SpectralAndConvergenceResponse: JSON with the spectral radius and the convergence of the Gauss Seidel method.
+    """
+    try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+        
+        # Get the data from the request
+        A = sp.Matrix(data.A)
+        b = sp.Matrix(data.b)
+        x_initial = sp.Matrix(data.x_initial)
+
+        # Create the object to solve the system of equations
+        gauss_seidel_object = GaussSeidel(A, b, x_initial, precision=data.precision)
+
+        # Calculate the spectral radius and the convergence
+        spectral_radius = gauss_seidel_object.get_t_spectral_radius()
+        convergence = gauss_seidel_object.converges()
+
+        return SpectralAndConvergenceResponse(spectral_radius=spectral_radius, convergence=convergence)
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise_exception(e, logger)
+
+
 @router.post('/sor/',
                 tags=["Linear Equations System", "Matrix and Iterative", "Protected"],
                 status_code=status.HTTP_200_OK,
@@ -324,6 +377,53 @@ def sor(request: Request, data: SorRequest, auth: dict = Depends(auth_handler.au
         message = result[3]
 
         return IterativeMatrixEquationSystemResponse(iterations=iterations, x=x, error=error, message=message)
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise_exception(e, logger)
+
+
+@router.post('/sor/spectral_radius_and_convergence/',
+                tags=["Linear Equations System", "Matrix and Iterative", "Protected"],
+                status_code=status.HTTP_200_OK,
+                summary="SOR method",
+                response_model=SpectralAndConvergenceResponse,
+                responses={
+                    500: {"model": ResponseError, "description": "Internal server error."},
+                    429: {"model": ResponseError, "description": "Too many requests."}
+                })
+@limiter.limit("15/minute")
+def sor_spectral_radius_and_convergence(request: Request, data: SorRequest, auth: dict = Depends(auth_handler.authenticate)):
+    """
+    Get the spectral radius and the convergence of the SOR method.
+    
+    This endpoint calculates the spectral radius and the convergence of the SOR method.
+    
+    Arguments:
+    data: IterativeMatrixEquationSystemRequest: JSON with the matrix of coefficients, the vector of solutions, the initial guess, the relaxation factor, and the precision.
+    
+    Returns:
+    SpectralAndConvergenceResponse: JSON with the spectral radius and the convergence of the SOR method.
+    """
+    try:
+        logger.info(f"Request from {request.client.host} to {request.url.path}: {data}")
+        
+        # Get the data from the request
+        A = sp.Matrix(data.A)
+        b = sp.Matrix(data.b)
+        x_initial = sp.Matrix(data.x_initial)
+        w = data.omega
+
+        # Create the object to solve the system of equations
+        sor_object = Sor(A, b, x_initial, precision=data.precision)
+
+        # Calculate the spectral radius and the convergence
+        spectral_radius = sor_object.get_t_spectral_radius(w=data.omega)
+        convergence = sor_object.converges(w=data.omega)
+
+        return SpectralAndConvergenceResponse(spectral_radius=spectral_radius, convergence=convergence)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:

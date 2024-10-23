@@ -158,31 +158,18 @@ class SecondNewtonModified(NewtonRaphsonModel):
     second_derivative_expression: Optional[str] = Field(None, description="Second derivative expression of the function to be used in the Second Modified Newton-Raphson method.")
 
 
-class SpectralRadiusRequest(BaseModel):
+class SpectralAndConvergenceResponse(BaseModel):
     """
-    Data model for spectral radius requests.
+    Data model for spectral radius and convergence responses.
 
-    This model is used for spectral radius requests. It contains the `A` attribute, which represents the matrix of coefficients.
-
-    Attributes:
-        A (List[List[float]]): Matrix of coefficients.
-        precision (int): Number of decimal places to round the values.
-    """
-    A: List[List[float]] = Field(..., description="Matrix of coefficients.")
-    precision: int = Field(16, description="Number of decimal places to round the values.")
-
-
-class SpectralRadiusResponse(BaseModel):
-    """
-    Data model for spectral radius responses.
-
-    This model is used for spectral radius responses. It contains the `spectral_radius` attribute, which represents the spectral radius of the matrix.
+    This model is used for spectral radius and convergence responses. It contains the `spectral_radius` attribute, which represents the spectral radius of the matrix, and the `convergence` attribute, which indicates whether the method converges or not.
 
     Attributes:
         spectral_radius (str): Spectral radius of the matrix.
+        convergence (str): Message indicating whether the method converges or not.
     """
     spectral_radius: str = Field(description="Spectral radius of the matrix.")
-
+    convergence: str = Field(description="Message indicating whether the method converges or not.")
 
 class EquationSystemsRequest(BaseModel):
     """

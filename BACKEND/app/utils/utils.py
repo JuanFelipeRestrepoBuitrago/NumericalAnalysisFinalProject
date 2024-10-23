@@ -105,6 +105,26 @@ def calculate_spectral_radius(A: sp.Matrix, precision: int = 16) -> str:
     eigenvalues = A.eigenvals()
 
     # Get the maximum eigenvalue
-    max_eigenvalue = str(max([sp.Abs(eig).evalf(precision) for eig in eigenvalues.keys()]))
+    max_eigenvalue = str(max([sp.Abs(eig.evalf(precision)).evalf(precision) for eig in eigenvalues.keys()]))
 
     return max_eigenvalue
+
+
+def is_strictly_diagonally_dominant(A: np.ndarray) -> bool:
+    """
+    Check if the matrix A is strictly diagonally dominant
+
+    Arguments:
+        A (np.ndarray) : The matrix to check
+
+    Returns:
+        bool : True if the matrix is strictly diagonally dominant, False otherwise
+    """
+    # Get the diagonal elements of the matrix A
+    diagonal = np.abs(A.diagonal())
+    
+    # Get the sum of the absolute values of the elements of each row without the diagonal element
+    row_sum = np.sum(np.abs(A), axis=1) - diagonal
+    
+    # Check if the matrix is strictly diagonally dominant
+    return np.all(diagonal > row_sum)
