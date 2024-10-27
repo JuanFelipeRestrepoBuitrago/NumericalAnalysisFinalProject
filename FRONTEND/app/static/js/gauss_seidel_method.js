@@ -113,10 +113,11 @@ function calculateGaussSeidelMethod() {
    sendDataToAPI(data);
 }
 
-// Función para enviar los datos a la API
+// Función para enviar los datos a la API y gestionar la convergencia y espectro radial
 function sendDataToAPI(data) {
-   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2MDM2MjMsImlhdCI6MTcyODQzMDgyMywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VIpuHO5lvZBT93IEkKaHt5zlnoOpRkkqmx0PcLzpKW0";
+   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMjM0OTgsImlhdCI6MTczMDA1MDY5OCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.tT5gdhlUdbpbTtCBtgwfH4Wr870PbRn0W0PrwpCNgMk";
 
+   // Primera llamada para el método de Gauss-Seidel
    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/gauss_seidel/", {
       method: "POST",
       headers: {
@@ -133,6 +134,25 @@ function sendDataToAPI(data) {
       })
       .then(result => {
          displayResults(result);
+
+         // Segunda llamada para la convergencia y espectro radial
+         return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/gauss_seidel/spectral_radius_and_convergence/", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+         });
+      })
+      .then(response => {
+         if (!response.ok) {
+            throw response.json();
+         }
+         return response.json();
+      })
+      .then(convergenceResult => {
+         displayConvergenceAndSpectral(convergenceResult);  // Mostrar los resultados de convergencia y espectro radial
       })
       .catch(error => handleError(error));
 }
@@ -186,10 +206,16 @@ function displayResults(result) {
 
       resultsTable.appendChild(newRow);
    });
+}
 
-   // Mostrar el mensaje de convergencia si existe
+// Función para mostrar convergencia y espectro radial
+function displayConvergenceAndSpectral(convergenceResult) {
    const convergenceMessage = document.getElementById('convergence-message');
-   convergenceMessage.textContent = result.message || 'Método completado sin mensaje de convergencia.';
+   const spectralRadiusMessage = document.getElementById('spectral-radius-message');
+   
+   // Mostrar los resultados de la API para la convergencia y espectro radial
+   convergenceMessage.textContent = `Convergencia: ${convergenceResult.convergence || 'No disponible'}`;
+   spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
 }
 
 // Función para manejar errores

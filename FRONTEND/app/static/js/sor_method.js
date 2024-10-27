@@ -80,6 +80,7 @@ function getVectorFromTable(id) {
    return vector;
 }
 
+// Función principal del método SOR
 function calculateSORMethod() {
    const matrix = getMatrixFromTable();
    const vectorB = getVectorFromTable('vectorInput');
@@ -121,11 +122,9 @@ function calculateSORMethod() {
    }
 }
 
-
-
-// Función para enviar los datos a la API
+// Función para enviar los datos a la API y manejar la convergencia y el espectro radial
 function sendDataToAPI(data) {
-   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2MDM2MjMsImlhdCI6MTcyODQzMDgyMywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VIpuHO5lvZBT93IEkKaHt5zlnoOpRkkqmx0PcLzpKW0";
+   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMjM0OTgsImlhdCI6MTczMDA1MDY5OCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.tT5gdhlUdbpbTtCBtgwfH4Wr870PbRn0W0PrwpCNgMk";
 
    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/sor/", {
       method: "POST",
@@ -135,16 +134,35 @@ function sendDataToAPI(data) {
       },
       body: JSON.stringify(data)
    })
-      .then(response => {
-         if (!response.ok) {
-            throw response.json();
-         }
-         return response.json();
-      })
-      .then(result => {
-         displayResults(result);
-      })
-      .catch(error => handleError(error));
+   .then(response => {
+      if (!response.ok) {
+         throw response.json();
+      }
+      return response.json();
+   })
+   .then(result => {
+      displayResults(result);
+
+      // Llamada para obtener el radio espectral y la convergencia
+      return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/sor/spectral_radius_and_convergence/", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+         },
+         body: JSON.stringify(data)
+      });
+   })
+   .then(response => {
+      if (!response.ok) {
+         throw response.json();
+      }
+      return response.json();
+   })
+   .then(convergenceResult => {
+      displayConvergenceAndSpectral(convergenceResult);
+   })
+   .catch(error => handleError(error));
 }
 
 // Función para mostrar los resultados en la tabla
@@ -196,10 +214,15 @@ function displayResults(result) {
 
       resultsTable.appendChild(newRow);
    });
+}
 
-   // Mostrar el mensaje de convergencia si existe
+// Función para mostrar convergencia y espectro radial
+function displayConvergenceAndSpectral(convergenceResult) {
    const convergenceMessage = document.getElementById('convergence-message');
-   convergenceMessage.textContent = result.message || 'Método completado sin mensaje de convergencia.';
+   const spectralRadiusMessage = document.getElementById('spectral-radius-message');
+
+   convergenceMessage.textContent = `Convergencia: ${convergenceResult.convergence || 'No disponible'}`;
+   spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
 }
 
 // Función para manejar errores

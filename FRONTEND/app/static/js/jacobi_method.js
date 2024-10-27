@@ -126,11 +126,18 @@ function calculateJacobiMethod() {
 
     // Enviar los datos a la API
     sendDataToAPI(data);
+
+    // Graficar si la matriz es 2x2
+    if (matrix.length === 2 && matrix[0].length === 2) {
+        plotSystemInGeoGebra(matrix, vectorB);
+    } else {
+        hideGraphAndDownloadButton();
+    }
 }
 
 // Función para enviar los datos a la API
 function sendDataToAPI(data) {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2MDM2MjMsImlhdCI6MTcyODQzMDgyMywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VIpuHO5lvZBT93IEkKaHt5zlnoOpRkkqmx0PcLzpKW0";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMjM0OTgsImlhdCI6MTczMDA1MDY5OCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.tT5gdhlUdbpbTtCBtgwfH4Wr870PbRn0W0PrwpCNgMk";
 
     fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/jacobi/", {
         method: "POST",
@@ -142,95 +149,94 @@ function sendDataToAPI(data) {
     })
         .then(response => {
             if (!response.ok) {
-                throw response.json();  // Lanza la respuesta como un error en JSON
+                throw response.json();
             }
             return response.json();
         })
         .then(result => {
             displayResults(result);
 
-            // Graficar solo si la matriz es 2x2
-            if (data.A.length === 2 && data.A[0].length === 2) {
-                plotSystemInGeoGebra(data.A, data.b);
-            } else {
-                hideGraphAndDownloadButton();
-            }
+            // Llamada para obtener el radio espectral y la convergencia
+            return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/jacobi/spectral_radius_and_convergence/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+        })
+        .then(response => response.json())
+        .then(convergenceResult => {
+            displayConvergenceAndSpectral(convergenceResult);
         })
         .catch(error => handleError(error));
 }
 
 // Función para mostrar los resultados en la tabla
 function displayResults(result) {
-   const resultsTable = document.querySelector("#resultsTable tbody");
-   const resultsTableHead = document.querySelector("#resultsTable thead");
-   resultsTable.innerHTML = ''; // Limpiar la tabla antes de añadir los nuevos resultados
-   resultsTableHead.innerHTML = ''; // Limpiar la cabecera antes de añadir nuevas columnas
+    const resultsTable = document.querySelector("#resultsTable tbody");
+    const resultsTableHead = document.querySelector("#resultsTable thead");
+    resultsTable.innerHTML = '';
+    resultsTableHead.innerHTML = '';
 
-   // Obtener las listas de iteraciones, X y errores del resultado de la API
-   const iterations = result.iterations;  // Array de iteraciones
-   const solutions = result.x;            // Lista de listas de soluciones
-   const errors = result.error;           // Array de errores
+    const iterations = result.iterations;
+    const solutions = result.x;
+    const errors = result.error;
 
-   const numSolutions = solutions.length; // Número de columnas Xn (dependerá del tamaño de la matriz)
+    const numSolutions = solutions.length;
 
-   // Crear las cabeceras de la tabla de forma dinámica
-   const headerRow = document.createElement('tr');
-   const headerIteration = document.createElement('th');
-   headerIteration.textContent = 'Iteración';
-   headerRow.appendChild(headerIteration);
+    const headerRow = document.createElement('tr');
+    const headerIteration = document.createElement('th');
+    headerIteration.textContent = 'Iteración';
+    headerRow.appendChild(headerIteration);
 
-   // Generar dinámicamente las cabeceras X1, X2, ..., Xn según el número de soluciones
-   for (let i = 0; i < numSolutions; i++) {
-       const headerX = document.createElement('th');
-       headerX.textContent = `X${i + 1}`;
-       headerRow.appendChild(headerX);
-   }
+    for (let i = 0; i < numSolutions; i++) {
+        const headerX = document.createElement('th');
+        headerX.textContent = `X${i + 1}`;
+        headerRow.appendChild(headerX);
+    }
 
-   const headerError = document.createElement('th');
-   headerError.textContent = 'Error';
-   headerRow.appendChild(headerError);
-   resultsTableHead.appendChild(headerRow);
+    const headerError = document.createElement('th');
+    headerError.textContent = 'Error';
+    headerRow.appendChild(headerError);
+    resultsTableHead.appendChild(headerRow);
 
-   // Iterar sobre los datos y añadir cada fila a la tabla
-   iterations.forEach((iteration, index) => {
-       const newRow = document.createElement('tr');
+    iterations.forEach((iteration, index) => {
+        const newRow = document.createElement('tr');
 
-       // Crear celda para la iteración
-       const cellIteration = document.createElement('td');
-       cellIteration.textContent = iteration; // Número de iteración
-       newRow.appendChild(cellIteration);
+        const cellIteration = document.createElement('td');
+        cellIteration.textContent = iteration;
+        newRow.appendChild(cellIteration);
 
-       // Crear celdas dinámicas para cada solución Xn
-       for (let i = 0; i < numSolutions; i++) {
-           const cellXn = document.createElement('td');
-           cellXn.textContent = solutions[i][index]; // Valor de la solución Xn en esa iteración
-           newRow.appendChild(cellXn);
-       }
+        for (let i = 0; i < numSolutions; i++) {
+            const cellXn = document.createElement('td');
+            cellXn.textContent = solutions[i][index];
+            newRow.appendChild(cellXn);
+        }
 
-       // Crear celda para el error
-       const cellError = document.createElement('td');
-       cellError.textContent = errors[index]; // Error asociado a esa iteración
-       newRow.appendChild(cellError);
+        const cellError = document.createElement('td');
+        cellError.textContent = errors[index];
+        newRow.appendChild(cellError);
 
-       // Añadir la fila a la tabla
-       resultsTable.appendChild(newRow);
-   });
+        resultsTable.appendChild(newRow);
+    });
+}
 
-   // Mostrar el mensaje de convergencia si existe
-   const convergenceMessage = document.getElementById('convergence-message');
-   if (result.message) {
-       convergenceMessage.textContent = result.message;
-   } else {
-       convergenceMessage.textContent = 'Método completado sin mensaje de convergencia.';
-   }
+// Función para mostrar convergencia y espectro radial
+function displayConvergenceAndSpectral(convergenceResult) {
+    const convergenceMessage = document.getElementById('convergence-message');
+    const spectralRadiusMessage = document.getElementById('spectral-radius-message');
+
+    convergenceMessage.textContent = `Convergencia: ${convergenceResult.convergence || 'No disponible'}`;
+    spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
 }
 
 // Función para manejar errores
 function handleError(error) {
-   const errorMessage = document.getElementById('error-message');
-   errorMessage.textContent = 'Ocurrió un error al calcular los resultados: ' + error;
+    const errorMessage = document.getElementById('error-message');
+    errorMessage.textContent = 'Ocurrió un error al calcular los resultados: ' + error;
 }
-
 
 // Función para graficar el sistema de ecuaciones en GeoGebra
 function plotSystemInGeoGebra(matrix, vector) {
@@ -278,35 +284,27 @@ function initializeGeoGebra() {
     hideGraphAndDownloadButton();
 }
 
-
+// Función para descargar el gráfico como SVG
 function downloadGeoGebraSVG() {
-   console.log("Botón de descarga SVG presionado"); // Verificar si la función se llama
-   if (typeof ggbApplet !== 'undefined' && typeof ggbApplet.exportSVG === 'function') {
-       // Llamar a exportSVG con una función de callback para procesar el SVG
-       ggbApplet.exportSVG(function(svgContent) {
-           console.log("SVG Content: ", svgContent); // Verificar el contenido del SVG
+    if (typeof ggbApplet !== 'undefined' && typeof ggbApplet.exportSVG === 'function') {
+        ggbApplet.exportSVG(function (svgContent) {
+            if (!svgContent || !svgContent.startsWith('<svg')) {
+                alert("El contenido exportado no es un SVG válido.");
+                return;
+            }
 
-           // Asegurarse de que el SVG no esté vacío o indefinido
-           if (!svgContent || !svgContent.startsWith('<svg')) {
-               alert("El contenido exportado no es un SVG válido.");
-               return;
-           }
-
-           // Crear un enlace para descargar el archivo SVG
-           let link = document.createElement('a');
-           link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent);
-           link.download = 'geogebra_graph.svg';
-           link.style.display = 'none';
-           document.body.appendChild(link);
-           link.click();
-           document.body.removeChild(link);
-       });
-   } else {
-       alert('No se pudo exportar el SVG. Asegúrate de que la API de GeoGebra esté disponible.');
-   }
+            let link = document.createElement('a');
+            link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent);
+            link.download = 'geogebra_graph.svg';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    } else {
+        alert('No se pudo exportar el SVG. Asegúrate de que la API de GeoGebra esté disponible.');
+    }
 }
-
-
 
 // Ejecutar la función de inicialización cuando se cargue la página
 window.onload = function () {

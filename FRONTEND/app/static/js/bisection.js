@@ -23,7 +23,7 @@ function calculateBisection() {
     }
 
     // Token para la autenticación
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0OTYyNjQsImlhdCI6MTcyODMyMzQ2NCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VbzqMestAYMgOSIW-Bg5lF179l-aVu3ZqSujniYXUx4";
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjk4NjkwNDcsImlhdCI6MTcyOTY5NjI0NywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.fjAK610XqTtiDN13UhihK_Wtc06l7Ni3Ybg0pT9-7Uo";
 
     // Realizar la solicitud POST a la API
     fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/bisection/", {
