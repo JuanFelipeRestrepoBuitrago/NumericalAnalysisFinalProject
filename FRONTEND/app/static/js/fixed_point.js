@@ -1,3 +1,24 @@
+const maxSize = 6; // Tamaño máximo de 6x6 para la matriz
+let apiToken;
+
+// Llama a fetchApiToken y espera su finalización antes de cualquier llamada a la API
+async function initializeApp() {
+    await fetchApiToken();
+}
+
+// Obtener el token y tipo de la API al cargar la página
+function fetchApiToken() {
+    return fetch('/config')
+        .then(response => response.json())
+        .then(config => {
+            apiToken = `${config.token_type} ${config.access_token}`;
+        })
+        .catch(error => console.error('Error al obtener el token:', error));
+}
+
+// Llama a fetchApiToken cuando se cargue la página
+initializeApp();
+
 // Inicializar el applet de GeoGebra
 function initializeGeoGebra(expression, g_expression, root = null) {
     const ggbApp = new GGBApplet({
@@ -61,15 +82,12 @@ function calculateFixedPoint() {
         data.precision = parseInt(precisionInput);
     }
 
-    // Define el token de autenticación
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0OTYyNjQsImlhdCI6MTcyODMyMzQ2NCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VbzqMestAYMgOSIW-Bg5lF179l-aVu3ZqSujniYXUx4";
-
     // Realizar la solicitud POST a la API con el token en el encabezado
     fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/fixed_point/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": apiToken
         },
         body: JSON.stringify(data)
     })
@@ -82,8 +100,6 @@ function calculateFixedPoint() {
         return response.json();  // Parsear la respuesta a JSON
     })
     .then(result => {
-        console.log(result); // Verificar la estructura del resultado antes de usarlo
-
         // Limpiar resultados anteriores en la tabla
         let resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
         resultsTable.innerHTML = '';
