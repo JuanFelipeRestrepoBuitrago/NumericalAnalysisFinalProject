@@ -30,25 +30,41 @@ function initializeGeoGebra(expression = "x^2-4", root = null) {
         "capturingThreshold": null,
         "enableFileFeatures": true,
         "appletOnLoad": function () {
-            // Insertar la función en el gráfico
             ggbApplet.evalCommand(`f(x) = ${formattedExpression}`);
             
-            // Si hay una raíz, marcarla en la gráfica
             if (root !== null) {
-                ggbApplet.evalCommand(`RootPoint = (${root}, f(${root}))`);  // Crea un punto en la raíz
-                ggbApplet.evalCommand(`SetPointStyle(RootPoint, 3)`);  // Cambia el estilo del punto
-                ggbApplet.evalCommand(`SetPointSize(RootPoint, 5)`);   // Aumenta el tamaño del punto
+                ggbApplet.evalCommand(`RootPoint = (${root}, f(${root}))`);
+                ggbApplet.evalCommand(`SetPointStyle(RootPoint, 3)`);
+                ggbApplet.evalCommand(`SetPointSize(RootPoint, 5)`);
             }
         }
     }, true);
     
-    ggbApp.inject('geogebra');  // Inyecta el gráfico en el contenedor 'geogebra'
+    ggbApp.inject('geogebra');
 }
 
 // Ejecutar la inicialización de GeoGebra al cargar la página
 window.onload = function () {
-    initializeGeoGebra();  // Puedes pasar una expresión predeterminada, o dejar "x^2" como default.
+    initializeApp();  // Inicializar aplicación con token y configuración
 };
+
+let apiToken;
+
+// Inicializar la aplicación y cargar el token
+async function initializeApp() {
+    await fetchApiToken();
+    initializeGeoGebra();
+}
+
+// Obtener el token de la API al cargar la página
+function fetchApiToken() {
+    return fetch('/config')
+        .then(response => response.json())
+        .then(config => {
+            apiToken = `${config.token_type} ${config.access_token}`;
+        })
+        .catch(error => console.error('Error al obtener el token:', error));
+}
 
 // Función que se llama al enviar el formulario
 function calculateSecant() {
@@ -71,53 +87,46 @@ function calculateSecant() {
         "second_initial": second_initial
     };
 
-    // Agregar "precision" solo si el usuario lo ha proporcionado y no es null
     if (precisionInput !== "" && precisionInput !== null) {
         data.precision = parseInt(precisionInput);
     }
-
-    // Define el token de autenticación
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0OTYyNjQsImlhdCI6MTcyODMyMzQ2NCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VbzqMestAYMgOSIW-Bg5lF179l-aVu3ZqSujniYXUx4";
 
     // Realizar la solicitud POST a la API con el token en el encabezado
     fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/secant/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": apiToken
         },
         body: JSON.stringify(data)
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`Error en la solicitud: ${response.statusText}`);
+            return response.json().then(err => { throw err; });
         }
-        return response.json();  // Parsear la respuesta a JSON
+        return response.json();
     })
     .then(result => {
-        console.log(result);  // Verificar la estructura del resultado antes de usarlo
+        console.log(result);
 
         // Limpiar resultados anteriores en la tabla
         let resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
-        resultsTable.innerHTML = '';  // Limpiar resultados anteriores
+        resultsTable.innerHTML = '';  
 
         // Verificar la estructura y existencia de las propiedades antes de llenar la tabla
         if (result.Iterations && result.Xn && result.Fx && result.Error) {
-            // Iterar a través de las iteraciones y llenar la tabla
             result.Iterations.forEach((iteration, index) => {
                 let row = resultsTable.insertRow();
                 let xi = result.Xn[index];
                 let fx = result.Fx[index];
                 let error = result.Error[index];
 
-                // Crear las celdas de la tabla
-                let iterationCell = row.insertCell(0);  // Número de iteración
-                let xiCell = row.insertCell(1);          // Valor de xi
-                let fxCell = row.insertCell(2);          // Valor de f(xi+1)
-                let errorCell = row.insertCell(3);       // Valor del error
+                let iterationCell = row.insertCell(0);
+                let xiCell = row.insertCell(1);
+                let fxCell = row.insertCell(2);
+                let errorCell = row.insertCell(3);
 
-                // Rellenar las celdas con los valores
-                iterationCell.textContent = iteration + 1;  // Mostrar iteración comenzando desde 1
+                iterationCell.textContent = iteration + 1;
                 xiCell.textContent = xi;
                 fxCell.textContent = fx;
                 errorCell.textContent = error;
@@ -132,7 +141,7 @@ function calculateSecant() {
         let root = null;
         if (result.Message) {
             rootMessage.textContent = result.Message;
-            root = result.Xn[result.Xn.length - 1];  // Asumimos que la última Xn es la raíz aproximada
+            root = result.Xn[result.Xn.length - 1];
         } else {
             rootMessage.textContent = "No se encontró un mensaje de raíz.";
         }
@@ -141,22 +150,15 @@ function calculateSecant() {
         initializeGeoGebra(expression, root);
     })
     .catch(error => {
-        error.then(err => {
-            console.error('Error al conectarse a la API:', err);
-            const errorMessageElement = document.getElementById('error-message');
-            errorMessageElement.style.display = 'block';
- 
-            // Extraer y mostrar el mensaje enviado por la API, manejando ambos casos (string o array de objetos)
-            if (typeof err.detail === 'string') {
-                errorMessageElement.textContent = err.detail;  // Si `detail` es string, lo mostramos
-            } else if (Array.isArray(err.detail) && err.detail[0].msg) {
-                errorMessageElement.textContent = err.detail[0].msg;  // Si `detail` es array, mostramos el mensaje
-            } else {
-                errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';  // Mensaje genérico
-            }
- 
-            errorMessageElement.style.textAlign = 'center';  // Centrar el mensaje de error
-        });
+        const errorMessageElement = document.getElementById('error-message');
+        errorMessageElement.style.display = 'block';
+        if (typeof error.detail === 'string') {
+            errorMessageElement.textContent = error.detail;
+        } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+            errorMessageElement.textContent = error.detail[0].msg;
+        } else {
+            errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+        }
+        errorMessageElement.style.textAlign = 'center';
     });
- }
- 
+}

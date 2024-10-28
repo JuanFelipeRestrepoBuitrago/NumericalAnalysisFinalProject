@@ -1,3 +1,25 @@
+const maxSize = 6;
+let apiToken;
+
+// Llama a fetchApiToken y espera su finalización antes de cualquier llamada a la API
+async function initializeApp() {
+   await fetchApiToken();
+   // Ahora puedes iniciar cualquier otra funcionalidad que dependa del token
+}
+
+// Obtener el token y tipo de la API al cargar la página
+function fetchApiToken() {
+    return fetch('/config')
+        .then(response => response.json())
+        .then(config => {
+            apiToken = `${config.token_type} ${config.access_token}`;
+        })
+        .catch(error => console.error('Error al obtener el token:', error));
+}
+
+// Llama a fetchApiToken cuando se cargue la página
+fetchApiToken();
+
 function calculateBisection() {
     // Obtener valores del formulario
     let expression = document.getElementById('expression').value;
@@ -22,15 +44,12 @@ function calculateBisection() {
         data.precision = parseInt(precisionInput);
     }
 
-    // Token para la autenticación
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0OTYyNjQsImlhdCI6MTcyODMyMzQ2NCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VbzqMestAYMgOSIW-Bg5lF179l-aVu3ZqSujniYXUx4";
-
-    // Realizar la solicitud POST a la API
+    // Realizar la solicitud POST a la API con el token cargado desde el archivo .env
     fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/bisection/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": apiToken // Aquí se usa el token completo
         },
         body: JSON.stringify(data)
     })

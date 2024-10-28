@@ -1,4 +1,23 @@
 const maxSize = 6; // Tamaño máximo de 6x6 para la matriz
+let apiToken;
+
+// Llama a fetchApiToken y espera su finalización antes de cualquier llamada a la API
+async function initializeApp() {
+    await fetchApiToken();
+}
+
+// Obtener el token y tipo de la API al cargar la página
+function fetchApiToken() {
+    return fetch('/config')
+        .then(response => response.json())
+        .then(config => {
+            apiToken = `${config.token_type} ${config.access_token}`;
+        })
+        .catch(error => console.error('Error al obtener el token:', error));
+}
+
+// Llama a fetchApiToken cuando se cargue la página
+initializeApp();
 
 // Función para generar la matriz y el vector basados en el tamaño ingresado
 function generateMatrix() {
@@ -90,17 +109,12 @@ function calculateLUFactorization() {
         pivot_type: pivotType
     };
 
-    console.log("Datos enviados a la API:", JSON.stringify(data));
-
-    // Token de autenticación
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2MDM2MjMsImlhdCI6MTcyODQzMDgyMywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VIpuHO5lvZBT93IEkKaHt5zlnoOpRkkqmx0PcLzpKW0";
-
     // Realizar la solicitud POST a la API con el token en el encabezado
     fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/lu_factorization/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": apiToken
         },
         body: JSON.stringify(data)
     })
@@ -111,9 +125,6 @@ function calculateLUFactorization() {
         return response.json();  // Parsear la respuesta a JSON
     })
     .then(result => {
-        console.log(result); // Verificar la estructura del resultado antes de usarlo
-
-        // Limpiar cualquier mensaje de error previo
         const errorMessageElement = document.getElementById('error-message');
         errorMessageElement.style.display = 'none';
         errorMessageElement.textContent = '';
@@ -125,25 +136,23 @@ function calculateLUFactorization() {
         resultsContainer.innerHTML = '';
         absoluteErrorContainer.innerHTML = '';
 
-       
         // Función para convertir una matriz de strings a LaTeX
         function matrixToLatex(matrix) {
-         return matrix.map(row => row.join(' & ')).join(' \\\\ ');
-     }
+            return matrix.map(row => row.join(' & ')).join(' \\\\ ');
+        }
 
-     // Mostrar los resultados en formato LaTeX
-     let xLatex = `x = \\begin{pmatrix} ${result.x[0].join(' \\\\ ')} \\end{pmatrix}`;
-     let lLatex = `L = \\begin{pmatrix} ${matrixToLatex(result.L)} \\end{pmatrix}`;
-     let uLatex = `U = \\begin{pmatrix} ${matrixToLatex(result.U)} \\end{pmatrix}`;
-     let errorVectorialLatex = `\\text{Error Vectorial} = \\begin{pmatrix} ${result.vectorial_error[0].join(' \\\\ ')} \\end{pmatrix}`;
-     let absoluteErrorText = `Error absoluto: ${result.absolute_error}`;
+        // Mostrar los resultados en formato LaTeX
+        let xLatex = `x = \\begin{pmatrix} ${result.x[0].join(' \\\\ ')} \\end{pmatrix}`;
+        let lLatex = `L = \\begin{pmatrix} ${matrixToLatex(result.L)} \\end{pmatrix}`;
+        let uLatex = `U = \\begin{pmatrix} ${matrixToLatex(result.U)} \\end{pmatrix}`;
+        let errorVectorialLatex = `\\text{Error Vectorial} = \\begin{pmatrix} ${result.vectorial_error[0].join(' \\\\ ')} \\end{pmatrix}`;
+        let absoluteErrorText = `Error absoluto: ${result.absolute_error}`;
 
-     resultsContainer.innerHTML = `\\[ ${xLatex} \\] \\[ ${lLatex} \\] \\[ ${uLatex} \\] \\[ ${errorVectorialLatex} \\]`;
-     absoluteErrorContainer.textContent = absoluteErrorText;
+        resultsContainer.innerHTML = `\\[ ${xLatex} \\] \\[ ${lLatex} \\] \\[ ${uLatex} \\] \\[ ${errorVectorialLatex} \\]`;
+        absoluteErrorContainer.textContent = absoluteErrorText;
 
-     // Rerenderizar MathJax para que muestre las fórmulas
-     MathJax.typesetPromise();
-
+        // Rerenderizar MathJax para que muestre las fórmulas
+        MathJax.typesetPromise();
 
         // Solo graficar si la matriz es 2x2
         if (matrix.length === 2 && matrix[0].length === 2) {
@@ -197,12 +206,9 @@ function plotSystemInGeoGebra(matrix, vector) {
    // Ajustar el sistema de coordenadas
    ggbApplet.setCoordSystem(-10, 10, -10, 10);
 
-   console.log("Ecuaciones graficadas en GeoGebra:", eq1, eq2);
-
-   // Mostrar el contenedor de GeoGebra
+   // Mostrar el contenedor de GeoGebra y el botón de descarga
    document.getElementById('geogebra-container').style.display = 'block';
-     // Mostrar el botón de descarga
-     document.getElementById('downloadButton').style.display = 'block';
+   document.getElementById('downloadButton').style.display = 'block';
 }
 
 // Inicializar el applet de GeoGebra y asegurarse de que la barra de álgebra esté visible
@@ -222,7 +228,6 @@ function initializeGeoGebra() {
         "capturingThreshold": null,
         "enableFileFeatures": true,
         "appletOnLoad": function () {
-            console.log("GeoGebra cargado");
             ggbApplet.setVisible('algebra', true); // Mostrar la barra de álgebra al cargar
         }
     }, true);

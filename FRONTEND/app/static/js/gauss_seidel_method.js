@@ -1,4 +1,23 @@
 const maxSize = 6;
+let apiToken;
+
+// Llama a fetchApiToken y espera su finalización antes de cualquier llamada a la API
+async function initializeApp() {
+   await fetchApiToken();
+}
+
+// Obtener el token y tipo de la API al cargar la página
+function fetchApiToken() {
+   return fetch('/config')
+      .then(response => response.json())
+      .then(config => {
+         apiToken = `${config.token_type} ${config.access_token}`;
+      })
+      .catch(error => console.error('Error al obtener el token:', error));
+}
+
+// Llama a fetchApiToken cuando se cargue la página
+initializeApp();
 
 // Función para generar la matriz y los vectores
 function generateMatrix() {
@@ -108,20 +127,16 @@ function calculateGaussSeidelMethod() {
       method_type: methodType
    };
 
-   console.log("Datos enviados a la API:", JSON.stringify(data));
-
    sendDataToAPI(data);
 }
 
-// Función para enviar los datos a la API
+// Función para enviar los datos a la API y gestionar la convergencia y espectro radial
 function sendDataToAPI(data) {
-   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2MDM2MjMsImlhdCI6MTcyODQzMDgyMywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VIpuHO5lvZBT93IEkKaHt5zlnoOpRkkqmx0PcLzpKW0";
-
    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/gauss_seidel/", {
       method: "POST",
       headers: {
          "Content-Type": "application/json",
-         "Authorization": `Bearer ${token}`
+         "Authorization": apiToken
       },
       body: JSON.stringify(data)
    })
@@ -133,6 +148,24 @@ function sendDataToAPI(data) {
       })
       .then(result => {
          displayResults(result);
+
+         return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/gauss_seidel/spectral_radius_and_convergence/", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               "Authorization": apiToken
+            },
+            body: JSON.stringify(data)
+         });
+      })
+      .then(response => {
+         if (!response.ok) {
+            throw response.json();
+         }
+         return response.json();
+      })
+      .then(convergenceResult => {
+         displayConvergenceAndSpectral(convergenceResult);
       })
       .catch(error => handleError(error));
 }
@@ -186,10 +219,15 @@ function displayResults(result) {
 
       resultsTable.appendChild(newRow);
    });
+}
 
-   // Mostrar el mensaje de convergencia si existe
+// Función para mostrar convergencia y espectro radial
+function displayConvergenceAndSpectral(convergenceResult) {
    const convergenceMessage = document.getElementById('convergence-message');
-   convergenceMessage.textContent = result.message || 'Método completado sin mensaje de convergencia.';
+   const spectralRadiusMessage = document.getElementById('spectral-radius-message');
+   
+   convergenceMessage.textContent = `Convergencia: ${convergenceResult.convergence || 'No disponible'}`;
+   spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
 }
 
 // Función para manejar errores
@@ -200,29 +238,23 @@ function handleError(error) {
 
 // Función para graficar el sistema de ecuaciones en GeoGebra (solo si la matriz es 2x2)
 function plotSystemInGeoGebra(matrix, vector) {
-   // Solo graficar si la matriz es 2x2
    if (matrix.length !== 2 || matrix[0].length !== 2) {
-      hideGraphAndDownloadButton(); // Si no es 2x2, ocultar el gráfico
+      hideGraphAndDownloadButton();
       return;
    }
 
    const a1 = matrix[0][0], b1 = matrix[0][1], c1 = vector[0][0];
    const a2 = matrix[1][0], b2 = matrix[1][1], c2 = vector[1][0];
 
-   // Ecuaciones en formato para GeoGebra
    const eq1 = `(${a1}) * x + (${b1}) * y = ${c1}`;
    const eq2 = `(${a2}) * x + (${b2}) * y = ${c2}`;
 
-   // Resetear el applet de GeoGebra antes de graficar
    ggbApplet.reset();
    ggbApplet.setVisible('algebra', true);
    ggbApplet.evalCommand(`ec1: ${eq1}`);
    ggbApplet.evalCommand(`ec2: ${eq2}`);
    ggbApplet.setCoordSystem(-10, 10, -10, 10);
 
-   console.log("Ecuaciones graficadas en GeoGebra:", eq1, eq2);
-
-   // Mostrar el contenedor de GeoGebra y el botón de descarga
    document.getElementById('geogebra-container').style.display = 'block';
    document.getElementById('downloadButton').style.display = 'block';
 }
@@ -272,13 +304,12 @@ function initializeGeoGebra() {
       "capturingThreshold": null,
       "enableFileFeatures": true,
       "appletOnLoad": function () {
-         console.log("GeoGebra cargado");
          ggbApplet.setVisible('algebra', true);
       }
    }, true);
    ggbApp.inject('geogebra');
 
-   hideGraphAndDownloadButton(); // Ocultar el gráfico hasta que se utilice
+   hideGraphAndDownloadButton();
 }
 
 // Función principal para calcular el método de Gauss-Seidel y graficar si es 2x2
@@ -309,19 +340,17 @@ function calculateGaussSeidelMethod() {
       method_type: methodType
    };
 
-   console.log("Datos enviados a la API:", JSON.stringify(data));
-
    sendDataToAPI(data);
 
-   // Graficar si la matriz es 2x2
    if (matrix.length === 2 && matrix[0].length === 2) {
       plotSystemInGeoGebra(matrix, vectorB);
    } else {
-      hideGraphAndDownloadButton(); // Ocultar el gráfico si no es 2x2
+      hideGraphAndDownloadButton();
    }
 }
 
 // Ejecutar la función de inicialización de GeoGebra cuando se cargue la página
 window.onload = function () {
+   initializeApp();
    initializeGeoGebra();
 };
