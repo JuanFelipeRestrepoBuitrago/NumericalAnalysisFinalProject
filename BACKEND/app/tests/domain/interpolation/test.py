@@ -33,3 +33,12 @@ def test_convert_polynomial_to_string():
         object = Interpolation(x, y)
     except HTTPException as e:
         assert e.detail == 'Los valores de x deben ser únicos para realizar la interpolación, no se permiten valores repetidos', "Test failed for convert_polynomial_to_string"
+
+def test_transform_array_to_1_column_matrix():
+    # test 1
+    x = [1, 2, 3, 4, 5]
+    y = [1, 8, 27, 64, 125]
+
+    object = Interpolation(x, y)
+    result = object.transform_array_to_1_column_matrix(x)
+    assert result == sp.Matrix([[1], [2], [3], [4], [5]]), "Test failed for transform_array_to_1_column_matrix"
