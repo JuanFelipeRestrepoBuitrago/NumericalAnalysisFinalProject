@@ -5,6 +5,10 @@ from app.routes.routes import logger
 
 class Interpolation:
     def __init__(self, x: List[float], y: List[float]):
+        # Convert x and y elements to floats
+        x = [float(value) for value in x]
+        y = [float(value) for value in y]
+        
         self.x = self.transform_array_to_1_column_matrix(x)
         self.y = self.transform_array_to_1_column_matrix(y)
 

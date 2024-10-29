@@ -39,5 +39,5 @@ class Vandermonde(Interpolation):
         if y_values is None:
             y_values = self.y
 
-        return (vandermonde_matrix.inv().evalf(self.precision) * y_values).evalf(self.precision)
-
+        # Fix the typo here to apply precision correctly
+        return (vandermonde_matrix.inv() * y_values).evalf(self.precision)

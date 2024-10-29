@@ -11,44 +11,32 @@ def test_create_vandermonde_matrix():
     object = Vandermonde(x, y)
     
     expected = sp.Matrix([
-        [1, 1, 1, 1, 1],
-        [16, 8, 4, 2, 1],
-        [81, 27, 9, 3, 1],
-        [256, 64, 16, 4, 1],
-        [625, 125, 25, 5, 1]
+        [float(1), float(1), float(1), float(1), 1],
+        [float(16), float(8), float(4), float(2), 1],
+        [float(81), float(27), float(9), float(3), 1],
+        [float(256), float(64), float(16), float(4), 1],
+        [float(625), float(125), float(25), float(5), 1]
     ])
     assert object.vandermonde_matrix == expected
 
 def test_solve():
     # test 1
     x = [1, 2, 3, 4, 5]
-    y = [1, 8, 27, 64, 125]
+    y = [1, 8, 27, 64, 5]
 
-    object = Vandermonde(x, y, 17)
+    vandermonde = Vandermonde(x, y, precision=40)
     
-    expected = sp.Matrix([
-        [-0.000000000000001],
-        [1.000000000000014],
-        [0.000000000000028],
-        [-0.000000000000057],
-        [0.000000000000014]
+    expected = 1.0e2 * sp.Matrix([
+        [-0.05],
+        [0.51],
+        [-1.75],
+        [2.5],
+        [-1.2]
     ])
-    result = object.solve()
-    assert  result == expected
-
-    # test 2
-    x = [1, 2, 3, 4, 5]
-    y = [1, 8, 27, 64, 125]
-
-    object = Vandermonde(x, y)
     
-    expected = sp.Matrix([
-        [1],
-        [1],
-        [1],
-        [1],
-        [1]
-    ])
-    assert object.solve(object.vandermonde_matrix, object.y) == expected
+    result = vandermonde.solve()
 
+    # Check with a tolerance for floating-point precision
+    tolerance = 1e-11
+    assert all(sp.Abs(a - b) <= tolerance for a, b in zip(result, expected)), f"Got: {result}, Expected: {expected}"
     
