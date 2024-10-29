@@ -1,4 +1,66 @@
 const maxSize = 6;
+let apiToken;
+
+// Llama a fetchApiToken y espera su finalización antes de cualquier llamada a la API
+async function initializeApp() {
+   await fetchApiToken();
+   // Ahora puedes iniciar cualquier otra funcionalidad que dependa del token
+}
+
+// Obtener el token y tipo de la API al cargar la página
+function fetchApiToken() {
+    return fetch('/config')
+        .then(response => response.json())
+        .then(config => {
+            apiToken = `${config.token_type} ${config.access_token}`;
+        })
+        .catch(error => console.error('Error al obtener el token:', error));
+}
+
+// Llama a fetchApiToken cuando se cargue la página
+fetchApiToken();
+
+// Función para enviar los datos a la API y manejar la convergencia y el espectro radial
+function sendDataToAPI(data) {
+    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/sor/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": apiToken // Aquí se usa el token completo
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw response.json();
+        }
+        return response.json();
+    })
+    .then(result => {
+        displayResults(result);
+
+        // Llamada para obtener el radio espectral y la convergencia
+        return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/sor/spectral_radius_and_convergence/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": apiToken // Aquí también se usa el token completo
+            },
+            body: JSON.stringify(data)
+        });
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw response.json();
+        }
+        return response.json();
+    })
+    .then(convergenceResult => {
+        displayConvergenceAndSpectral(convergenceResult);
+    })
+    .catch(error => handleError(error));
+}
+
 
 // Función para generar la matriz y los vectores
 function generateMatrix() {
@@ -80,6 +142,7 @@ function getVectorFromTable(id) {
    return vector;
 }
 
+// Función principal del método SOR
 function calculateSORMethod() {
    const matrix = getMatrixFromTable();
    const vectorB = getVectorFromTable('vectorInput');
@@ -109,8 +172,6 @@ function calculateSORMethod() {
       method_type: methodType
    };
 
-   console.log("Datos enviados a la API:", JSON.stringify(data));
-
    sendDataToAPI(data);
 
    // Graficar si la matriz es 2x2
@@ -119,32 +180,6 @@ function calculateSORMethod() {
    } else {
       hideGraphAndDownloadButton(); // Ocultar el gráfico si no es 2x2
    }
-}
-
-
-
-// Función para enviar los datos a la API
-function sendDataToAPI(data) {
-   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg2MDM2MjMsImlhdCI6MTcyODQzMDgyMywidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VIpuHO5lvZBT93IEkKaHt5zlnoOpRkkqmx0PcLzpKW0";
-
-   fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/sor/", {
-      method: "POST",
-      headers: {
-         "Content-Type": "application/json",
-         "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-   })
-      .then(response => {
-         if (!response.ok) {
-            throw response.json();
-         }
-         return response.json();
-      })
-      .then(result => {
-         displayResults(result);
-      })
-      .catch(error => handleError(error));
 }
 
 // Función para mostrar los resultados en la tabla
@@ -196,10 +231,16 @@ function displayResults(result) {
 
       resultsTable.appendChild(newRow);
    });
+}
 
-   // Mostrar el mensaje de convergencia si existe
+// Función para mostrar convergencia y espectro radial
+function displayConvergenceAndSpectral(convergenceResult) {
    const convergenceMessage = document.getElementById('convergence-message');
-   convergenceMessage.textContent = result.message || 'Método completado sin mensaje de convergencia.';
+   const spectralRadiusMessage = document.getElementById('spectral-radius-message');
+   
+   // Mostrar los resultados de la API para la convergencia y espectro radial
+   convergenceMessage.textContent = `Convergencia: ${convergenceResult.convergence || 'No disponible'}`;
+   spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
 }
 
 // Función para manejar errores

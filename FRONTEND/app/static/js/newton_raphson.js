@@ -1,4 +1,4 @@
-// Inicializar el applet de GeoGebra
+// Función para inicializar el applet de GeoGebra
 function initializeGeoGebra(expression, derivative_expression, root = null) {
     const ggbApp = new GGBApplet({
         "appName": "graphing",
@@ -15,41 +15,38 @@ function initializeGeoGebra(expression, derivative_expression, root = null) {
         "capturingThreshold": null,
         "enableFileFeatures": true,
         "appletOnLoad": function () {
-            // Graficar la función f(x) y f'(x)
             ggbApplet.evalCommand(`f(x) = ${expression}`);
             ggbApplet.evalCommand(`g(x) = ${derivative_expression}`);
 
             if (root !== null) {
-                // Graficar el punto raíz si existe
                 ggbApplet.evalCommand(`RootPoint = (${root}, f(${root}))`);
-                ggbApplet.evalCommand(`SetPointStyle(RootPoint, 3)`);  // Cambia el estilo del punto
-                ggbApplet.evalCommand(`SetPointSize(RootPoint, 5)`);   // Aumenta el tamaño del punto
+                ggbApplet.evalCommand(`SetPointStyle(RootPoint, 3)`);
+                ggbApplet.evalCommand(`SetPointSize(RootPoint, 5)`);
             }
         }
     }, true);
-    ggbApp.inject('geogebra'); // Inyecta el gráfico en el contenedor 'geogebra'
+    ggbApp.inject('geogebra');
 }
 
 // Función para calcular la derivada automáticamente si no se proporciona
 function calculateDerivative(expression) {
     try {
-        // Derivar la función utilizando math.js
         let node = math.parse(expression);
         let derivative = math.derivative(node, 'x');
-        return derivative.toString(); // Convertir la derivada a cadena para GeoGebra
+        return derivative.toString();
     } catch (error) {
         console.error("Error al derivar la función:", error);
         return null;
     }
 }
 
-// Ejecutar la inicialización de GeoGebra al cargar la página con funciones por defecto
+// Inicializar GeoGebra al cargar la página con una función y su derivada
 window.onload = function () {
     initializeGeoGebra('x^3 - x - 2', '3x^2 - 1');
 };
 
+// Función que se llama al enviar el formulario para calcular Newton-Raphson
 function calculateNewtonRaphson() {
-    // Obtener valores del formulario
     let expression = document.getElementById('expression').value;
     let derivative_expression = document.getElementById('derivative_expression').value;
     let initial = parseFloat(document.getElementById('initial').value);
@@ -58,8 +55,8 @@ function calculateNewtonRaphson() {
     let error_type = document.getElementById('error_type').value;
     let precisionInput = document.getElementById('precision').value;
 
-    // Si no se proporciona la derivada, calcularla automáticamente
-    if (derivative_expression === "" || derivative_expression === null) {
+    // Calcular la derivada automáticamente si no se proporciona
+    if (!derivative_expression) {
         derivative_expression = calculateDerivative(expression);
         if (!derivative_expression) {
             alert("No se pudo calcular la derivada de la función proporcionada.");
@@ -67,104 +64,81 @@ function calculateNewtonRaphson() {
         }
     }
 
-    // Crear el objeto de datos para enviar a la API
     let data = {
         "expression": expression,
         "error_type": error_type,
         "tolerance": tolerance,
         "max_iterations": max_iterations,
         "initial": initial,
-        "derivative_expression": derivative_expression // Agregar la derivada calculada o proporcionada
+        "derivative_expression": derivative_expression
     };
 
-    // Agregar "precision" solo si el usuario lo ha proporcionado y no es null
-    if (precisionInput !== "" && precisionInput !== null) {
+    if (precisionInput) {
         data.precision = parseInt(precisionInput);
     }
 
-    // Define el token de autenticación
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mjg0OTYyNjQsImlhdCI6MTcyODMyMzQ2NCwidXNlciI6eyJ1c2VybmFtZSI6ImVhZml0In19.VbzqMestAYMgOSIW-Bg5lF179l-aVu3ZqSujniYXUx4";
+    // Token de autenticación desde el archivo de configuración
+    let token;
+    fetch('/config')
+        .then(response => response.json())
+        .then(config => {
+            token = `${config.token_type} ${config.access_token}`;
 
-    // Realizar la solicitud POST a la API con el token en el encabezado
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/newton_raphson/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Error en la solicitud: ${response.statusText}`);
-        }
-        return response.json();  // Parsear la respuesta a JSON
-    })
-    .then(result => {
-        console.log(result); // Verificar la estructura del resultado antes de usarlo
-
-        // Limpiar resultados anteriores en la tabla
-        let resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
-        resultsTable.innerHTML = ''; // Limpiar resultados anteriores
-
-        // Verificar la estructura y existencia de las propiedades antes de llenar la tabla
-        if (result.Iterations && result.Xn && result.Fx && result.Error) {
-            // Iterar a través de las iteraciones y llenar la tabla
-            result.Iterations.forEach((iteration, index) => {
-                let row = resultsTable.insertRow();
-                let xi = result.Xn[index];
-                let fx = result.Fx[index];
-                let error = result.Error[index];
-
-                // Crear las celdas de la tabla
-                let iterationCell = row.insertCell(0);  // Número de iteración
-                let xiCell = row.insertCell(1);          // Valor de xi
-                let fxCell = row.insertCell(2);          // Valor de f(xi)
-                let errorCell = row.insertCell(3);       // Valor del error
-
-                // Rellenar las celdas con los valores
-                iterationCell.textContent = iteration + 1;  // Mostrar iteración comenzando desde 1
-                xiCell.textContent = xi;
-                fxCell.textContent = fx;
-                errorCell.textContent = error;
+            return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/newton_raphson/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token
+                },
+                body: JSON.stringify(data)
             });
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error en la solicitud: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log(result);
 
-            // Obtener la raíz final
-            let root = result.Xn[result.Xn.length - 1];
+            let resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            resultsTable.innerHTML = ''; 
 
-            // Actualizar el gráfico con la nueva función y la raíz
-            initializeGeoGebra(expression, derivative_expression, root);
+            if (result.Iterations && result.Xn && result.Fx && result.Error) {
+                result.Iterations.forEach((iteration, index) => {
+                    let row = resultsTable.insertRow();
+                    let xi = result.Xn[index];
+                    let fx = result.Fx[index];
+                    let error = result.Error[index];
 
-        } else {
-            console.error('Estructura de respuesta incorrecta. Algunas propiedades están indefinidas.');
-            alert('Error: La estructura de la respuesta de la API no es la esperada.');
-        }
+                    let iterationCell = row.insertCell(0);
+                    let xiCell = row.insertCell(1);
+                    let fxCell = row.insertCell(2);
+                    let errorCell = row.insertCell(3);
 
-        // Mostrar el mensaje de la raíz de la función en el contenedor
-        let rootMessage = document.getElementById('rootMessage');
-        if (result.Message) {
-            rootMessage.textContent = result.Message;
-        } else {
-            rootMessage.textContent = "No se encontró un mensaje de raíz.";
-        }
-    })
-    .catch(error => {
-        error.then(err => {
-            console.error('Error al conectarse a la API:', err);
+                    iterationCell.textContent = iteration + 1;
+                    xiCell.textContent = xi;
+                    fxCell.textContent = fx;
+                    errorCell.textContent = error;
+                });
+
+                let root = result.Xn[result.Xn.length - 1];
+                initializeGeoGebra(expression, derivative_expression, root);
+
+            } else {
+                console.error('Estructura de respuesta incorrecta. Algunas propiedades están indefinidas.');
+                alert('Error: La estructura de la respuesta de la API no es la esperada.');
+            }
+
+            let rootMessage = document.getElementById('rootMessage');
+            rootMessage.textContent = result.Message || "No se encontró un mensaje de raíz.";
+        })
+        .catch(error => {
+            console.error('Error en la solicitud:', error);
             const errorMessageElement = document.getElementById('error-message');
             errorMessageElement.style.display = 'block';
- 
-            // Extraer y mostrar el mensaje enviado por la API, manejando ambos casos (string o array de objetos)
-            if (typeof err.detail === 'string') {
-                errorMessageElement.textContent = err.detail;  // Si `detail` es string, lo mostramos
-            } else if (Array.isArray(err.detail) && err.detail[0].msg) {
-                errorMessageElement.textContent = err.detail[0].msg;  // Si `detail` es array, mostramos el mensaje
-            } else {
-                errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';  // Mensaje genérico
-            }
- 
-            errorMessageElement.style.textAlign = 'center';  // Centrar el mensaje de error
+            errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+            errorMessageElement.style.textAlign = 'center';
         });
-    });
- }
- 
+}

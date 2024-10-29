@@ -5,10 +5,19 @@ import matplotlib
 matplotlib.use('Agg')  # Configurar matplotlib para usar el backend 'Agg'
 import matplotlib.pyplot as plt
 import numpy as np
-
 import io
+from dotenv import load_dotenv
+load_dotenv()  # Cargar variables del archivo .env
+import os
 
-API_URL = "http://localhost:8000/api/v1.3.0/backend_numerical_methods"
+
+API_URL = "http://localhost:8000/api/v1.3.1/backend_numerical_methods"
+
+@app.route('/config', methods=['GET'])
+def get_token():
+    access_token = os.getenv("API_ACCESS_TOKEN")
+    token_type = os.getenv("API_TOKEN_TYPE", "Bearer")
+    return jsonify({"access_token": access_token, "token_type": token_type})
 
 @app.route('/')
 def home():
