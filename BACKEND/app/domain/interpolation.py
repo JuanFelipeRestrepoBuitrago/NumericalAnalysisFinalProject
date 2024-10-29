@@ -39,14 +39,14 @@ class Interpolation:
         # Create the polynomial
         polynomial = 0
         for i, coefficient in enumerate(coefficients):
-            polynomial += coefficient * x ** i
+            polynomial += coefficient * x ** (len(coefficients) - i - 1)
 
         return str(polynomial)
     
-    def convert_1_column_matrix_to_array(self, matrix: sp.Matrix) -> List[float]:
+    def convert_1_column_matrix_to_array(self, matrix: sp.Matrix) -> List[str]:
         """
         Convert a 1 column matrix to an array
 
         :param matrix: Matrix to convert of 1 column and n rows
         """
-        return [element[0] for element in matrix.tolist()]
+        return [str(element[0]) for element in matrix.tolist()]

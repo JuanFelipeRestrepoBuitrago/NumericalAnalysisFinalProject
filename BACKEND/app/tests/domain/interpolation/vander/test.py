@@ -24,7 +24,7 @@ def test_solve():
     x = [1, 2, 3, 4, 5]
     y = [1, 8, 27, 64, 5]
 
-    vandermonde = Vandermonde(x, y, precision=40)
+    vandermonde = Vandermonde(x, y, precision=16)
     
     expected = 1.0e2 * sp.Matrix([
         [-0.05],
@@ -39,4 +39,22 @@ def test_solve():
     # Check with a tolerance for floating-point precision
     tolerance = 1e-11
     assert all(sp.Abs(a - b) <= tolerance for a, b in zip(result, expected)), f"Got: {result}, Expected: {expected}"
-    
+
+    # Test 2
+    x = [-2, -1, 2, 3]
+    y = [12.13533528, 6.367879441, -4.610943901, 2.085536923]
+
+    vandermonde = Vandermonde(x, y, precision=16)
+
+    expected = sp.Matrix([
+        [0.412412027316666],
+        [0.939374041900000],
+        [-5.836217904516666],
+        [0.004699521900001]
+    ])
+
+    result = vandermonde.solve()
+
+    # Check with a tolerance for floating-point precision
+    tolerance = 1e-15
+    assert all(sp.Abs(a - b) <= tolerance for a, b in zip(result, expected)), f"Got: {result}, Expected: {expected}"

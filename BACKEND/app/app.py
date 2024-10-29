@@ -11,6 +11,7 @@ from app.config.limiter import limiter
 from app.routes.routes import router
 from app.routes.methods.routes import router as methods_router
 from app.routes.linear_equation_systems.routes import router as linear_equation_systems_router
+from app.routes.interpolation.routes import router as interpolation_router
 from app.utils.crud import init_db
 
 # FastAPI imports
@@ -96,3 +97,4 @@ app.add_middleware(
 app.include_router(router, prefix=f'/api/{API_VERSION}/{API_NAME}')
 app.include_router(methods_router, prefix=f'/api/{API_VERSION}/{API_NAME}/methods')
 app.include_router(linear_equation_systems_router, prefix=f'/api/{API_VERSION}/{API_NAME}/linear_equations_system')
+app.include_router(interpolation_router, prefix=f'/api/{API_VERSION}/{API_NAME}/interpolation')

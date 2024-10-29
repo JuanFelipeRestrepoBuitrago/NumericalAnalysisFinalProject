@@ -9,7 +9,7 @@ def test_convert_polynomial_to_string():
     y = [1, 8, 27, 64, 125]
 
     object = Interpolation(x, y)
-    coefficients = sp.Matrix([[1], [2], [3], [4], [5]])
+    coefficients = sp.Matrix([[5], [4], [3], [2], [1]])
 
     result = object.convert_polynomial_to_string(coefficients)
     assert result == "5*x**4 + 4*x**3 + 3*x**2 + 2*x + 1", "Test failed for convert_polynomial_to_string"
@@ -39,7 +39,7 @@ def test_convert_polynomial_to_string():
     y = [1, 8, 27, 64, 125]
 
     object = Interpolation(x, y)
-    coefficients = sp.Matrix([1, 2, 3, 4, 5])
+    coefficients = sp.Matrix([5, 4, 3, 2, 1])
 
     result = object.convert_polynomial_to_string(coefficients)
     assert result == "5*x**4 + 4*x**3 + 3*x**2 + 2*x + 1", "Test failed for convert_polynomial_to_string"
@@ -63,4 +63,4 @@ def test_convert_1_column_matrix_to_array():
     object = Interpolation(x, y)
     matrix = sp.Matrix([[1], [2], [3], [4], [5]])
     result = object.convert_1_column_matrix_to_array(matrix)
-    assert result == [1, 2, 3, 4, 5], "Test failed for convert_1_column_matrix_to_array"
+    assert result == ["1", "2", "3", "4", "5"], "Test failed for convert_1_column_matrix_to_array"
