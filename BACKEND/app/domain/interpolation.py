@@ -38,3 +38,11 @@ class Interpolation:
             polynomial += coefficient * x ** i
 
         return str(polynomial)
+    
+    def convert_1_column_matrix_to_array(self, matrix: sp.Matrix) -> List[float]:
+        """
+        Convert a 1 column matrix to an array
+
+        :param matrix: Matrix to convert of 1 column and n rows
+        """
+        return [element[0] for element in matrix.tolist()]
