@@ -1,7 +1,5 @@
 import sympy as sp
-from app.utils.utils import raise_exception
-from app.routes.routes import logger
-from typing import List, Tuple
+from typing import List
 from app.domain.interpolation import Interpolation
 
 class Vandermonde(Interpolation):
