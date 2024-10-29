@@ -64,3 +64,17 @@ def test_convert_1_column_matrix_to_array():
     matrix = sp.Matrix([[1], [2], [3], [4], [5]])
     result = object.convert_1_column_matrix_to_array(matrix)
     assert result == ["1", "2", "3", "4", "5"], "Test failed for convert_1_column_matrix_to_array"
+
+def test_x_y_sorted():
+    # test 1
+    x = [5, 4, 3, 2, 1]
+    y = [125, 64, 27, 8, 1]
+
+    object = Interpolation(x, y)
+    result = object.x
+    expected = sp.Matrix([[float(i)] for i in range(1, 6)])
+    assert result == expected, f"Got: {result}, Expected: {expected}"
+
+    result = object.y
+    expected = sp.Matrix([[float(i)**3] for i in range(1, 6)])
+    assert result == expected, f"Got: {result}, Expected: {expected}"
