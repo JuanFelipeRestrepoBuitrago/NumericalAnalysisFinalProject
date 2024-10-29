@@ -306,4 +306,34 @@ class SorRequest(IterativeMatrixEquationSystemRequest):
     """
     # Omega, but sent as w by users
     omega: float = Field(..., description="Relaxation factor.", alias="w")
+
+
+class InterpolationRequest(BaseModel):
+    """
+    Data model for interpolation requests.
+
+    This model is used for interpolation requests. It contains the `x` attribute, which represents the x values, and the `y` attribute, which represents the y values.
+
+    Attributes:
+        x (List[float]): List of x values.
+        y (List[float]): List of y values.
+        precision (int): Number of decimal places to round the values.
+    """
+    x: List[float] = Field(..., description="List of x values.")
+    y: List[float] = Field(..., description="List of y values.")
+    precision: int = Field(16, description="Number of decimal places to round the values.")
+
+
+class InterpolationResponse(BaseModel):
+    """
+    Data model for interpolation responses.
+    
+    This model is used for interpolation responses. It contains the `polynomial` attribute, which represents the polynomial obtained from the interpolation.
+
+    Attributes:
+        polynomial (str): Polynomial obtained from the interpolation.
+        coefficients (List[str]): List of coefficients of the polynomial.
+    """
+    polynomial: str = Field(description="Polynomial obtained from the interpolation.")
+    coefficients: List[str] = Field(description="List of coefficients of the polynomial.")
     
