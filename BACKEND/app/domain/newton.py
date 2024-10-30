@@ -1,6 +1,4 @@
 import sympy as sp
-from app.utils.utils import raise_exception
-from app.routes.routes import logger
 from typing import List, Tuple
 from app.domain.interpolation import Interpolation
 
@@ -67,7 +65,7 @@ class Newton(Interpolation):
 
         return coefficients
     
-    def get_polynomial(self, x: sp.Matrix = None, coefficients: sp.Matrix = None, n: int = None) -> sp.Expr:
+    def get_polynomial(self, x: sp.Matrix = None, coefficients: sp.Matrix = None, n: int = None) -> Tuple[str, List[str]]:
         """
         Get the polynomial from the coefficients.
 
@@ -75,7 +73,7 @@ class Newton(Interpolation):
         :param coefficients: The coefficients of the polynomial.
         :param n: The number of points to interpolate.
 
-        :return: The polynomial as an expression.
+        :return: The polynomial as an expression and a list with the coefficients as strings.
         """
         if x is None:
             x = self.x
