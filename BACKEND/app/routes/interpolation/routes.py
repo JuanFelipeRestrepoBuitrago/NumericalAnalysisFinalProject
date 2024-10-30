@@ -13,6 +13,7 @@ from app.routes.routes import logger
 # Module imports
 from app.domain.vander import Vandermonde
 from app.domain.newton import Newton
+from app.domain.lagrange import Lagrange
 
 
 router = APIRouter()
@@ -80,6 +81,41 @@ def newton(request: Request, data: InterpolationRequest, auth: dict = Depends(au
 
         newton = Newton(x, y, precision=data.precision)
         polynomial, coefficients = newton.get_polynomial()
+
+        return InterpolationResponse(polynomial=polynomial, coefficients=coefficients)
+    except RateLimitExceeded:
+        raise HTTPException(status_code=429, detail="Too many requests.")
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise_exception(e, logger)
+
+
+@router.post('/lagrange/',
+                tags=["Interpolation", "Protected"],
+                status_code=status.HTTP_200_OK,
+                summary="Lagrange method",
+                response_model=InterpolationResponse,
+                responses={
+                    500: {"model": ResponseError, "description": "Internal server error."},
+                    429: {"model": ResponseError, "description": "Too many requests."}
+                })
+@limiter.limit("15/minute")
+def lagrange(request: Request, data: InterpolationRequest, auth: dict = Depends(auth_handler.authenticate)):
+    """
+    Find a interpolating polynomial using the Lagrange method.
+
+    :param request: Request object.
+    :param data: InterpolationRequest object.
+    :param auth: Authentication token.
+    :return: InterpolationResponse object.
+    """
+    try:
+        x = data.x
+        y = data.y
+
+        lagrange = Lagrange(x, y, precision=data.precision)
+        polynomial, coefficients = lagrange.solve()
 
         return InterpolationResponse(polynomial=polynomial, coefficients=coefficients)
     except RateLimitExceeded:
