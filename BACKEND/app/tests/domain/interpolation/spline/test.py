@@ -25,3 +25,11 @@ def test_solve():
 
     assert result_array == expected, f"Expected: {expected}, Obtained: {result_array}"
     assert result_coefficient_array == expected_coef, f"Expected: {expected_coef}, Obtained: {result_coefficient_array}"
+    
+    # test 2
+    
+    object = Spline(x, y, 16)
+    result_array, result_coefficient_array = object.solve(1)
+    
+    assert result_array == expected, f"Expected: {expected}, Obtained: {result_array}"
+    assert result_coefficient_array == expected_coef, f"Expected: {expected_coef}, Obtained: {result_coefficient_array}"
