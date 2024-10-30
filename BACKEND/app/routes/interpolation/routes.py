@@ -45,8 +45,8 @@ def vandermonde(request: Request, data: InterpolationRequest, auth: dict = Depen
         vandermonde = Vandermonde(x, y, precision=data.precision)
         coefficients = vandermonde.solve()
 
-        polynomial = vandermonde.convert_polynomial_to_string(coefficients)
-        coefficients = vandermonde.convert_1_column_matrix_to_array(coefficients)
+        polynomial = vandermonde.convert_coefficients_to_polynomial(coefficients)
+        coefficients = vandermonde.convert_1_n_matrix_to_array(coefficients)
         return InterpolationResponse(polynomial=polynomial, coefficients=coefficients)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")

@@ -31,7 +31,7 @@ class Interpolation:
         """
         return sp.Matrix(array).reshape(len(array), 1)
 
-    def convert_polynomial_to_string(self, coefficients: sp.Matrix) -> str:
+    def convert_coefficients_to_polynomial(self, coefficients: sp.Matrix) -> str:
         """
         Convert the coefficients of the polynomial to a string
 
@@ -44,12 +44,38 @@ class Interpolation:
         for i, coefficient in enumerate(coefficients):
             polynomial += coefficient * x ** (len(coefficients) - i - 1)
 
-        return str(polynomial)
+        return self.expression_to_string(polynomial)
     
-    def convert_1_column_matrix_to_array(self, matrix: sp.Matrix) -> List[str]:
+    def convert_1_n_matrix_to_array(self, matrix: sp.Matrix) -> List[str]:
         """
-        Convert a 1 column matrix to an array
+        Convert a 1 column or 1 row matrix to an array
 
         :param matrix: Matrix to convert of 1 column and n rows
         """
-        return [str(element[0]) for element in matrix.tolist()]
+        if matrix.shape[0] != 1 and matrix.shape[1] != 1:
+            raise_exception('La matriz debe ser de 1 columna o 1 fila', logger=logger)
+        
+        return [str(element) for element in matrix]
+    
+    def expression_to_string(self, expression: sp.Expr) -> str:
+        """
+        Convert a sympy expression to a string
+
+        :param expression: Sympy expression to convert
+        """
+        x = sp.symbols('x')
+        
+        # Get the polynomial as a Poly object to access coefficients
+        poly = sp.Poly(expression, x)
+
+        # Extract coefficients in descending order
+        coefficients = poly.all_coeffs()
+
+        # Construct the polynomial as a string in descending order of powers
+        polynomial_str = " + ".join([f"{coeff}*x**{i}" for i, coeff in enumerate(reversed(coefficients))][::-1])
+
+        # Clean up any redundant terms like "0*x**n" and handle signs
+        polynomial_str = polynomial_str.replace("+ -", "- ").replace("*x**0", "").replace(" 1*x", " x").replace("x**1", "x")
+
+        # Return the polynomial as a string
+        return polynomial_str
