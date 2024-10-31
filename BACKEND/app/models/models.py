@@ -337,3 +337,78 @@ class InterpolationResponse(BaseModel):
     polynomial: str = Field(description="Polynomial obtained from the interpolation.")
     coefficients: List[str] = Field(description="List of coefficients of the polynomial.")
     
+    
+class VandermondeResponse(InterpolationResponse):
+    """
+    Data model for Vandermonde responses.
+    
+    This model is used for Vandermonde responses. It contains the `vandermonde_matrix` attribute, which represents the Vandermonde matrix obtained from the interpolation.
+
+    Attributes:
+        vandermonde_matrix (List[List[str]]): List of the Vandermonde matrix.
+    """
+    vandermonde_matrix: List[List[str]] = Field(description="List of the Vandermonde matrix.")
+    
+    
+class NewtonResponse(InterpolationResponse):
+    """
+    Data model for Newton responses.
+    
+    This model is used for Newton responses. It contains the `difference_table` attribute, which represents the difference table obtained from the interpolation.
+
+    Attributes:
+        difference_table (List[List[str]]): List of the difference table.
+    """
+    difference_table: List[List[str]] = Field(description="List of the difference table.")
+    
+class LagrangeResponse(InterpolationResponse):
+    """
+    Data model for Lagrange responses.
+    
+    This model is used for Lagrange responses. It contains the `lagrange_polynomials` attribute, which represents the Lagrange polynomials obtained from the interpolation.
+
+    Attributes:
+        lagrange_polynomials (List[str]): List of the Lagrange polynomials.
+    """
+    lagrange_polynomials: List[str] = Field(description="List of the Lagrange polynomials.")
+    
+    
+class SplineRequest(InterpolationRequest):
+    """
+    Data model for spline requests.
+
+    This model extends the `InterpolationRequest` model and adds specific attributes for spline methods.
+
+    Attributes:
+        degree (int): Type of spline method to be used.
+    """
+    degree: Literal[1, 3] = Field(1, description="Type of spline method to be used.")
+    
+    
+class SplineFunction(BaseModel):
+    """
+    Data model for spline functions responses.
+    
+    This model is used for spline function responses. It contains the `function` attribute, which represents the function obtained from the spline method and the interval of the function.
+    
+    Attributes:
+        function (str): Function obtained from the spline method.
+        interval (str): Interval of the function.
+    """
+    function: str = Field(description="Function obtained from the spline method.")
+    interval: str = Field(description="Interval of the function.")
+    
+    
+class SplineResponse(BaseModel):
+    """
+    Data model for spline responses.
+    
+    This model is used for spline responses. It contains the `functions` attribute, which represents the functions obtained from the spline method.
+
+    Attributes:
+        functions (List[str]): List of functions obtained from the spline method.
+        coefficients (List[List[str]]): List of coefficients of the functions.
+    """
+    functions: List[SplineFunction] = Field(description="List of functions obtained from the spline method.")
+    coefficients: List[List[str]] = Field(description="List of coefficients of the functions.")
+    

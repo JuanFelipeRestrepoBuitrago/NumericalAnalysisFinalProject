@@ -30,6 +30,7 @@ class Lagrange(Interpolation):
         # Symbolic variable
         x_symbol = sp.symbols('x')
         polynomial = 0
+        lagrange_polynomials = []
 
         for i in range(n):
             # Initialize the Lagrange basis polynomial L_i(x) and denominator
@@ -45,10 +46,11 @@ class Lagrange(Interpolation):
 
             # Add the i-th term of the polynomial (y_i * L_i / den)
             polynomial += (y[i] * Li / den).evalf(self.precision)
+            lagrange_polynomials.append(self.expression_to_string((Li / den).evalf(self.precision)))
 
         # Simplify the polynomial
         polynomial = sp.expand(polynomial)
 
         polynomial_coefficients = sp.Poly(polynomial, x_symbol).all_coeffs()
         polynomial_coefficients = [str(coefficient) for coefficient in polynomial_coefficients]
-        return str(polynomial.as_expr()), polynomial_coefficients
+        return self.expression_to_string(polynomial), polynomial_coefficients, lagrange_polynomials

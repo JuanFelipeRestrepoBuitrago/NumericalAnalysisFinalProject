@@ -99,5 +99,5 @@ class Newton(Interpolation):
 
         polynomial_coefficients = sp.Poly(polynomial, x_symbol).all_coeffs()
         polynomial_coefficients = [str(coefficient) for coefficient in polynomial_coefficients]
-        return str(polynomial.as_expr()), polynomial_coefficients
+        return self.expression_to_string(polynomial), polynomial_coefficients
     

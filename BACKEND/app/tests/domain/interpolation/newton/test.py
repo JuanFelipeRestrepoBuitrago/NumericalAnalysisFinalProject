@@ -53,7 +53,7 @@ def test_get_polynomial():
 
     object = Newton(x, y, 16)
     
-    expected = "0.6004236020000011 - 5.767455838999999*x"
+    expected = "-5.767455838999999*x + 0.6004236020000011"
     expected_coef = ['-5.767455838999999', '0.6004236020000011']
 
     result_str, result_coefficient = object.get_polynomial()
