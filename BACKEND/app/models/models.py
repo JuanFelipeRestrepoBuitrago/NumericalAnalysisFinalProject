@@ -338,6 +338,18 @@ class InterpolationResponse(BaseModel):
     coefficients: List[str] = Field(description="List of coefficients of the polynomial.")
     
     
+class VandermondeResponse(InterpolationResponse):
+    """
+    Data model for Vandermonde responses.
+    
+    This model is used for Vandermonde responses. It contains the `vandermonde_matrix` attribute, which represents the Vandermonde matrix obtained from the interpolation.
+
+    Attributes:
+        vandermonde_matrix (List[List[str]]): List of the Vandermonde matrix.
+    """
+    vandermonde_matrix: List[List[str]] = Field(description="List of the Vandermonde matrix.")
+    
+    
 class SplineRequest(InterpolationRequest):
     """
     Data model for spline requests.

@@ -34,11 +34,13 @@ def test_vandermonde():
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/interpolation/vandermonde/", json=data, headers=headers)
     expected_polynomial = "0.4124120273166665*x**3 + 0.9393740418999997*x**2 - 5.836217904516666*x + 0.004699521900001835"
     expected_coefficients = ['0.4124120273166665', '0.9393740418999997', '-5.836217904516666', '0.004699521900001835']
-
+    vandermonde_matrix = [['-8.00000000000000', '4.00000000000000', '-2.00000000000000', '1'], ['-1.00000000000000', '1.00000000000000', '-1.00000000000000', '1'], ['8.00000000000000', '4.00000000000000', '2.00000000000000', '1'], ['27.0000000000000', '9.00000000000000', '3.00000000000000', '1']]
+    
     assert response.status_code == 200
     answer = response.json()
     assert answer["polynomial"] == expected_polynomial, f"Expected: {expected_polynomial}, got: {answer['polynomial']}"
     assert answer["coefficients"] == expected_coefficients, f"Expected: {expected_coefficients}, got: {answer['coefficients']}"
+    assert answer["vandermonde_matrix"] == vandermonde_matrix, f"Expected: {vandermonde_matrix}, got: {answer['vandermonde_matrix']}"
 
 
 def test_newton():

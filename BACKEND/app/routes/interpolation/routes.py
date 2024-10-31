@@ -5,7 +5,7 @@ import sympy as sp
 
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
-from app.models.models import ResponseError, InterpolationRequest, InterpolationResponse, SplineRequest, SplineResponse, SplineFunction
+from app.models.models import ResponseError, InterpolationRequest, InterpolationResponse, SplineRequest, SplineResponse, SplineFunction, VandermondeResponse
 from app.auth.auth import auth_handler
 from app.utils.utils import raise_exception
 from app.routes.routes import logger
@@ -24,7 +24,7 @@ router = APIRouter()
                 tags=["Interpolation", "Protected"],
                 status_code=status.HTTP_200_OK,
                 summary="Gauss Elimination method",
-                response_model=InterpolationResponse,
+                response_model=VandermondeResponse,
                 responses={
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
@@ -48,7 +48,7 @@ def vandermonde(request: Request, data: InterpolationRequest, auth: dict = Depen
 
         polynomial = vandermonde.convert_coefficients_to_polynomial(coefficients)
         coefficients = vandermonde.convert_1_n_matrix_to_array(coefficients)
-        return InterpolationResponse(polynomial=polynomial, coefficients=coefficients)
+        return VandermondeResponse(polynomial=polynomial, coefficients=coefficients, vandermonde_matrix=vandermonde.float_matrix_to_string_array(vandermonde.vandermonde_matrix))
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
