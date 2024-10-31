@@ -73,11 +73,13 @@ def test_newton():
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/interpolation/newton/", json=data, headers=headers)
     expected_polynomial = "0.4124120273166667*x**3 + 0.9393740418999998*x**2 - 5.836217904516667*x + 0.004699521900000558"
     expected_coefficients = ['0.4124120273166667', '0.9393740418999998', '-5.836217904516667', '0.004699521900000558']
+    expected_difference_table = [['-2.00000000000000', '12.1353352800000', '0', '0', '0'], ['-1.00000000000000', '6.36787944100000', '-5.767455838999999', '0', '0'], ['2.00000000000000', '-4.61094390100000', '-3.659607780666667', '0.5269620145833331', '0'], ['3.00000000000000', '2.08553692300000', '6.696480824000000', '2.589022151166667', '0.4124120273166667']]
 
     assert response.status_code == 200
     answer = response.json()
     assert answer["polynomial"] == expected_polynomial, f"Expected: {expected_polynomial}, got: {answer['polynomial']}"
     assert answer["coefficients"] == expected_coefficients, f"Expected: {expected_coefficients}, got: {answer['coefficients']}"
+    assert answer["difference_table"] == expected_difference_table, f"Expected: {expected_difference_table}, got: {answer['difference_table']}"
 
 def test_lagrange():
     """

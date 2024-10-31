@@ -350,6 +350,18 @@ class VandermondeResponse(InterpolationResponse):
     vandermonde_matrix: List[List[str]] = Field(description="List of the Vandermonde matrix.")
     
     
+class NewtonResponse(InterpolationResponse):
+    """
+    Data model for Newton responses.
+    
+    This model is used for Newton responses. It contains the `difference_table` attribute, which represents the difference table obtained from the interpolation.
+
+    Attributes:
+        difference_table (List[List[str]]): List of the difference table.
+    """
+    difference_table: List[List[str]] = Field(description="List of the difference table.")
+    
+    
 class SplineRequest(InterpolationRequest):
     """
     Data model for spline requests.

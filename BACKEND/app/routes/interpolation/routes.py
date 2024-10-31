@@ -5,7 +5,7 @@ import sympy as sp
 
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
-from app.models.models import ResponseError, InterpolationRequest, InterpolationResponse, SplineRequest, SplineResponse, SplineFunction, VandermondeResponse
+from app.models.models import ResponseError, InterpolationRequest, InterpolationResponse, SplineRequest, SplineResponse, SplineFunction, VandermondeResponse, NewtonResponse
 from app.auth.auth import auth_handler
 from app.utils.utils import raise_exception
 from app.routes.routes import logger
@@ -61,7 +61,7 @@ def vandermonde(request: Request, data: InterpolationRequest, auth: dict = Depen
                 tags=["Interpolation", "Protected"],
                 status_code=status.HTTP_200_OK,
                 summary="Newton's Divided Difference method",
-                response_model=InterpolationResponse,
+                response_model=NewtonResponse,
                 responses={
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
@@ -83,7 +83,7 @@ def newton(request: Request, data: InterpolationRequest, auth: dict = Depends(au
         newton = Newton(x, y, precision=data.precision)
         polynomial, coefficients = newton.get_polynomial()
 
-        return InterpolationResponse(polynomial=polynomial, coefficients=coefficients)
+        return NewtonResponse(polynomial=polynomial, coefficients=coefficients, difference_table=newton.float_matrix_to_string_array(newton.difference_table))
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
