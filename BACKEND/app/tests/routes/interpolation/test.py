@@ -111,11 +111,13 @@ def test_lagrange():
     response = client.post(f"/api/{API_VERSION}/{API_NAME}/interpolation/lagrange/", json=data, headers=headers)
     expected_polynomial = "0.4124120273166666*x**3 + 0.9393740419000002*x**2 - 5.836217904516667*x + 0.004699521900000114"
     expected_coefficients = ['0.4124120273166666', '0.9393740419000002', '-5.836217904516667', '0.004699521900000114']
+    expected_lagrange_polynomials = ["-0.05000000000000000*x**3 + 0.2000000000000000*x**2 - 0.05000000000000000*x - 0.3000000000000000", "0.08333333333333333*x**3 - 0.2500000000000000*x**2 - 0.3333333333333333*x + 0.9999999999999999", "-0.08333333333333333*x**3 + 0.5833333333333333*x + 0.5000000000000000", "0.05000000000000000*x**3 + 0.05000000000000000*x**2 - 0.2000000000000000*x - 0.2000000000000000"] 
 
     assert response.status_code == 200
     answer = response.json()
     assert answer["polynomial"] == expected_polynomial, f"Expected: {expected_polynomial}, got: {answer['polynomial']}"
     assert answer["coefficients"] == expected_coefficients, f"Expected: {expected_coefficients}, got: {answer['coefficients']}"
+    assert answer["lagrange_polynomials"] == expected_lagrange_polynomials, f"Expected: {expected_lagrange_polynomials}, got: {answer['lagrange_polynomials']}"
     
     
 def test_spline():

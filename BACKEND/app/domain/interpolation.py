@@ -2,6 +2,7 @@ from typing import List
 from app.utils.utils import raise_exception
 import sympy as sp
 from app.routes.routes import logger
+import re
 
 class Interpolation:
     def __init__(self, x: List[float], y: List[float]):
@@ -76,6 +77,9 @@ class Interpolation:
 
         # Construct the polynomial as a string in descending order of powers
         polynomial_str = " + ".join([f"{coeff}*x**{i}" for i, coeff in enumerate(reversed(coefficients))][::-1])
+        
+        # Remove terms like "0.0*x**n"
+        polynomial_str = re.sub(r'(\s\+\s)?\-?(?<!\d)0(\.0+)?\*x\*\*\d+', '', polynomial_str)
 
         # Clean up any redundant terms like "0*x**n" and handle signs
         polynomial_str = polynomial_str.replace("+ -", "- ").replace("*x**0", "").replace(" 1*x", " x").replace("x**1", "x")

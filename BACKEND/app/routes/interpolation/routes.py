@@ -5,7 +5,7 @@ import sympy as sp
 
 # Configuration, models, methods and authentication modules imports
 from app.config.limiter import limiter
-from app.models.models import ResponseError, InterpolationRequest, InterpolationResponse, SplineRequest, SplineResponse, SplineFunction, VandermondeResponse, NewtonResponse
+from app.models.models import ResponseError, InterpolationRequest, SplineRequest, SplineResponse, SplineFunction, VandermondeResponse, NewtonResponse, LagrangeResponse
 from app.auth.auth import auth_handler
 from app.utils.utils import raise_exception
 from app.routes.routes import logger
@@ -96,7 +96,7 @@ def newton(request: Request, data: InterpolationRequest, auth: dict = Depends(au
                 tags=["Interpolation", "Protected"],
                 status_code=status.HTTP_200_OK,
                 summary="Lagrange method",
-                response_model=InterpolationResponse,
+                response_model=LagrangeResponse,
                 responses={
                     500: {"model": ResponseError, "description": "Internal server error."},
                     429: {"model": ResponseError, "description": "Too many requests."}
@@ -116,9 +116,9 @@ def lagrange(request: Request, data: InterpolationRequest, auth: dict = Depends(
         y = data.y
 
         lagrange = Lagrange(x, y, precision=data.precision)
-        polynomial, coefficients = lagrange.solve()
+        polynomial, coefficients, lagrange_polynomials = lagrange.solve()
 
-        return InterpolationResponse(polynomial=polynomial, coefficients=coefficients)
+        return LagrangeResponse(polynomial=polynomial, coefficients=coefficients, lagrange_polynomials=lagrange_polynomials)
     except RateLimitExceeded:
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:

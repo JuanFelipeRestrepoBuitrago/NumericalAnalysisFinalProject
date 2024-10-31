@@ -361,6 +361,17 @@ class NewtonResponse(InterpolationResponse):
     """
     difference_table: List[List[str]] = Field(description="List of the difference table.")
     
+class LagrangeResponse(InterpolationResponse):
+    """
+    Data model for Lagrange responses.
+    
+    This model is used for Lagrange responses. It contains the `lagrange_polynomials` attribute, which represents the Lagrange polynomials obtained from the interpolation.
+
+    Attributes:
+        lagrange_polynomials (List[str]): List of the Lagrange polynomials.
+    """
+    lagrange_polynomials: List[str] = Field(description="List of the Lagrange polynomials.")
+    
     
 class SplineRequest(InterpolationRequest):
     """
