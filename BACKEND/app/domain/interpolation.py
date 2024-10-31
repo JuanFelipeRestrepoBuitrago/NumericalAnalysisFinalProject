@@ -5,6 +5,15 @@ from app.routes.routes import logger
 
 class Interpolation:
     def __init__(self, x: List[float], y: List[float]):
+        if len(x) == 0 or len(y) == 0:
+            raise_exception("Las 'x' y 'y' no pueden estar vacíos", logger=logger)
+        elif len(x) != len(y):
+            raise_exception('El número de elementos en x debe ser igual al número de elementos en y para realizar la interpolación', logger=logger)
+        elif len(x) != len(set(x)):
+            raise_exception('Los valores de x deben ser únicos para realizar la interpolación, no se permiten valores repetidos', logger=logger)
+        elif len(x) < 2 or len(y) < 2:
+            raise_exception('Se necesitan al menos 2 puntos para realizar la interpolación', logger=logger)
+            
         # Convert x and y elements to floats
         x = [float(element) for element in x]
         y = [float(element) for element in y]
@@ -15,13 +24,7 @@ class Interpolation:
         self.x = self.transform_array_to_1_column_matrix(x)
         self.y = self.transform_array_to_1_column_matrix(y)
 
-        # Verify that the number of elements in x is equal to the number of elements in y
-        if len(x) != len(y):
-            raise_exception('El número de elementos en x debe ser igual al número de elementos en y para realizar la interpolación', logger=logger)
 
-        # Verify that the x values are unique
-        if len(x) != len(set(x)):
-            raise_exception('Los valores de x deben ser únicos para realizar la interpolación, no se permiten valores repetidos', logger=logger)
 
     def transform_array_to_1_column_matrix(self, array: List[float]) -> sp.Matrix:
         """
@@ -79,3 +82,21 @@ class Interpolation:
 
         # Return the polynomial as a string
         return polynomial_str
+    
+    def float_matrix_to_string_array(self, matrix: sp.Matrix) -> List[List[str]]:
+        """
+        Convert a float matrix to a string array
+
+        :param matrix: Matrix to convert
+        """
+        matrix = matrix.tolist()
+        
+        # Convert the matrix to a string matrix
+        for i in range(len(matrix)):
+            if type(matrix[i]) != list:
+                matrix[i] = str(matrix[i])
+            else:
+                for j in range(len(matrix[i])):
+                    matrix[i][j] = str(matrix[i][j])
+                
+        return matrix

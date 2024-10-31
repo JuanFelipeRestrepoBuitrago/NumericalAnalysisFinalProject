@@ -88,3 +88,25 @@ def test_x_y_sorted():
     result = object.y
     expected = sp.Matrix([[float(i)**3] for i in range(1, 6)])
     assert result == expected, f"Got: {result}, Expected: {expected}"
+    
+    
+def test_float_matrix_to_string_array():
+    # test 1
+    matrix = sp.Matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
+    
+    object = Interpolation([1, 2, 3], [1, 2, 3])
+    result = object.float_matrix_to_string_array(matrix)
+    
+    expected = [['1.00000000000000', '2.00000000000000', '3.00000000000000'], ['4.00000000000000', '5.00000000000000', '6.00000000000000'], ['7.00000000000000', '8.00000000000000', '9.00000000000000']]
+    
+    assert result == expected, f"Got: {result}, Expected: {expected}"
+    
+    # test 2
+    
+    matrix = sp.Matrix([[1, 2, 3]])
+    result = object.float_matrix_to_string_array(matrix)
+    
+    expected = [['1', '2', '3']]
+    
+    assert result == expected, f"Got: {result}, Expected: {expected}"
+    
