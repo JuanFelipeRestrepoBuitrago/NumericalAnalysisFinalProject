@@ -29,6 +29,7 @@ def test_solve():
     # test 2
     
     object = Spline(x, y, 16)
+    expected = [["-5.767455838999999*x + 0.6004236020000011", "-2.0 <= x <= -1.0"], ["-3.659607780666667*x + 2.708271660333334", "-1.0 <= x <= 2.0"], ["6.696480823999998*x - 18.00390554900000",  "2.0 <= x <= 3.0"]]
     result_array, result_coefficient_array = object.solve(1)
     
     assert result_array == expected, f"Expected: {expected}, Obtained: {result_array}"

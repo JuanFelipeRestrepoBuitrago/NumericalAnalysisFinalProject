@@ -10,17 +10,26 @@ class Spline(Interpolation):
         super().__init__(x, y)
         self.n = len(x)
         
-    def solve(self, d: int) -> Tuple[List[str], List[List[str]]]:
+    def solve(self, d: int, x: sp.Matrix = None, y: sp.Matrix = None, n: int = None) -> Tuple[List[List[str]], List[List[str]]]:
         """
         Solve the interpolation problem using the spline method.
         
         :param d: The degree of the spline.
         :return: A tuple with the list of functions and the list of coefficients.
         """
+        if x is None:
+            x = self.x
+
+        if y is None:
+            y = self.y
+
+        if n is None:
+            n = self.n
+            
         if d == 1:
-            result = self.solve_linear_spline()
+            result = self.solve_linear_spline(x, y, n)
         elif d == 3:
-            result = self.solve_cubic_spline()
+            result = self.solve_cubic_spline(x, y, n)
         else:
             raise_exception('El grado del spline debe ser 1 o 3', logger=logger)
         
@@ -30,7 +39,7 @@ class Spline(Interpolation):
         for i in range(result.shape[0]):
             current_row = result.row(i)
             # Add elements to array with each function with the current row of the matrix
-            result_array.append(self.convert_coefficients_to_polynomial(current_row))
+            result_array.append([self.convert_coefficients_to_polynomial(current_row), str(float(x[i])) + " <= x <= " + str(float(x[i + 1]))])
             result_coefficient_array.append(self.convert_1_n_matrix_to_array(current_row))
         
         return result_array, result_coefficient_array
