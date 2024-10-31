@@ -107,11 +107,12 @@ class Spline(Interpolation):
         if n is None:
             n = self.n
             
+        # Define matrix A and vector b based on cubic spline equations
         A = sp.zeros(4 * (n - 1), 4 * (n - 1))
         b = sp.zeros(4 * (n - 1), 1)
         
-        # Filling the A matrix and b vector for cubic spline
         c = 0
+        h = 0
         for i in range(n - 1):
             A[i, c] = x[i]**3
             A[i, c + 1] = x[i]**2
@@ -119,43 +120,49 @@ class Spline(Interpolation):
             A[i, c + 3] = 1
             b[i] = y[i]
             c += 4
-
+            h += 1
+            
         c = 0
         for i in range(1, n):
-            A[i + n - 2, c] = x[i]**3
-            A[i + n - 2, c + 1] = x[i]**2
-            A[i + n - 2, c + 2] = x[i]
-            A[i + n - 2, c + 3] = 1
-            b[i + n - 2] = y[i]
+            A[h , c] = x[i]**3
+            A[h, c + 1] = x[i]**2
+            A[h, c + 2] = x[i]
+            A[h, c + 3] = 1
+            b[h] = y[i]
             c += 4
-
+            h += 1
+            
         c = 0
         for i in range(1, n - 1):
-            A[2 * (n - 1) + i - 1, c] = 3 * x[i]**2
-            A[2 * (n - 1) + i - 1, c + 1] = 2 * x[i]
-            A[2 * (n - 1) + i - 1, c + 2] = 1
-            A[2 * (n - 1) + i - 1, c + 4] = -3 * x[i]**2
-            A[2 * (n - 1) + i - 1, c + 5] = -2 * x[i]
-            A[2 * (n - 1) + i - 1, c + 6] = -1
+            A[h, c] = 3 * x[i]**2
+            A[h, c + 1] = 2 * x[i]
+            A[h, c + 2] = 1
+            A[h, c + 4] = -3 * x[i]**2
+            A[h, c + 5] = -2 * x[i]
+            A[h, c + 6] = -1
             c += 4
-
+            h += 1
+            
         c = 0
         for i in range(1, n - 1):
-            A[3 * (n - 1) - 1 + i, c] = 6 * x[i]
-            A[3 * (n - 1) - 1 + i, c + 1] = 2
-            A[3 * (n - 1) - 1 + i, c + 4] = -6 * x[i]
-            A[3 * (n - 1) - 1 + i, c + 5] = -2
+            A[h, c] = 6 * x[i]
+            A[h, c + 1] = 2
+            A[h, c + 4] = -6 * x[i]
+            A[h, c + 5] = -2
             c += 4
-
-        # Boundary conditions for the cubic spline
-        A[-2, 0] = 6 * x[0]
-        A[-2, 1] = 2
-        A[-1, -4] = 6 * x[-1]
-        A[-1, -3] = 2
-
-        # Solve the system
+            h += 1
+            
+        A[h, 0] = 6 * x[0]
+        A[h, 1] = 2
+        b[h] = 0
+        h += 1
+        A[h, c] = 6 * x[-1]
+        A[h, c + 1] = 2
+        b[h] = 0
+       
         solution = (A.inv() * b).evalf(self.precision)
         
-        # Reshape the solution
+        # Reshape the solution to match intervals
         solution = solution.reshape(n - 1, 4)
         return solution
+
