@@ -130,7 +130,7 @@ function calculateJacobiMethod() {
 
 // Función para enviar los datos a la API
 function sendDataToAPI(data) {
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/jacobi/", {
+    fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/jacobi/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -144,7 +144,7 @@ function sendDataToAPI(data) {
         })
         .then(result => {
             displayResults(result);
-            return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/jacobi/spectral_radius_and_convergence/", {
+            return fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/jacobi/spectral_radius_and_convergence/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

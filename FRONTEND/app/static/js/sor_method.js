@@ -22,7 +22,7 @@ fetchApiToken();
 
 // Función para enviar los datos a la API y manejar la convergencia y el espectro radial
 function sendDataToAPI(data) {
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/sor/", {
+    fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/sor/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -40,7 +40,7 @@ function sendDataToAPI(data) {
         displayResults(result);
 
         // Llamada para obtener el radio espectral y la convergencia
-        return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/sor/spectral_radius_and_convergence/", {
+        return fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/sor/spectral_radius_and_convergence/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

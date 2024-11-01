@@ -110,7 +110,7 @@ function calculateGaussElimination() {
     };
 
     // Realizar la solicitud POST a la API con el token en el encabezado
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/linear_equations_system/gauss_elimination/", {
+    fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/gauss_elimination/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
