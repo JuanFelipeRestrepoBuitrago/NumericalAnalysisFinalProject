@@ -95,6 +95,22 @@ body {
    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+/* Contenedor de parámetros y resultados */
+.results-containero {
+   flex: 1;
+   background-color: #f8f9fa;
+   border-radius: 10px; /* Ajustado */
+   padding: 15px; /* Reducido */
+   margin: 5px; /* Reducido */
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reducido */
+   transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Contenedor de resultados */
+.results-containero {
+   flex-grow: 2;
+}
+
 /* Ancho máximo para el contenedor de parámetros */
 .parameters-container {
    max-width: 350px; /* Reducido */
@@ -315,6 +331,57 @@ input[type="number"] {
    grid-template-columns: 1fr;
    gap: 10px;
 }
+
+/* Estilos de los inputs de los puntos con clase vector-cello */
+.grid-x input.vector-cello {
+   display: block;
+   margin: 5px auto;
+   width: 180px;  /* Ancho aumentado */
+   height: 40px;  /* Altura ajustada */
+   font-size: 1rem;  /* Tamaño de fuente aumentado */
+   text-align: center;
+   border: none;
+   border-radius: 6px;
+   padding: 0.5rem;
+   background-color: white;
+   transition: background-color 0.3s ease;
+}
+
+#results-containero {
+   font-size: 0.9rem; /* Ajusta el tamaño según sea necesario */
+   padding: 20px;
+   background-color: #f8f9fa;
+   border-radius: 10px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   display: block;
+   max-width: 900px;
+   margin: 0 auto;
+   margin-top: 20px;
+   width: 100%;
+   height: 100%;
+}
+
+#results-containero h3 {
+   font-size: 0.8rem; /* Ajusta los encabezados */
+   font-weight: bold;
+   margin-bottom: 10px;
+}
+
+#results-containero div {
+   font-size: 0.8rem; /* Tamaño reducido para el contenido */
+}
+
+
+/* Hover y focus para los inputs del vector (grid-x) */
+.grid-x input.vector-cello:hover {
+   background-color: #f0f0f0;
+}
+
+.grid-x input.vector-cello:focus {
+   background-color: #fff;
+   outline: none;  /* Elimina el borde de enfoque del navegador */
+}
+
 
 /* Estilos generales para el contenedor del vector (grid-x) */
 .grid-x {

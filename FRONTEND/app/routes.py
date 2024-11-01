@@ -110,6 +110,22 @@ def gauss_seidel_page():
 def metodo_sor_page():
     return render_template('sor_method.html')
 
+@app.route('/vandermonde')
+def vandermonde_page():
+    return render_template('vandermonde.html')
+
+@app.route('/newton')
+def newton_page():
+    return render_template('newton.html')
+
+@app.route('/lagrange')
+def lagrange_page():
+    return render_template('lagrange.html')
+
+@app.route('/spline')
+def spline_page():
+    return render_template('spline.html')
+
 # Nueva ruta para la guía de expresiones
 @app.route('/guia')
 def guia_page():
