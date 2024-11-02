@@ -106,7 +106,7 @@ async function calculateSecondModifiedNewton() {
     try {
         const token = await getTokenFromConfig();
 
-        const response = await fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/second_modified_newton_method/", {
+        const response = await fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/methods/second_modified_newton_method/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

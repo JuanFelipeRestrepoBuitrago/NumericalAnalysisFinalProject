@@ -84,7 +84,7 @@ function calculateNewtonRaphson() {
         .then(config => {
             token = `${config.token_type} ${config.access_token}`;
 
-            return fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/newton_raphson/", {
+            return fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/methods/newton_raphson/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

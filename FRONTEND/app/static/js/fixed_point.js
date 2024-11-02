@@ -83,7 +83,7 @@ function calculateFixedPoint() {
     }
 
     // Realizar la solicitud POST a la API con el token en el encabezado
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/fixed_point/", {
+    fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/methods/fixed_point/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

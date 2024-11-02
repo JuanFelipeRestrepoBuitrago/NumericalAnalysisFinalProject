@@ -45,7 +45,8 @@ function calculateBisection() {
     }
 
     // Realizar la solicitud POST a la API con el token cargado desde el archivo .env
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/bisection/", {
+    fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/methods/bisection/",
+         {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

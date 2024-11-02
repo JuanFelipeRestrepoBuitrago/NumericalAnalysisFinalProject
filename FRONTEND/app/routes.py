@@ -6,12 +6,12 @@ matplotlib.use('Agg')  # Configurar matplotlib para usar el backend 'Agg'
 import matplotlib.pyplot as plt
 import numpy as np
 import io
+import os
 from dotenv import load_dotenv
 load_dotenv()  # Cargar variables del archivo .env
-import os
 
 
-API_URL = "http://localhost:8000/api/v1.3.1/backend_numerical_methods"
+API_URL = "http://localhost:8000/api/v1.5.0/backend_numerical_methods"
 
 @app.route('/config', methods=['GET'])
 def get_token():
@@ -109,6 +109,22 @@ def gauss_seidel_page():
 @app.route('/metodo_sor')
 def metodo_sor_page():
     return render_template('sor_method.html')
+
+@app.route('/vandermonde')
+def vandermonde_page():
+    return render_template('vandermonde.html')
+
+@app.route('/newton')
+def newton_page():
+    return render_template('newton.html')
+
+@app.route('/lagrange')
+def lagrange_page():
+    return render_template('lagrange.html')
+
+@app.route('/spline')
+def spline_page():
+    return render_template('spline.html')
 
 # Nueva ruta para la guía de expresiones
 @app.route('/guia')

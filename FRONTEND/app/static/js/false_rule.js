@@ -81,7 +81,7 @@ function calculateFalseRule() {
     }
 
     // Realizar solicitud POST a la API
-    fetch("http://localhost:8000/api/v1.3.1/backend_numerical_methods/methods/false_rule/", {
+    fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/methods/false_rule/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -16,12 +16,10 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="Ícono de MethodSolve" width="50"
-                    height="50" class="d-inline-block align-text-top">
+                <img src="{{ url_for('static', filename='images/iconon.png') }}" alt="Ícono de MethodSolve" width="50" height="50" class="d-inline-block align-text-top">
                 MethodSolver
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -36,12 +34,11 @@
                             <i class="bi bi-book-fill"></i> Métodos
                         </a>
                     </li>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('guia_page') }}">
-                   <i class="bi bi-patch-question-fill"></i> Guía
-                   </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('guia_page') }}">
+                            <i class="bi bi-patch-question-fill"></i> Guía
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -51,7 +48,7 @@
     <section class="hero-section">
         <div class="container">
             <h1 class="display-4">Métodos</h1>
-            <p class="lead">24 métodos para resolver problemas numéricos</p>
+            <p class="lead">16 métodos para resolver problemas numéricos</p>
         </div>
     </section>
 
@@ -68,52 +65,75 @@
                 </div>
             </div>
 
-<!-- Grupo 2: Resolver Ecuaciones de Una Variable -->
-<div class="container">
-    <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('calculate_bisection') }}" class="btn btn-outline-primary btn-lg w-100">Bisección</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('false_rule_page') }}" class="btn btn-outline-primary btn-lg w-100">Regla Falsa</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('fixed_point_page') }}" class="btn btn-outline-primary btn-lg w-100">Punto Fijo</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('secant_page') }}" class="btn btn-outline-primary btn-lg w-100">Secante</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('newton_raphson_page') }}" class="btn btn-outline-primary btn-lg w-100">Newton-Raphson</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('first_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Primer Método Modificado de Newton</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('second_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Segundo Método Modificado de Newton</a>
-        </div>
-    </div>
-</div>
+            <!-- Grupo 2: Resolver Ecuaciones de Una Variable -->
+            <div class="mb-5">
+                <h2 class="mb-4"><i class="bi bi-calculator-fill"></i> Resolver ecuaciones de una variable</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('calculate_bisection') }}" class="btn btn-outline-primary btn-lg w-100">Método de Bisección</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('false_rule_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Regla Falsa</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('fixed_point_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Punto Fijo</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('secant_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Secante</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('newton_raphson_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Newton-Raphson</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('first_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Primer Método Modificado de Newton</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('second_modified_newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Segundo Método Modificado de Newton</a>
+                    </div>
+                </div>
+            </div>
 
-<!-- Grupo 3: Resolver Ecuaciones de Varias Variables -->
-  <div class="mb-5">
-    <h2 class="mb-4"><i class="bi bi-bar-chart-fill"></i> Solución de sistemas de ecuaciones</h2>
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('gauss_elimination_page') }}" class="btn btn-outline-primary btn-lg w-100">Eliminación Gaussiana</a>
+            <!-- Grupo 3: Resolver Ecuaciones de Varias Variables -->
+            <div class="mb-5">
+                <h2 class="mb-4"><i class="bi bi-bar-chart-fill"></i> Resolver sistemas de ecuaciones</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('gauss_elimination_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de  Eliminación Gaussiana</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('factorization_lu_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Factorización LU</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('jacobi_page') }}" class="btn btn-outline-primary btn-lg w-100">Método Jacobi</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('gauss_seidel_page') }}" class="btn btn-outline-primary btn-lg w-100">Método Gauss-Seidel</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('metodo_sor_page') }}" class="btn btn-outline-primary btn-lg w-100">Método SOR</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grupo 4: Resolver Ecuaciones de Interpolación -->
+            <div class="mb-5">
+                <h2 class="mb-4"><i class="bi bi-border-outer"></i> Resolver Interpolaciones</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('vandermonde_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Vandermonde</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('newton_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Newton</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('lagrange_page') }}" class="btn btn-outline-primary btn-lg w-100">Método de Lagrange</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('spline_page') }}" class="btn btn-outline-primary btn-lg w-100">Método Spline</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('factorization_lu_page') }}" class="btn btn-outline-primary btn-lg w-100">Factorización LU</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('jacobi_page') }}" class="btn btn-outline-primary btn-lg w-100">Método Jacobi</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('gauss_seidel_page') }}" class="btn btn-outline-primary btn-lg w-100">Método Gauss-Seidel</a>
-        </div>
-        <div class="col-md-4 mb-4">
-            <a href="{{ url_for('metodo_sor_page') }}" class="btn btn-outline-primary btn-lg w-100">Método SOR</a>
     </section>
 
     <!-- Footer -->
