@@ -1,13 +1,15 @@
 # Numerical Analysis Final Project
 
 ## Content Table
-- [Authors](#authors)
-- [Introduction](#introduction)
-- [Project Structure](#project-structure)
-- [Setup Instructions](#setup-instructions)
-- [Contribution](#contribution)
-- [License](#license)
-- [Contact](#contact)
+- [Numerical Analysis Final Project](#numerical-analysis-final-project)
+  - [Content Table](#content-table)
+  - [Authors](#authors)
+  - [Introduction](#introduction)
+  - [Project Structure](#project-structure)
+  - [Setup Instructions](#setup-instructions)
+  - [Contribution](#contribution)
+  - [License](#license)
+  - [Contact](#contact)
 
 ## Authors
 
