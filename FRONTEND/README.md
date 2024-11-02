@@ -1,19 +1,15 @@
 # MethodSolver - Numerical Analysis Final Project (Frontend)
 
 ## Content Table
-- [MethodSolver - Numerical Analysis Final Project (Frontend)](#methodsolver---numerical-analysis-final-project-frontend)
-  - [Content Table](#content-table)
-  - [Authors](#authors)
-  - [Introduction](#introduction)
-  - [Project Structure](#project-structure)
-  - [Setup Instructions](#setup-instructions)
-    - [Clone the repository:](#clone-the-repository)
-  - [Technologies Used](#technologies-used)
-  - [Features](#features)
-    - [Implemented Numerical Methods:](#implemented-numerical-methods)
-  - [Contribution](#contribution)
-  - [License](#license)
-  - [Contact](#contact)
+- [Authors](#authors)
+- [Introduction](#introduction)
+- [Project Structure](#project-structure)
+- [Setup Instructions](#setup-instructions)
+- [Technologies Used](#technologies-used)
+- [Features](#features)
+- [Contribution](#contribution)
+- [License](#license)
+- [Contact](#contact)
 
 ## Authors
 
