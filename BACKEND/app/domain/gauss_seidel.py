@@ -184,6 +184,8 @@ class GaussSeidel:
                     b_element = b[i, 0]
 
                 # Calculate the new value of the x vector
+                if A[i, i] == 0:
+                    raise_exception(ValueError("La matriz A tiene un 0 en la diagonal, por lo que no se puede dividir por este valor. Asegúrese que la matriz A sea no singular (det(A) != 0) y este condicionada para el método de Gauss-Seidel"), logger)
                 if x_new.shape[0] == 1:
                     x_new[0, i] = ((b_element - sum_row) / A[i, i]).evalf(self.precision)
                 elif x_new.shape[1] == 1:

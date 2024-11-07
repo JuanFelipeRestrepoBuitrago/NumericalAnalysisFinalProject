@@ -281,6 +281,8 @@ class GaussianElimination:
             # Iterate over the rows
             for i in range(k + 1, n):
                 # Calculate the factor to eliminate the coefficient
+                if Ab[k, k] == 0:
+                    raise_exception(ValueError("La matriz A tiene un 0 en la diagonal, por lo que no se puede dividir por este valor. Se recomienda usar pivoteo"), logger)
                 factor = Ab[i, k] / Ab[k, k]
 
                 # Iterate over the columns
