@@ -176,7 +176,7 @@ def test_0_division():
 
     object = GaussSeidel(A, b, x_initial, precision=16)
     try:
-        object.matrix_solve(0.5e-5)
+        object.iterative_solve(0.5e-5)
     except HTTPException as e:
-        assert e.detail == "La matriz A tiene un 0 en la diagonal, por lo que no se puede dividir por este valor", "Test 1 failed for 0_division"
+        assert e.detail == "La matriz A tiene un 0 en la diagonal, por lo que no se puede dividir por este valor. Asegúrese que la matriz A sea no singular (det(A) != 0) y este condicionada para el método de Gauss-Seidel", "Test 1 failed for 0_division"
  

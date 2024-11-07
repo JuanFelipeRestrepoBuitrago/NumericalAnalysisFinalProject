@@ -141,6 +141,9 @@ def false_rule(function: sp.Expr, variable: sp.Symbol, initial: float, final: fl
             else:
                 initial = medium
                 f_initial = f_medium
+                
+            if f_initial == f_final:
+                break
 
             # Temporarily store the previous medium point and calculate the new medium point
             previous_medium = medium
