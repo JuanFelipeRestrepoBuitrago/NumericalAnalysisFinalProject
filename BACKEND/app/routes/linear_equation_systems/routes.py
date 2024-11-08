@@ -179,6 +179,8 @@ def jacobi(request: Request, data: IterativeMatrixEquationSystemRequest, auth: d
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
         raise e
+    except sp.matrices.exceptions.NonInvertibleMatrixError:
+        raise HTTPException(status_code=500, detail="La matriz D no es invertible porque su determinante es 0. Verifique que la matriz A cumpla con las condiciones necesarias para aplicar el método de Jacobi.")
     except Exception as e:
         raise_exception(e, logger)
 
@@ -280,6 +282,8 @@ def gauss_seidel(request: Request, data: IterativeMatrixEquationSystemRequest, a
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
         raise e
+    except sp.matrices.exceptions.NonInvertibleMatrixError:
+        raise HTTPException(status_code=500, detail="La matriz D - L no es invertible porque su determinante es 0. Verifique que la matriz A cumpla con las condiciones necesarias para aplicar el método de Gauss Seidel.")
     except Exception as e:
         raise_exception(e, logger)
 
@@ -381,6 +385,8 @@ def sor(request: Request, data: SorRequest, auth: dict = Depends(auth_handler.au
         raise HTTPException(status_code=429, detail="Too many requests.")
     except HTTPException as e:
         raise e
+    except sp.matrices.exceptions.NonInvertibleMatrixError:
+        raise HTTPException(status_code=500, detail="La matriz D - wL no es invertible porque su determinante es 0. Verifique que la matriz A y w cumplan con las condiciones necesarias para aplicar el método de SOR.")
     except Exception as e:
         raise_exception(e, logger)
 

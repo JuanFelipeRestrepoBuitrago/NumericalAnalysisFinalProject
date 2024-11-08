@@ -1,3 +1,5 @@
+from app.utils.utils import raise_exception
+from app.routes.routes import logger
 import sympy as sp
 from typing import List, Tuple
 from app.domain.interpolation import Interpolation
@@ -45,6 +47,8 @@ class Lagrange(Interpolation):
                     den *= (x[i] - x[j])
 
             # Add the i-th term of the polynomial (y_i * L_i / den)
+            if den == 0:
+                raise_exception(f'No se puede dividir por 0, el denominador del polinomio de Lagrange {i} es 0', logger=logger)
             polynomial += (y[i] * Li / den).evalf(self.precision)
             lagrange_polynomials.append(self.expression_to_string((Li / den).evalf(self.precision)))
 

@@ -32,10 +32,18 @@ This is the backend section of this project. It's an API which handles the funct
 │   │   ├── env.py # Environment variables handling file. \
 │   │   └── limiter.py # Rate limiter handling file. \
 │   ├── domain \
-│   │   ├── __init__.py # Domain initialization. \
-│   │   ├── gaussian_elimination.py # Gaussian Elimination method. \
-│   │   ├── lu_factorization.py # LU Factorization method. \
-│   │   └── methods.py # Numerical methods handling file. \
+│   │   ├── __init__.py # Domain initialization. \      
+│   │   ├── gaussian_elimination.py # Gaussian Elimination method. \        
+│   │   ├── lu_factorization.py # LU Factorization method. \        
+│   │   ├── gauss_seidel.py # Gauss Seidel method. \        
+│   │   ├── jacobi.py # Jacobi method. \        
+│   │   ├── sor.py # Successive Over Relaxation method. \       
+│   │   ├── interpolation.py # Interpolation class. \       
+│   │   ├── lagrange.py # Lagrange interpolation method. \      
+│   │   ├── newton.py # Newton interpolation method. \      
+│   │   ├── spline.py # Spline interpolation method. \      
+│   │   ├── vander.py # Vandermonde interpolation method. \     
+│   │   └── methods.py # Numerical methods handling file. \     
 │   ├── models \
 │   │   ├── __init__.py # Models initialization. \
 │   │   ├── db_models.py # Database models file. \
@@ -48,16 +56,43 @@ This is the backend section of this project. It's an API which handles the funct
 │   │   │   ├── __init__.py # Methods initialization. \
 │   │   │   └── routes.py # Methods routes file. \
 │   │   ├── __init__.py # Routes initialization. \
-│   │   └── routes.py # Routes file. \
+│   │   ├── interpolation \     
+│   │   │   ├── __init__.py # Interpolation initialization. \       
+│   │   │   └── routes.py # Interpolation routes file. \        
+│   │   └── routes.py # Routes file. \      
 │   ├── tests \
 │   │   ├── domain \
-│   │   │   ├── linear_equation_systems \
-│   │   │   │   ├── gaussian_elimination \
-│   │   │   │   │   ├── __init__.py # Gaussian Elimination initialization. \
-│   │   │   │   │   └── test.py # Gaussian Elimination test file. \
-│   │   │   │   ├── lu_factorization \
-│   │   │   │   │   ├── __init__.py # LU Factorization initialization. \
-│   │   │   │   │   └── test.py # LU Factorization test file. \
+│   │   │   ├── interpolation \     
+│   │   │   │   ├── lagrange \      
+│   │   │   │   │   ├── __init__.py # Lagrange Interpolation initialization. \      
+│   │   │   │   │   └── test.py # Lagrange Interpolation test file. \       
+│   │   │   │   ├── newton \        
+│   │   │   │   │   ├── __init__.py # Newton Interpolation initialization. \        
+│   │   │   │   │   └── test.py # Newton Interpolation test file. \     
+│   │   │   │   ├── spline \        
+│   │   │   │   │   ├── __init__.py # Spline Interpolation initialization. \        
+│   │   │   │   │   └── test.py # Spline Interpolation test file. \     
+│   │   │   │   ├── vander \        
+│   │   │   │   │   ├── __init__.py # Vandermonde Interpolation initialization. \       
+│   │   │   │   │   └── test.py # Vandermonde Interpolation test file. \        
+│   │   │   │   ├── test.py # General Interpolation test file. \        
+│   │   │   │   └── __init__.py # Interpolation initialization. \       
+│   │   │   ├── linear_equation_systems \       
+│   │   │   │   ├── gaussian_elimination \      
+│   │   │   │   │   ├── __init__.py # Gaussian Elimination initialization. \        
+│   │   │   │   │   └── test.py # Gaussian Elimination test file. \     
+│   │   │   │   ├── lu_factorization \      
+│   │   │   │   │   ├── __init__.py # LU Factorization initialization. \        
+│   │   │   │   │   └── test.py # LU Factorization test file. \     
+│   │   │   │   ├── gauss_seidel \      
+│   │   │   │   │   ├── __init__.py # Gauss Seidel initialization. \        
+│   │   │   │   │   └── test.py # Gauss Seidel test file. \     
+│   │   │   │   ├── jacobi \        
+│   │   │   │   │   ├── __init__.py # Jacobi initialization. \      
+│   │   │   │   │   └── test.py # Jacobi test file. \       
+│   │   │   │   ├── sor \       
+│   │   │   │   │   ├── __init__.py # Successive Over Relaxation initialization. \      
+│   │   │   │   │   └── test.py # Successive Over Relaxation test file. \       
 │   │   │   │   └── __init__.py # Linear Equation Systems initialization. \
 │   │   │   ├── methods \
 │   │   │   │   ├── __init__.py # Methods initialization. \
@@ -98,7 +133,7 @@ This is the backend section of this project. It's an API which handles the funct
 
 ## Setup Instructions
 
-1. **Environment Setup**: Make sure you have python 3.8 or higher installed. The python version used was the 3.9.13.
+1. **Environment Setup**: Make sure you have python 3.8 or higher installed. The python version used was the 3.9.13. Also, make sure you have a MySQL database with the sql script provided in the [SQL Script File](../DEPLOY/db/db.sql).
 2. **Directory Navigation**: navigate to the BACKEND directory `cd BACKEND`.
 3. **Virtual Environment Setup (Optional)**: setup a python venv if desired `python -m  venv .venv` and activate it `.venv\Scripts\activate` in Windows or `source .venv\bin\activate` in Linux or Mac.
 4. **Dependencies Installation**: Execute `pip install -r requirements.txt` to install the needed dependencies. 
@@ -149,6 +184,16 @@ The API provides several endpoint to apply or use different numerical methods fo
 - `POST /api/${API_VERSION}/${API_NAME}/methods/first_modified_newton_method/`: First Modified Newton method endpoint for multiple roots.
 - `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/gauss_elimination/`: Gaussian Elimination method endpoint.
 - `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/lu_factorization/`: LU Factorization method endpoint.
+- `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/jacobi/`: Jacobi method endpoint.
+- `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/gauss_seidel/`: Gauss Seidel method endpoint.
+- `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/jacobi/spectral_radius_and_convergence`: Get the spectral radius and convergence of the Jacobi method.
+- `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/gauss_seidel/spectral_radius_and_convergence`: Get the spectral radius and convergence of the Gauss Seidel method.
+- `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/sor/spectral_radius_and_convergence`: Get the spectral radius and convergence of the SOR method.
+- `POST /api/${API_VERSION}/${API_NAME}/linear_equations_system/`: Interpolation method endpoint.
+- `POST /api/${API_VERSION}/${API_NAME}/interpolation/lagrange/`: Lagrange Interpolation method endpoint.
+- `POST /api/${API_VERSION}/${API_NAME}/interpolation/newton/`: Newton Interpolation method endpoint.
+- `POST /api/${API_VERSION}/${API_NAME}/interpolation/spline/`: Spline Interpolation method endpoint.
+- `POST /api/${API_VERSION}/${API_NAME}/interpolation/vandermonde/`: Vandermonde Interpolation method endpoint.
 
 ## Contribution
 
