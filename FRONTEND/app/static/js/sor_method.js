@@ -178,6 +178,8 @@ function calculateSORMethod() {
    const tol = document.getElementById('tolerance').value || 1e-7;
    const methodType = document.getElementById('method_type').value;
    const errorType = document.getElementById('error_type').value;
+   const order = parseInt(document.getElementById('order').value);
+
 
    const data = {
       A: matrix,
@@ -188,7 +190,8 @@ function calculateSORMethod() {
       tol: parseFloat(tol),
       w: relaxationFactor,
       error_type: errorType,
-      method_type: methodType
+      method_type: methodType,
+      order: order
    };
 
    sendDataToAPI(data);

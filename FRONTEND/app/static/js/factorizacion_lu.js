@@ -100,13 +100,16 @@ function calculateLUFactorization() {
 
     const precision = document.getElementById('precision').value ? parseInt(document.getElementById('precision').value) : 16;  // Valor por defecto
     const pivotType = parseInt(document.getElementById('pivot_type').value);
+    const order = parseInt(document.getElementById('order').value);
+
 
     // Crear el objeto de datos para enviar a la API
     const data = {
         A: matrix,
         b: vector,
         precision: precision,
-        pivot_type: pivotType
+        pivot_type: pivotType,
+        order: order
     };
 
     // Realizar la solicitud POST a la API con el token en el encabezado
