@@ -126,7 +126,7 @@ function calculateSecant() {
                 let fxCell = row.insertCell(2);
                 let errorCell = row.insertCell(3);
 
-                iterationCell.textContent = iteration + 1;
+                iterationCell.textContent = iteration;
                 xiCell.textContent = xi;
                 fxCell.textContent = fx;
                 errorCell.textContent = error;
