@@ -131,43 +131,64 @@ function calculateGaussSeidelMethod() {
 }
 
 // Función para enviar los datos a la API y gestionar la convergencia y espectro radial
+
+// Función para enviar los datos a la API y gestionar la convergencia y espectro radial
 function sendDataToAPI(data) {
    fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/gauss_seidel/", {
-      method: "POST",
-      headers: {
-         "Content-Type": "application/json",
-         "Authorization": apiToken
-      },
-      body: JSON.stringify(data)
+       method: "POST",
+       headers: {
+           "Content-Type": "application/json",
+           "Authorization": apiToken
+       },
+       body: JSON.stringify(data)
    })
-      .then(response => {
-         if (!response.ok) {
-            throw response.json();
-         }
-         return response.json();
-      })
-      .then(result => {
-         displayResults(result);
+   .then(response => {
+       if (!response.ok) {
+           throw response.json();
+       }
+       return response.json();
+   })
+   .then(result => {
+       displayResults(result);
 
-         return fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/gauss_seidel/spectral_radius_and_convergence/", {
-            method: "POST",
-            headers: {
+       return fetch("http://localhost:8000/api/v1.5.0/backend_numerical_methods/linear_equations_system/gauss_seidel/spectral_radius_and_convergence/", {
+           method: "POST",
+           headers: {
                "Content-Type": "application/json",
                "Authorization": apiToken
-            },
-            body: JSON.stringify(data)
-         });
-      })
-      .then(response => {
-         if (!response.ok) {
-            throw response.json();
-         }
-         return response.json();
-      })
-      .then(convergenceResult => {
-         displayConvergenceAndSpectral(convergenceResult);
-      })
-      .catch(error => handleError(error));
+           },
+           body: JSON.stringify(data)
+       });
+   })
+   .then(response => {
+       if (!response.ok) {
+           throw response.json();
+       }
+       return response.json();
+   })
+   .then(convergenceResult => {
+       displayConvergenceAndSpectral(convergenceResult);
+   })
+   .catch(error => handleError(error));
+}
+
+// Función para manejar errores
+function handleError(errorPromise) {
+   const errorMessageElement = document.getElementById('error-message');
+   errorPromise.then(error => {
+       errorMessageElement.style.display = 'block';
+
+       if (typeof error.detail === 'string') {
+           errorMessageElement.textContent = error.detail;
+       } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+           errorMessageElement.textContent = error.detail[0].msg;
+       } else {
+           errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+       }
+
+       errorMessageElement.style.textAlign = 'center';
+       hideGraphAndDownloadButton();
+   });
 }
 
 // Función para mostrar los resultados en la tabla
@@ -230,11 +251,6 @@ function displayConvergenceAndSpectral(convergenceResult) {
    spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
 }
 
-// Función para manejar errores
-function handleError(error) {
-   const errorMessage = document.getElementById('error-message');
-   errorMessage.textContent = 'Ocurrió un error al calcular los resultados: ' + error;
-}
 
 // Función para graficar el sistema de ecuaciones en GeoGebra (solo si la matriz es 2x2)
 function plotSystemInGeoGebra(matrix, vector) {

@@ -205,18 +205,32 @@ function displayResults(result) {
     });
 }
 
+
+// Función para manejar errores
+function handleError(errorPromise) {
+    const errorMessageElement = document.getElementById('error-message');
+    errorPromise.then(error => {
+        errorMessageElement.style.display = 'block';
+
+        if (typeof error.detail === 'string') {
+            errorMessageElement.textContent = error.detail;
+        } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+            errorMessageElement.textContent = error.detail[0].msg;
+        } else {
+            errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+        }
+
+        errorMessageElement.style.textAlign = 'center';
+        hideGraphAndDownloadButton();
+    });
+}
+
 // Función para mostrar convergencia y espectro radial
 function displayConvergenceAndSpectral(convergenceResult) {
     const convergenceMessage = document.getElementById('convergence-message');
     const spectralRadiusMessage = document.getElementById('spectral-radius-message');
     convergenceMessage.textContent = `Convergencia: ${convergenceResult.convergence || 'No disponible'}`;
     spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
-}
-
-// Función para manejar errores
-function handleError(error) {
-    const errorMessage = document.getElementById('error-message');
-    errorMessage.textContent = 'Ocurrió un error al calcular los resultados: ' + error;
 }
 
 // Función para graficar el sistema de ecuaciones en GeoGebra

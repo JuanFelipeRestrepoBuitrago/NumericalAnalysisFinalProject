@@ -2,7 +2,12 @@ let apiToken;
 
 // Inicializa la aplicación al cargar la página
 async function initializeApp() {
-    await fetchApiToken();
+    try {
+        await fetchApiToken();
+        initializeGeoGebra();
+    } catch (error) {
+        console.error('Error en la inicialización de la aplicación:', error);
+    }
 }
 
 // Obtiene el token y tipo de la API al cargar la página
@@ -15,9 +20,8 @@ function fetchApiToken() {
         .catch(error => console.error('Error al obtener el token:', error));
 }
 
-// Inicializa la aplicación y GeoGebra
+// Llama a initializeApp al cargar la página
 initializeApp();
-initializeGeoGebra();
 
 // Agrega un nuevo punto (x, y) en el formulario
 function addPoint() {
@@ -74,12 +78,17 @@ function calculateNewton() {
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw err });
+        }
+        return response.json();
+    })
     .then(result => {
         displayResults(result, xValues, yValues);
         plotPolynomialAndPointsInGeoGebra(result.polynomial, xValues, yValues);
     })
-    .catch(error => console.error("Error en la solicitud:", error));
+    .catch(error => handleError(error));
 }
 
 // Muestra los resultados en formato LaTeX, incluyendo la tabla de diferencias
@@ -123,6 +132,7 @@ function displayResults(result, xValues, yValues) {
     MathJax.typesetPromise();
 }
 
+// Inicializa GeoGebra
 function initializeGeoGebra() {
     const ggbApp = new GGBApplet({
        "appName": "graphing",
@@ -184,5 +194,25 @@ function downloadGeoGebraSVG() {
         });
     } else {
         alert('No se pudo exportar el SVG. Asegúrate de que la API de GeoGebra esté disponible.');
+    }
+}
+
+function handleError(error) {
+    const errorMessageElement = document.getElementById('error-message');
+    errorMessageElement.style.display = 'block';
+    errorMessageElement.style.fontSize = '1.5em'; 
+    errorMessageElement.style.color = 'red'; 
+    errorMessageElement.style.textAlign = 'center';
+
+    if (error && error.detail) {
+        if (typeof error.detail === 'string') {
+            errorMessageElement.textContent = error.detail;
+        } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+            errorMessageElement.textContent = error.detail[0].msg;
+        } else {
+            errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+        }
+    } else {
+        errorMessageElement.textContent = 'Ocurrió un error desconocido.';
     }
 }
