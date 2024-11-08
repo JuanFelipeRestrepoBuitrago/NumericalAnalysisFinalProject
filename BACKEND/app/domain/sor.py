@@ -192,6 +192,8 @@ class Sor:
                     x_element = x_current[i, 0]
 
                 # Calculate the new value of the x vector
+                if A[i, i] == 0:
+                    raise_exception(ValueError("La diagonal de la matriz A no puede contener ceros"), logger)
                 if x_new.shape[0] == 1:
                     x_new[0, i] = (w * ((b_element - sum_row) / A[i, i]) + (1 - w) * x_element).evalf(self.precision)
                 elif x_new.shape[1] == 1:

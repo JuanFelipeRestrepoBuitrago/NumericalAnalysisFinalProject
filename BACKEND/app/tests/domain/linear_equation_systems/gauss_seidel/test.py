@@ -166,3 +166,17 @@ def test_converges():
     result = object.converges()
 
     assert "El método converge, el radio espectral de T es menor a 1 y/o la matriz es estrictamente diagonal dominante", "Test 1 failed for converges"
+    
+    
+def test_0_division():
+    # test 1
+    A = sp.Matrix([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+    b = sp.Matrix([[1], [2], [3]])
+    x_initial = sp.Matrix([[1], [1], [1]])
+
+    object = GaussSeidel(A, b, x_initial, precision=16)
+    try:
+        object.iterative_solve(0.5e-5)
+    except HTTPException as e:
+        assert e.detail == "La matriz A tiene un 0 en la diagonal, por lo que no se puede dividir por este valor. Asegúrese que la matriz A sea no singular (det(A) != 0) y este condicionada para el método de Gauss-Seidel", "Test 1 failed for 0_division"
+ 

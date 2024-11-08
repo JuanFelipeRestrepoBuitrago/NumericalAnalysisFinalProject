@@ -1,3 +1,5 @@
+from app.utils.utils import raise_exception
+from app.routes.routes import logger
 import sympy as sp
 from typing import List, Tuple
 from app.domain.interpolation import Interpolation
@@ -36,6 +38,8 @@ class Newton(Interpolation):
         # Calculate divided differences
         for j in range(2, n + 1):
             for i in range(j - 1, n):
+                if difference_table[i, 0] - difference_table[i - j + 1, 0] == 0:
+                    raise_exception(f'No se puede dividir por 0, el elemento {i} de la columna 0 y el elemento {i - j + 1} de la columna 0 son iguales en la tabla de diferencias divididas', logger=logger)
                 # Calculate the divided difference
                 difference_table[i, j] = ((difference_table[i, j - 1] - difference_table[i - 1, j - 1]) / (difference_table[i, 0] - difference_table[i - j + 1, 0])).evalf(self.precision)
 

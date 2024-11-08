@@ -305,6 +305,8 @@ class LUFactorization:
             # Iterate over the rows
             for i in range(k + 1, n):
                 # Calculate the factor to eliminate the coefficient
+                if A[k, k] == 0:
+                    raise_exception(ValueError("La matriz A tiene un 0 en la diagonal, por lo que no se puede dividir por este valor. Se recomienda usar pivoteo"), logger)
                 factor = A[i, k] / A[k, k]
 
                 # Iterate over the columns
