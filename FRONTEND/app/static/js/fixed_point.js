@@ -120,7 +120,7 @@ function calculateFixedPoint() {
                 let errorCell = row.insertCell(3);       // Valor del error
 
                 // Rellenar las celdas con los valores
-                iterationCell.textContent = iteration + 1;  // Mostrar iteración comenzando desde 1
+                iterationCell.textContent = iteration; 
                 xnCell.textContent = xn;
                 fxCell.textContent = fx;
                 errorCell.textContent = error;
