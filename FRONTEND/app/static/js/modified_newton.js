@@ -102,7 +102,7 @@ async function calculateModifiedNewton() {
         if (result.Iterations && result.Xn && result.Fx && result.Error) {
             result.Iterations.forEach((iteration, index) => {
                 let row = resultsTable.insertRow();
-                row.insertCell(0).textContent = iteration + 1;
+                row.insertCell(0).textContent = iteration;
                 row.insertCell(1).textContent = result.Xn[index];
                 row.insertCell(2).textContent = result.Fx[index];
                 row.insertCell(3).textContent = result.Error[index];

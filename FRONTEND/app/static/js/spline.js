@@ -3,6 +3,7 @@ let apiToken;
 // Inicializa la aplicación al cargar la página
 async function initializeApp() {
    await fetchApiToken();
+   initializeGeoGebra();
 }
 
 // Obtiene el token y tipo de la API al cargar la página
@@ -17,7 +18,6 @@ function fetchApiToken() {
 
 // Inicializa la aplicación y GeoGebra
 initializeApp();
-initializeGeoGebra();
 
 // Agrega un nuevo punto (x, y) en el formulario
 function addPoint() {
@@ -76,18 +76,21 @@ function calculateSpline() {
       },
       body: JSON.stringify(data)
    })
-      .then(response => response.json())
+      .then(response => {
+         if (!response.ok) {
+            return response.json().then(error => { throw error });
+         }
+         return response.json();
+      })
       .then(result => {
          displayResults(result);
          plotSplineFunctionsInGeoGebra(result.functions, xValues, yValues);
       })
-      .catch(error => console.error("Error en la solicitud:", error));
+      .catch(error => handleError(error));
 }
-
 
 // Muestra los resultados en formato LaTeX
 function displayResults(result) {
-   // Formatear cada función e intervalo
    const functionsLatex = result.functions.map(f => {
       const formattedFunction = f.function
          .replace(/\*\*([0-9]+)/g, "^{$1}")
@@ -111,8 +114,6 @@ function displayResults(result) {
 
    MathJax.typesetPromise();
 }
-
-
 
 function initializeGeoGebra() {
    const ggbApp = new GGBApplet({
@@ -141,27 +142,21 @@ function initializeGeoGebra() {
 function plotSplineFunctionsInGeoGebra(functions, xValues, yValues) {
    ggbApplet.reset();
 
-   // Graficar cada función a tramos en su intervalo correspondiente
    functions.forEach((f, index) => {
-      // Extraer el intervalo y los límites inferior y superior
       const intervalMatch = f.interval.match(/([-+]?\d*\.?\d+)\s*<=\s*x\s*<=\s*([-+]?\d*\.?\d+)/);
       if (intervalMatch) {
          const lowerBound = parseFloat(intervalMatch[1]);
          const upperBound = parseFloat(intervalMatch[2]);
          const functionCommand = `If(${lowerBound} <= x <= ${upperBound}, ${f.function})`;
-
-         // Graficar la función a tramos en GeoGebra
          ggbApplet.evalCommand(`f${index + 1}: ${functionCommand}`);
       }
    });
 
-   // Graficar los puntos
    xValues.forEach((x, index) => {
       const y = yValues[index];
       ggbApplet.evalCommand(`P${index + 1} = (${x}, ${y})`);
    });
 
-   // Ajustar el sistema de coordenadas
    ggbApplet.setCoordSystem(-20, 20, -20, 20);
 
    document.getElementById('geogebra-container').style.display = 'block';
@@ -187,5 +182,25 @@ function downloadGeoGebraSVG() {
       });
    } else {
       alert('No se pudo exportar el SVG. Asegúrate de que la API de GeoGebra esté disponible.');
+   }
+}
+
+function handleError(error) {
+   const errorMessageElement = document.getElementById('error-message');
+   errorMessageElement.style.display = 'block';
+   errorMessageElement.style.fontSize = '1.5em'; 
+   errorMessageElement.style.color = 'red'; 
+   errorMessageElement.style.textAlign = 'center';
+
+   if (error && error.detail) {
+       if (typeof error.detail === 'string') {
+           errorMessageElement.textContent = error.detail;
+       } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+           errorMessageElement.textContent = error.detail[0].msg;
+       } else {
+           errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+       }
+   } else {
+       errorMessageElement.textContent = 'Ocurrió un error desconocido.';
    }
 }

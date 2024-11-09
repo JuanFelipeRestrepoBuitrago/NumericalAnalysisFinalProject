@@ -46,7 +46,6 @@ function removePoint() {
     }
 }
 
-// Función para calcular el método de Lagrange y graficar el polinomio y puntos
 function calculateLagrange() {
     const xInputs = document.querySelectorAll('input[name="x[]"]');
     const yInputs = document.querySelectorAll('input[name="y[]"]');
@@ -74,12 +73,38 @@ function calculateLagrange() {
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            // Captura el error si el status no es 2xx
+            return response.json().then(err => { throw err });
+        }
+        return response.json();
+    })
     .then(result => {
         displayResults(result);
         plotPolynomialAndPointsInGeoGebra(result.polynomial, xValues, yValues);
     })
-    .catch(error => console.error("Error en la solicitud:", error));
+    .catch(error => handleError(error));
+}
+
+function handleError(error) {
+    const errorMessageElement = document.getElementById('error-message');
+    errorMessageElement.style.display = 'block';
+    errorMessageElement.style.fontSize = '1.5em';
+    errorMessageElement.style.color = 'red';
+    errorMessageElement.style.textAlign = 'center';
+
+    if (error && error.detail) {
+        if (typeof error.detail === 'string') {
+            errorMessageElement.textContent = error.detail;
+        } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+            errorMessageElement.textContent = error.detail[0].msg;
+        } else {
+            errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+        }
+    } else {
+        errorMessageElement.textContent = 'Ocurrió un error desconocido.';
+    }
 }
 
 function displayResults(result) {

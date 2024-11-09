@@ -62,6 +62,25 @@ function sendDataToAPI(data) {
 }
 
 
+// Función para manejar errores
+function handleError(errorPromise) {
+   const errorMessageElement = document.getElementById('error-message');
+   errorPromise.then(error => {
+       errorMessageElement.style.display = 'block';
+
+       if (typeof error.detail === 'string') {
+           errorMessageElement.textContent = error.detail;
+       } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+           errorMessageElement.textContent = error.detail[0].msg;
+       } else {
+           errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+       }
+
+       errorMessageElement.style.textAlign = 'center';
+       hideGraphAndDownloadButton();
+   });
+}
+
 // Función para generar la matriz y los vectores
 function generateMatrix() {
    const size = parseInt(document.getElementById('matrixSize').value);
@@ -159,6 +178,8 @@ function calculateSORMethod() {
    const tol = document.getElementById('tolerance').value || 1e-7;
    const methodType = document.getElementById('method_type').value;
    const errorType = document.getElementById('error_type').value;
+   const order = parseInt(document.getElementById('order').value);
+
 
    const data = {
       A: matrix,
@@ -169,7 +190,8 @@ function calculateSORMethod() {
       tol: parseFloat(tol),
       w: relaxationFactor,
       error_type: errorType,
-      method_type: methodType
+      method_type: methodType,
+      order: order
    };
 
    sendDataToAPI(data);
@@ -243,11 +265,6 @@ function displayConvergenceAndSpectral(convergenceResult) {
    spectralRadiusMessage.textContent = `Espectro Radial: ${convergenceResult.spectral_radius || 'No disponible'}`;
 }
 
-// Función para manejar errores
-function handleError(error) {
-   const errorMessage = document.getElementById('error-message');
-   errorMessage.textContent = 'Ocurrió un error al calcular los resultados: ' + error;
-}
 
 // Función para graficar el sistema de ecuaciones en GeoGebra (solo si la matriz es 2x2)
 function plotSystemInGeoGebra(matrix, vector) {

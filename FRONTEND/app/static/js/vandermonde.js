@@ -74,12 +74,17 @@ function calculateVandermonde() {
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw response.json();
+        }
+        return response.json();
+    })
     .then(result => {
         displayResults(result);
         plotPolynomialAndPointsInGeoGebra(result.polynomial, xValues, yValues);
     })
-    .catch(error => console.error("Error en la solicitud:", error));
+    .catch(error => handleError(error));
 }
 
 // Muestra los resultados en formato LaTeX
@@ -108,7 +113,7 @@ function displayResults(result) {
 
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = `
-    <h3>Polinomio:</h3> ${polynomialLatex}<br><br>
+        <h3>Polinomio:</h3> ${polynomialLatex}<br><br>
         <h3>Matriz de Vandermonde:</h3> ${vandermondeMatrixLatex}
         <h3>Coeficientes:</h3> ${coefficientsLatex}
     `;
@@ -116,25 +121,26 @@ function displayResults(result) {
     MathJax.typesetPromise();
 }
 
+// Inicializa GeoGebra
 function initializeGeoGebra() {
     const ggbApp = new GGBApplet({
-       "appName": "graphing",
-       "width": 800,
-       "height": 450,
-       "showToolBar": false,
-       "showAlgebraInput": true,
-       "showMenuBar": false,
-       "enableRightClick": false,
-       "enableShiftDragZoom": true,
-       "showResetIcon": false,
-       "language": "es",
-       "showZoomButtons": true,
-       "capturingThreshold": null,
-       "enableFileFeatures": true,
-       "appletOnLoad": function () {
-          console.log("GeoGebra cargado");
-          ggbApplet.setVisible('algebra', true);
-       }
+        "appName": "graphing",
+        "width": 800,
+        "height": 450,
+        "showToolBar": false,
+        "showAlgebraInput": true,
+        "showMenuBar": false,
+        "enableRightClick": false,
+        "enableShiftDragZoom": true,
+        "showResetIcon": false,
+        "language": "es",
+        "showZoomButtons": true,
+        "capturingThreshold": null,
+        "enableFileFeatures": true,
+        "appletOnLoad": function () {
+            console.log("GeoGebra cargado");
+            ggbApplet.setVisible('algebra', true);
+        }
     }, true);
     ggbApp.inject('geogebra');
 }
@@ -142,10 +148,10 @@ function initializeGeoGebra() {
 // Graficar el polinomio y los puntos en GeoGebra
 function plotPolynomialAndPointsInGeoGebra(polynomial, xValues, yValues) {
     ggbApplet.reset();
-    
+
     // Graficar el polinomio
     ggbApplet.evalCommand(`f(x) = ${polynomial}`);
-    
+
     // Graficar los puntos
     xValues.forEach((x, index) => {
         const y = yValues[index];
@@ -179,3 +185,22 @@ function downloadGeoGebraSVG() {
         alert('No se pudo exportar el SVG. Asegúrate de que la API de GeoGebra esté disponible.');
     }
 }
+// Función para manejar errores de la API
+function handleError(errorPromise) {
+    const errorMessageElement = document.getElementById('error-message');
+    errorMessageElement.style.display = 'block';
+    errorMessageElement.style.fontSize = '1.5em'; // Cambia el tamaño de la letra a un tamaño mayor
+
+    errorPromise.then(error => {
+        if (typeof error.detail === 'string') {
+            errorMessageElement.textContent = error.detail;
+        } else if (Array.isArray(error.detail) && error.detail[0].msg) {
+            errorMessageElement.textContent = error.detail[0].msg;
+        } else {
+            errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
+        }
+
+        errorMessageElement.style.textAlign = 'center';
+    });
+}
+
