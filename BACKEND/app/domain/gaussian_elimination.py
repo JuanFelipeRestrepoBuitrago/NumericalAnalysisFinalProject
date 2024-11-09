@@ -3,11 +3,13 @@ from app.routes.routes import logger
 from decimal import Decimal, getcontext
 import numpy as np
 from typing import List
+import sympy as sp
 
 
 class GaussianElimination:
     def __init__(self, A: np.array, b: np.array, n: int = None, precision: int = 16):
         getcontext().prec = precision
+        self.precision = precision
         self.A = A.astype(float)
         self.b = b.astype(float)    
 
@@ -242,7 +244,7 @@ class GaussianElimination:
             raise_exception(ValueError("El orden de la norma no es válido, este debe ser 0 o entero positivo"), logger)
         else:
             # Calculate the absolute error with the order
-            error = np.linalg.norm(vectorial_error, ord=order)
+            error = sp.Matrix(vectorial_error).norm(order).evalf(self.precision)
 
         # Store the absolute error
         self.absolute_error = error

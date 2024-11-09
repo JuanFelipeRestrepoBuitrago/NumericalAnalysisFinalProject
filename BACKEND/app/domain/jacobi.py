@@ -156,14 +156,14 @@ class Jacobi:
         :return: List with the number of iterations, the solutions for each iteration, the absolute or relative error for each iteration and a message with the result
         """
         if A is None:
-            A = self.A.copy()
+            A = sp.Matrix(self.A)
         if b is None:
-            b = self.b.copy()
+            b = sp.Matrix(self.b)
         if x_initial is None:
-            x_initial = self.x_initial.copy()
+            x_initial = sp.Matrix(self.x_initial)
 
         if order == 0:
-            order = np.inf
+            order = sp_inf
         elif order < 0:
             raise_exception(ValueError("El orden de la norma no es válido, este debe ser 0 o entero positivo"), logger)
 
@@ -175,15 +175,15 @@ class Jacobi:
         error = tol + 1
 
         # Initialize the current x vector
-        x_current = x_initial.copy()
+        x_current = sp.Matrix(x_initial)
 
         # Fill the table with the initial values
         counter_values_list.append(counter)
-    
-        if x_current.shape[0] == 1:  # Shape (1, n)
-            values_list = [[str(val[0, 0])] for val in np.split(x_current, x_current.shape[1], axis=1)]
-        elif x_current.shape[1] == 1:  # Shape (n, 1)
-            values_list = [[str(val[0, 0])] for val in np.split(x_current, x_current.shape[0], axis=0)]
+
+        if x_current.shape[0] == 1:
+            values_list = [[str(x_current[0, i])] for i in range(x_current.shape[1])]
+        elif x_current.shape[1] == 1:
+            values_list = [[str(x_current[i, 0])] for i in range(x_current.shape[0])]
 
         error_values_list.append("-")
 
@@ -213,24 +213,29 @@ class Jacobi:
                     b_element = b[i, 0]
 
                 # Calculate the new value of the x vector
-                if A[i, i] == 0:
+                if A[i, i] == 0 or A[i, i] == 0.0:
                     raise_exception(ValueError("La matriz A tiene un 0 en la diagonal, por lo que no se puede dividir por este valor. Asegúrese que la matriz A sea no singular (det(A) != 0) y este condicionada para el método de Jacobi"), logger)
                 if x_new.shape[0] == 1:
-                    x_new[0, i] = (b_element - sum_row) / A[i, i]
+                    x_new[0, i] = ((b_element - sum_row) / A[i, i]).evalf(self.precision)
                 elif x_new.shape[1] == 1:
-                    x_new[i, 0] = (b_element - sum_row) / A[i, i]
+                    x_new[i, 0] = ((b_element - sum_row) / A[i, i]).evalf(self.precision)
+
 
             # Calculate the error
+            if x_new.shape[0] == 1:
+                x_new_element = x_new.T
+            elif x_new.shape[1] == 1:
+                x_new_element = x_new
+
+            if x_current.shape[0] == 1:
+                x_element = x_current.T
+            elif x_current.shape[1] == 1:
+                x_element = x_current
+
             if absolute_error:
-                if x_current.shape[0] == 1:
-                    error = np.linalg.norm(x_new.T - x_current.T, ord=order)
-                elif x_current.shape[1] == 1:
-                    error = np.linalg.norm(x_new - x_current, ord=order)
+                error = ((x_new_element - x_element)).norm(order).evalf(self.precision)
             else:
-                if x_current.shape[0] == 1:
-                    error = np.linalg.norm((x_new.T - x_current.T) / x_new.T, ord=order)
-                elif x_current.shape[1] == 1:
-                    error = np.linalg.norm((x_new - x_current) / x_new, ord=order)
+                error = self.element_wise_division((x_new_element - x_element), x_new_element).norm(order).evalf(self.precision)
 
             # Update the current x vector
             x_current = x_new
@@ -238,12 +243,12 @@ class Jacobi:
             # Append the values to the lists
             counter += 1
             counter_values_list.append(counter)
-            if x_current.shape[0] == 1:  # Shape (1, n)
-                splitted = np.split(x_current, x_current.shape[1], axis=1)
-            elif x_current.shape[1] == 1:  # Shape (n, 1)
-                splitted = np.split(x_current, x_current.shape[0], axis=0)
+            if x_current.shape[0] == 1:
+                splitted = [x_current[0, i] for i in range(x_current.shape[1])]
+            elif x_current.shape[1] == 1:
+                splitted = [x_current[i, 0] for i in range(x_current.shape[0])]
 
-            [values_list[i].append(str(splitted[i][0][0])) for i in range(len(values_list))]
+            [values_list[i].append(str(splitted[i])) for i in range(len(values_list))]
 
             error_values_list.append(str(error))
 
@@ -255,7 +260,7 @@ class Jacobi:
         if error > tol:
             message = "El método no converge en {} iteraciones".format(max_iter)
         else:
-            message = f"{[str(splitted[i][0][0]) for i in range(len(values_list))]} es una aproximación de la solución del sistema con una tolerancia de {tol}"
+            message = f"{[str(splitted[i]) for i in range(len(values_list))]} es una aproximación de la solución del sistema con una tolerancia de {tol}"
 
         return counter_values_list, values_list, error_values_list, message
     
