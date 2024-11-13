@@ -150,4 +150,26 @@ async function calculateSecondModifiedNewton() {
         errorMessageElement.textContent = 'Ocurrió un error al procesar la solicitud.';
         errorMessageElement.style.textAlign = 'center';
     }
+
+
+}
+
+// Función para descargar el gráfico como SVG
+function downloadGeoGebraSVG() {
+    if (typeof ggbApplet !== 'undefined' && typeof ggbApplet.exportSVG === 'function') {
+        ggbApplet.exportSVG(svgContent => {
+            if (svgContent.startsWith('<svg')) {
+                const link = document.createElement('a');
+                link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent);
+                link.download = 'geogebra_graph.svg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert("Error: El contenido exportado no es un SVG válido.");
+            }
+        });
+    } else {
+        alert('No se pudo exportar el SVG. Verifica la disponibilidad de la API de GeoGebra.');
+    }
 }
